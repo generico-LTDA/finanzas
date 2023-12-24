@@ -15,13 +15,17 @@ dependencyResolutionManagement {
 }
 
 rootProject.name = "finanzas"
+
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 
 include(":core:database")
 
 include(":data:paymentaccount")
-include(":data:transation")
+include(":data:transaction")
 
 include(":feature:home")
 include(":feature:createpaymentaccount")
 include(":feature:createtransaction")
+include(":core:ui")
+include(":core:common")

@@ -41,5 +41,26 @@ gradlePlugin {
             id = "conventionPluginsApp.android.lib.compose"
             implementationClass = "plugins.AndroidLibComposeConventionPlugin"
         }
+
+        register("androidHilt") {
+            id = "conventionPluginsApp.android.hilt"
+            implementationClass = "plugins.AndroidHiltConventionPlugin"
+        }
+
+        register("androidRoom") {
+            id = "conventionPluginsApp.android.room"
+            implementationClass = "plugins.AndroidRoomConventionPlugin"
+        }
+
+        register("androidFeature") {
+            id = "conventionPluginsApp.android.feature"
+            implementationClass = "plugins.AndroidAppFeatureConventionPlugin"
+        }
+
+        register("androidData") {
+            id = "conventionPluginsApp.android.data"
+            implementationClass = "plugins.AndroidAppDataConvetionPlugin"
+        }
+
     }
 }

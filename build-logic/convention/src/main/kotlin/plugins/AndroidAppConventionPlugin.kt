@@ -3,6 +3,7 @@ package plugins
 import com.android.build.api.dsl.ApplicationExtension
 import config.Config
 import extensions.configureAndroidKotlin
+import extensions.configureAndroidProjects
 import extensions.configureBuildTypes
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -28,6 +29,8 @@ class AndroidAppConventionPlugin : Plugin<Project> {
 
                 configureAndroidKotlin(this)
                 configureBuildTypes(this)
+                configureAndroidProjects(this)
+                
             }
         }
     }

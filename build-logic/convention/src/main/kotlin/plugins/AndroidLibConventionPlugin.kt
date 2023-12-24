@@ -1,5 +1,6 @@
 package plugins
 
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import config.Config
 import extensions.configureAndroidKotlin
@@ -15,6 +16,7 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 apply("com.android.library")
                 apply("kotlin-android")
             }
+
             extensions.configure<LibraryExtension> {
                 configureAndroidKotlin(this)
                 defaultConfig.apply {
@@ -22,6 +24,9 @@ class AndroidLibConventionPlugin : Plugin<Project> {
                 }
                 configureBuildTypes(this)
             }
+
+
+
         }
     }
 }

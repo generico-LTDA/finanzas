@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.soleel.transation"
+    namespace = "com.soleel.common"
     compileSdk = 33
 
     defaultConfig {
