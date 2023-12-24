@@ -16,3 +16,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "finanzas"
 include(":app")
+
+include(":core:database")
+
+include(":data:paymentaccount")
+include(":data:transation")
+
+include(":feature:home")
+include(":feature:createpaymentaccount")
+include(":feature:createtransaction")
