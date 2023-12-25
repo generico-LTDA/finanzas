@@ -1,4 +1,4 @@
-package com.soleel.home.modals
+package com.soleel.add
 
 import android.content.Context
 import androidx.compose.foundation.Image
@@ -24,40 +24,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.soleel.ui.R
-import com.soleel.home.HomeUiState
-import com.soleel.home.HomeViewModel
-//import com.soleel.home.R
 
-//@OptIn(ExperimentalMaterial3Api::class)
-//@Preview(showBackground = true)
-//@Composable
-//private fun Preview() {
-//    MonetaTheme {
-//        AddCards()
-//    }
-//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddModalBottomSheet(
-    homeViewModel: HomeViewModel,
     onDismiss: () -> Unit,
-    sheetState: SheetState
+    sheetState: SheetState,
+    viewModel: AddViewModel = hiltViewModel(),
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = sheetState,
         dragHandle = { BottomSheetDefaults.DragHandle() }
     ) {
-        AddCards(homeViewModel)
+        AddCards(viewModel)
     }
 }
 
 @Composable
-private fun AddCards(homeViewModel: HomeViewModel) {
+private fun AddCards(viewModel: AddViewModel) {
 
-    val paymentAccountsUiState: HomeUiState by homeViewModel.homeUiState.collectAsState()
+    val paymentAccountsUiState: AddUiState by viewModel.addUiState.collectAsState()
 
 //    val paymentAccountsExistEntity: Boolean = paymentAccountsUiState.isPaymentAccountSuccess
 
