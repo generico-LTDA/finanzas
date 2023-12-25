@@ -1,6 +1,5 @@
 package com.soleel.add
 
-import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +20,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -31,6 +29,8 @@ import com.soleel.ui.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddModalBottomSheet(
+    onCreatePaymentAccount: () -> Unit,
+    onCreateTransaction: () -> Unit,
     onDismiss: () -> Unit,
     sheetState: SheetState,
     viewModel: AddViewModel = hiltViewModel(),
@@ -38,24 +38,27 @@ fun AddModalBottomSheet(
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
         sheetState = sheetState,
-        dragHandle = { BottomSheetDefaults.DragHandle() }
-    ) {
-        AddCards(viewModel)
-    }
+        dragHandle = { BottomSheetDefaults.DragHandle() },
+        content = {
+            AddCards(
+                onCreatePaymentAccount = onCreatePaymentAccount,
+                onCreateTransaction = onCreateTransaction,
+                onDismiss = onDismiss,
+                viewModel = viewModel
+            )
+        }
+    )
 }
 
 @Composable
-private fun AddCards(viewModel: AddViewModel) {
+private fun AddCards(
+    onCreatePaymentAccount: () -> Unit,
+    onCreateTransaction: () -> Unit,
+    onDismiss: () -> Unit,
+    viewModel: AddViewModel,
+) {
 
     val paymentAccountsUiState: AddUiState by viewModel.addUiState.collectAsState()
-
-//    val paymentAccountsExistEntity: Boolean = paymentAccountsUiState.isPaymentAccountSuccess
-
-//    ) {
-//        is HomeUiState.Loading -> false
-//        is HomeUiState.Success<*> -> (paymentAccountsUiState as HomeUiState.Success<List<PaymentAccountEntity>>).data.isNotEmpty()
-//        is HomeUiState.Error<*> -> false
-//    }
 
     Row(
         modifier = Modifier.navigationBarsPadding(),
@@ -64,13 +67,17 @@ private fun AddCards(viewModel: AddViewModel) {
         AddCardItem(
             modifier = Modifier.weight(1f),
             iconResId = R.drawable.ic_add_account,
-            name = "Crear cuenta"
+            name = "Crear cuenta",
+            onClick = onCreatePaymentAccount,
+            onDismiss = onDismiss
         )
         AddCardItem(
             modifier = Modifier.weight(1f),
             iconResId = R.drawable.ic_add_transaction,
             name = "Crear transacción",
-            paymentAccountExist = paymentAccountsUiState.isPaymentAccountSuccess
+            onClick = onCreateTransaction,
+            onDismiss = onDismiss,
+            paymentAccountExist = paymentAccountsUiState.isPaymentAccountSuccess,
         )
     }
 }
@@ -80,46 +87,38 @@ private fun AddCardItem(
     modifier: Modifier,
     iconResId: Int,
     name: String,
-    paymentAccountExist: Boolean = true
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+    paymentAccountExist: Boolean = true,
 ) {
-    val context = LocalContext.current
-
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .clickable(enabled = paymentAccountExist) {
-                onClick(context, name)
-            }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Image(
-                painter = painterResource(id = iconResId),
-                contentDescription = "Icono de agregar",
+            .clickable(
+                enabled = paymentAccountExist,
+                onClick = {
+                    onClick()
+                    onDismiss()
+                }),
+        content = {
+            Column(
                 modifier = Modifier
-                    .size(50.dp)
-                    .align(Alignment.CenterHorizontally)
-            )
-            Text(
-                text = name,
-                modifier = Modifier.align(Alignment.CenterHorizontally)
-            )
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Image(
+                    painter = painterResource(id = iconResId),
+                    contentDescription = "Icono de agregar",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .align(Alignment.CenterHorizontally)
+                )
+                Text(
+                    text = name,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
         }
-    }
-}
-
-private fun onClick(context: Context, name: String) {
-    when (name) {
-        "Crear cuenta" -> {
-//            context.startActivity(Intent(context, CreatePaymentAccountActivity::class.java))
-        }
-
-        "Crear transacción" -> {
-//            context.startActivity(Intent(context, CreateTransactionActivity::class.java))
-        }
-    }
+    )
 }

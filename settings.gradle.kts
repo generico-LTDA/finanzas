@@ -19,17 +19,18 @@ rootProject.name = "finanzas"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 include(":app")
 
+include(":core:common")
 include(":core:database")
+include(":core:ui")
 
 include(":data:paymentaccount")
 include(":data:transaction")
 
 include(":feature:home")
-include(":feature:createpaymentaccount")
-include(":feature:createtransaction")
-include(":core:ui")
-include(":core:common")
 include(":feature:accounts")
 include(":feature:profile")
 include(":feature:stats")
 include(":feature:add")
+include(":feature:createpaymentaccount")
+include(":feature:createtransaction")
+include(":feature:cancelalert")

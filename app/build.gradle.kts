@@ -12,4 +12,5 @@ dependencies {
     implementation(projects.feature.add)
     implementation(projects.feature.createpaymentaccount)
     implementation(projects.feature.createtransaction)
+    implementation(projects.feature.cancelalert)
 }
