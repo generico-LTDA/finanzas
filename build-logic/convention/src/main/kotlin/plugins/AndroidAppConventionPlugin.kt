@@ -3,11 +3,12 @@ package plugins
 import com.android.build.api.dsl.ApplicationExtension
 import config.Config
 import extensions.configureAndroidKotlin
-import extensions.configureAndroidProjects
 import extensions.configureBuildTypes
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
+import org.gradle.kotlin.dsl.dependencies
+
 
 class AndroidAppConventionPlugin : Plugin<Project> {
 
@@ -29,7 +30,12 @@ class AndroidAppConventionPlugin : Plugin<Project> {
 
                 configureAndroidKotlin(this)
                 configureBuildTypes(this)
-                configureAndroidProjects(this)
+
+                dependencies {
+                    add("implementation", project(":feature:home"))
+                    add("implementation", project(":feature:createpaymentaccount"))
+                    add("implementation", project(":feature:createtransaction"))
+                }
                 
             }
         }
