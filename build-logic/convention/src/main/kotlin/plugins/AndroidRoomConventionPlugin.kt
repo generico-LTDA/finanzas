@@ -1,13 +1,9 @@
 package plugins
 
-import com.android.build.api.dsl.ApplicationExtension
-import com.android.build.gradle.LibraryExtension
-import extensions.configureAndroidRoom
 import extensions.versionCatalog
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.getByType
 
 
 class AndroidRoomConventionPlugin : Plugin<Project> {

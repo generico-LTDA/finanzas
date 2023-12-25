@@ -4,8 +4,11 @@ plugins {
     id("conventionPluginsApp.android.hilt")
 }
 
-//dependencies {
-//    implementation(projects.feature.home)
-//    implementation(projects.feature.createpaymentaccount)
-//    implementation(projects.feature.createtransaction)
-//}
+dependencies {
+    implementation(projects.feature.home)
+    implementation(projects.feature.stats)
+    implementation(projects.feature.accounts)
+    implementation(projects.feature.profile)
+    implementation(projects.feature.createpaymentaccount)
+    implementation(projects.feature.createtransaction)
+}

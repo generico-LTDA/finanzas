@@ -1,4 +1,4 @@
-package com.soleel.home.screens
+package com.soleel.profile
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,9 +11,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @Composable
-fun ProfileScreen() {
+internal fun ProfileRoute(
+    modifier: Modifier = Modifier,
+    viewModel: ProfileViewModel = hiltViewModel()
+){
+    ProfileScreen(modifier = modifier, viewModel = viewModel)
+}
+
+@Composable
+fun ProfileScreen(
+    modifier: Modifier,
+    viewModel: ProfileViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

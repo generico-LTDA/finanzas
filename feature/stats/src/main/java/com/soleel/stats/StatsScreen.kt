@@ -1,4 +1,4 @@
-package com.soleel.home.screens
+package com.soleel.stats
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,16 +11,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+
 
 @Composable
-fun AccountsScreen() {
+internal fun StatsRoute(
+    modifier: Modifier = Modifier,
+    viewModel: StatsViewModel = hiltViewModel()
+){
+    StatsScreen(modifier = modifier, viewModel = viewModel)
+}
+
+@Composable
+fun StatsScreen(
+    modifier: Modifier,
+    viewModel: StatsViewModel
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Accounts Screen",
+            text = "Stats Screen",
             fontWeight = FontWeight.Bold,
             color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),
