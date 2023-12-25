@@ -1,31 +1,26 @@
 package com.soleel.home
 
-import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.navigation.NavGraph.Companion.findStartDestination
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.soleel.home.screens.AccountsScreen
-import com.soleel.home.screens.InitScreen
-import com.soleel.home.screens.ProfileScreen
-import com.soleel.home.screens.StatsScreen
-import com.soleel.home.modals.AddModalBottomSheet
-import com.soleel.home.navigation.HomeBottomNavigationItems
+import com.soleel.transaction.model.Transaction
+
 
 @Composable
 internal fun HomeRoute(
@@ -35,94 +30,105 @@ internal fun HomeRoute(
     HomeScreen(modifier = modifier, viewModel = viewModel)
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
-internal fun HomeScreen(
+fun HomeScreen(
     modifier: Modifier,
     viewModel: HomeViewModel
 ) {
-    val navController = rememberNavController()
-    val showBottomSheet = remember { mutableStateOf(false) }
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val homeUiState: HomeUiState by viewModel.homeUiState.collectAsState()
 
-    Scaffold(
-        bottomBar = {
-            navController.currentBackStackEntryAsState().value?.destination?.route?.let {
-                HomeNavigationBar(
-                    selectedDestination = it,
-                    navigateTopLevelDestination = { destination ->
-                        if (destination.screenRoute == "add") {
-                            showBottomSheet.value = true
-                        } else {
-                            navController.navigate(destination.screenRoute) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
-                                launchSingleTop = true
-                            }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .wrapContentSize(Alignment.Center),
+        content = {
+
+            if (homeUiState.isPaymentAccountLoading && homeUiState.isTransactionLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxSize()
+                        .wrapContentSize(Alignment.Center)
+                )
+            }
+
+            if (homeUiState.isPaymentAccountSuccess && homeUiState.isTransactionSuccess) {
+                val transactions: List<Transaction> = homeUiState.itemsTransaction
+
+                if (transactions.isEmpty()) {
+                    Text(
+                        text = "No existen transacciones actualmente.",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                        textAlign = TextAlign.Center,
+                        fontSize = 16.sp
+                    )
+                } else {
+                    LazyColumn {
+                        items(transactions) { transaction ->
+                            TransactionItem(transaction)
                         }
                     }
-                )
-            }
-        },
-        content = {
-            if (showBottomSheet.value) {
-                AddModalBottomSheet(
-                    viewModel,
-                    { showBottomSheet.value = false },
-                    bottomSheetState
-                )
+                }
             }
 
-            // Esto no debe estar condicionado, ya que es necesario mantener la ultima Screen visitada
-            NavHost(
-                navController = navController,
-                startDestination = HomeBottomNavigationItems.Init.screenRoute
-            ) {
-                composable(HomeBottomNavigationItems.Init.screenRoute) {
-                    InitScreen(viewModel)
-                }
-                composable(HomeBottomNavigationItems.Stats.screenRoute) {
-                    StatsScreen()
-                }
-                composable(HomeBottomNavigationItems.Accounts.screenRoute) {
-                    AccountsScreen()
-                }
-                composable(HomeBottomNavigationItems.Profile.screenRoute) {
-                    ProfileScreen()
-                }
-            }
+
+//            when (homeUiState) {
+//                is HomeUiState.Loading -> {
+//                    // Muestra una pantalla de carga
+//                    CircularProgressIndicator(
+//                        modifier = Modifier
+//                            .padding(16.dp)
+//                            .fillMaxSize()
+//                            .wrapContentSize(Alignment.Center)
+//                    )
+//                }
+//
+//                is HomeUiState.Success<*> -> {
+//                    // Muestra los datos exitosos
+//                    val transactions: List<TransactionEntity> =
+//                        (homeUiState as HomeUiState.Success<List<TransactionEntity>>).data
+//
+//                    if (transactions.isEmpty()) {
+//                        Text(
+//                            text = "No existen transacciones actualmente.",
+//                            fontWeight = FontWeight.Bold,
+//                            color = Color.Black,
+//                            modifier = Modifier.align(Alignment.CenterHorizontally),
+//                            textAlign = TextAlign.Center,
+//                            fontSize = 16.sp
+//                        )
+//                    } else {
+//                        LazyColumn {
+//                            items(transactions) { transaction ->
+//                                TransactionItem(transaction)
+//                            }
+//                        }
+//                    }
+//                }
+
+//                is HomeUiState.Error<*> -> {
+//                    // Muestra un mensaje de error en caso de falla
+//                    val failedState: HomeUiState.Error<Exception> = homeUiState as HomeUiState.Error<Exception>
+//                    val errorMessage = failedState.error.message ?: "Error desconocido"
+//
+//                    Text(
+//                        text = "Error: $errorMessage",
+//                        fontWeight = FontWeight.Bold,
+//                        color = Color.Red,
+//                        modifier = Modifier.align(Alignment.CenterHorizontally),
+//                        textAlign = TextAlign.Center,
+//                        fontSize = 16.sp
+//                    )
+//                }
+
         }
     )
 }
 
 @Composable
-private fun HomeNavigationBar(
-    selectedDestination: String,
-    navigateTopLevelDestination: (HomeBottomNavigationItems) -> Unit
-) {
-    val items = listOf(
-        HomeBottomNavigationItems.Init,
-        HomeBottomNavigationItems.Stats,
-        HomeBottomNavigationItems.Accounts,
-        HomeBottomNavigationItems.Profile,
-        HomeBottomNavigationItems.Add
-    )
-
-    NavigationBar(modifier = Modifier.fillMaxWidth()) {
-        items.forEach { item ->
-            NavigationBarItem(
-                icon = {
-                    Icon(
-                        painter = painterResource(id = item.icon),
-                        contentDescription = item.title
-                    )
-                },
-                label = { Text(item.title) },
-                selected = selectedDestination == item.screenRoute,
-                onClick = { navigateTopLevelDestination(item) },
-            )
-        }
-    }
+fun TransactionItem(transaction: Transaction) {
+    Text(text = transaction.name)
 }
