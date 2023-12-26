@@ -39,7 +39,8 @@ fun FinanzasNavHost(
 
             createPaymentAccountScreen(
 //                onBackClick = navController::popBackStack
-                onBackClick = appState::showCancelAlert
+                onBackClick = appState::showCancelAlert,
+                onCreateClick = { appState.navigateToTopLevelDestination(TopLevelDestination.HOME) }
             )
 
             createTransactionScreen(
@@ -49,20 +50,21 @@ fun FinanzasNavHost(
     )
 }
 
-fun NavGraphBuilder.finanzas(navController: NavHostController) {
-    homeScreen()
-
-    statsScreen()
-
-    accountsScreen()
-
-    profileScreen()
-
-    createPaymentAccountScreen(
-        onBackClick = navController::popBackStack
-    )
-
-    createTransactionScreen(
-        onBackClick = navController::popBackStack
-    )
-}
+//fun NavGraphBuilder.finanzas(navController: NavHostController) {
+//    homeScreen()
+//
+//    statsScreen()
+//
+//    accountsScreen()
+//
+//    profileScreen()
+//
+//    createPaymentAccountScreen(
+//        onBackClick = navController::popBackStack,
+//        onCreateClick = { appState.navigateToTopLevelDestination(INTERESTS) }
+//    )
+//
+//    createTransactionScreen(
+//        onBackClick = navController::popBackStack
+//    )
+//}

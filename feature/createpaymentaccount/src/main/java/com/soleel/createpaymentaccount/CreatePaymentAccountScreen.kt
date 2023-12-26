@@ -56,13 +56,13 @@ import com.soleel.ui.R
 internal fun CreatePaymentAccountRoute(
     modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
+    onCreateClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel = hiltViewModel(),
-
-    ) {
-
+) {
     CreatePaymentAccountScreen(
         modifier = modifier,
         onBackClick = onBackClick,
+        onCreateClick = onCreateClick,
         viewModel = viewModel
     )
 }
@@ -71,6 +71,7 @@ internal fun CreatePaymentAccountRoute(
 internal fun CreatePaymentAccountScreen(
     modifier: Modifier,
     onBackClick: () -> Unit,
+    onCreateClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel,
 ) {
 
