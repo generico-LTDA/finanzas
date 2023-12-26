@@ -1,4 +1,4 @@
-package com.soleel.createpaymentaccount.modals
+package com.soleel.cancelalert
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -23,6 +23,7 @@ fun CancelAlertDialog(
             TextButton(
                 onClick = {
                     onConfirmation()
+                    onDismissRequest()
                 }
             ) {
                 Text("Aceptar")

@@ -13,9 +13,11 @@ fun NavController.navigateToCreatePaymentAccount(navOptions: NavOptions? = null)
     this.navigate(createPaymentAccountRoute, navOptions)
 }
 
-fun NavGraphBuilder.createPaymentAccountScreen() {
+fun NavGraphBuilder.createPaymentAccountScreen(
+    onBackClick: () -> Unit,
+) {
     composable(
         route = createPaymentAccountRoute,
-        content = { CreatePaymentAccountRoute() }
+        content = { CreatePaymentAccountRoute(onBackClick = onBackClick) }
     )
 }

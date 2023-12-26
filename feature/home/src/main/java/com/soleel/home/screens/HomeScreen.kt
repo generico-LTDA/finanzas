@@ -21,7 +21,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.soleel.home.HomeViewModel
-import com.soleel.home.modals.AddModalBottomSheet
 import com.soleel.home.navigation.HomeBottomNavigationItems
 
 @Composable
@@ -65,11 +64,11 @@ internal fun HomeScreen(
         },
         content = {
             if (showBottomSheet.value) {
-                AddModalBottomSheet(
-                    viewModel,
-                    { showBottomSheet.value = false },
-                    bottomSheetState
-                )
+//                AddModalBottomSheet(
+//                    viewModel,
+//                    { showBottomSheet.value = false },
+//                    bottomSheetState
+//                )
             }
 
             // Esto no debe estar condicionado, ya que es necesario mantener la ultima Screen visitada

@@ -1,5 +1,6 @@
 package com.soleel.createtransaction
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.wrapContentSize
@@ -15,15 +16,22 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 internal fun CreateTransactionRoute(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
 ){
-    CreateTransactionScreen(modifier)
+    CreateTransactionScreen(modifier = modifier, onBackClick = onBackClick)
 }
 
 @Composable
 private fun CreateTransactionScreen(
-    modifier: Modifier
+    modifier: Modifier,
+    onBackClick: () -> Unit,
 ) {
+    BackHandler(
+        enabled = true,
+        onBack = { onBackClick() }
+    )
+
     Column(
         modifier = Modifier
             .fillMaxSize()

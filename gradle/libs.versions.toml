@@ -20,7 +20,7 @@ room = "2.6.1"
 
 
 ## plugins
-android-application = "8.1.2"
+android-application = "8.2.0"
 android-kotlin = "1.9.10"
 org-jetbrains-kotlin-jvm = "1.9.10"
 appcompat = "1.6.1"

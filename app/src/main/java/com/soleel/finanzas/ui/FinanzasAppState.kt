@@ -1,6 +1,8 @@
 package com.soleel.finanzas.ui
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.core.os.trace
@@ -11,6 +13,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import com.soleel.accounts.navigation.navigateToAccounts
+import com.soleel.createpaymentaccount.navigation.navigateToCreatePaymentAccount
+import com.soleel.createtransaction.navigation.navigateToCreateTransaction
 import com.soleel.home.navigation.homeRoute
 import com.soleel.finanzas.navigation.TopLevelDestination
 import com.soleel.home.navigation.navigateToHome
@@ -22,7 +26,8 @@ import kotlinx.coroutines.CoroutineScope
 @Composable
 fun rememberFinanzasAppState(
     navController: NavHostController = rememberNavController(),
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    showCancelAlert: MutableState<Boolean> = remember { mutableStateOf(false) }
 ): FinanzasAppState {
     return remember(
         key1 = navController,
@@ -31,7 +36,8 @@ fun rememberFinanzasAppState(
         calculation = {
             FinanzasAppState(
                 navController = navController,
-                coroutineScope = coroutineScope
+                coroutineScope = coroutineScope,
+                showCancelAlert = showCancelAlert
             )
         }
     )
@@ -39,17 +45,20 @@ fun rememberFinanzasAppState(
 
 private fun createAppState(
     navController: NavHostController,
-    coroutineScope: CoroutineScope
+    coroutineScope: CoroutineScope,
+    showCancelAlert: MutableState<Boolean>
 ): FinanzasAppState {
     return FinanzasAppState(
         navController = navController,
-        coroutineScope = coroutineScope
+        coroutineScope = coroutineScope,
+        showCancelAlert = showCancelAlert
     )
 }
 
 class FinanzasAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
+    val showCancelAlert: MutableState<Boolean>
 ) {
 
     @Composable
@@ -66,11 +75,11 @@ class FinanzasAppState(
     }
 
     fun shouldShowBottomBar(): Boolean {
-       return true
+        return true
     }
 
     fun topLevelDestinations(): List<TopLevelDestination> {
-       return TopLevelDestination.values().asList()
+        return TopLevelDestination.values().asList()
     }
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
@@ -82,7 +91,8 @@ class FinanzasAppState(
                     // avoid building up a large stack of destinations
                     // on the back stack as users select items
                     popUpTo(
-                        id = navController.graph.findStartDestination().id) {
+                        id = navController.graph.findStartDestination().id
+                    ) {
                         saveState = true
                     }
                     // Avoid multiple copies of the same destination when
@@ -95,11 +105,32 @@ class FinanzasAppState(
                 when (topLevelDestination) {
                     TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
                     TopLevelDestination.STATS -> navController.navigateToStats(topLevelNavOptions)
-                    TopLevelDestination.ACCOUNTS -> navController.navigateToAccounts(topLevelNavOptions)
-                    TopLevelDestination.PROFILE -> navController.navigateToProfile(topLevelNavOptions)
+                    TopLevelDestination.ACCOUNTS -> navController.navigateToAccounts(
+                        topLevelNavOptions
+                    )
+
+                    TopLevelDestination.PROFILE -> navController.navigateToProfile(
+                        topLevelNavOptions
+                    )
                 }
             }
         )
+    }
+
+    fun navigateToCreatePaymentAccount() {
+        navController.navigateToCreatePaymentAccount()
+    }
+
+    fun navigateToCreateTransaction() {
+        navController.navigateToCreateTransaction()
+    }
+
+    fun navigateToBack() {
+        navController.popBackStack()
+    }
+
+    fun showCancelAlert() {
+        showCancelAlert.value = true
     }
 }
 
