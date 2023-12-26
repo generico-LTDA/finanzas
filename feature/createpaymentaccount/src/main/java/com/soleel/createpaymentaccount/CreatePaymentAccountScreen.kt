@@ -1,5 +1,6 @@
 package com.soleel.createpaymentaccount
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -58,6 +59,7 @@ internal fun CreatePaymentAccountRoute(
     viewModel: CreatePaymentAccountViewModel = hiltViewModel(),
 
     ) {
+
     CreatePaymentAccountScreen(
         modifier = modifier,
         onBackClick = onBackClick,
@@ -71,6 +73,12 @@ internal fun CreatePaymentAccountScreen(
     onBackClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel,
 ) {
+
+    BackHandler(
+        enabled = true,
+        onBack = { onBackClick() }
+    )
+
     val addPaymentAccountUiState: CreatePaymentAccountUiState by viewModel.createPaymentAccountUiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }

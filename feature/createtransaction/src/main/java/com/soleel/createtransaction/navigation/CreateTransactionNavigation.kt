@@ -18,7 +18,7 @@ fun NavGraphBuilder.createTransactionScreen(
 ) {
     composable(
         route = createTransactionRoute,
-        content = { CreateTransactionRoute() }
+        content = { CreateTransactionRoute(onBackClick = onBackClick) }
     )
 }
 

@@ -43,7 +43,7 @@ fun FinanzasNavHost(
             )
 
             createTransactionScreen(
-                onBackClick = navController::popBackStack
+                onBackClick = appState::showCancelAlert
             )
         }
     )

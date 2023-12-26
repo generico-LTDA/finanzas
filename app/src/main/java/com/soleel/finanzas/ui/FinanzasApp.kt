@@ -62,18 +62,12 @@ fun FinanzasApp(
                 )
             }
 
-            BackHandler(
-                enabled = true,
-                onBack = { appState.showCancelAlert.value = true }
-            )
-
             if (appState.showCancelAlert.value) {
-
                 CancelAlertDialog(
                     onDismissRequest = { appState.showCancelAlert.value = false },
                     onConfirmation = { appState.navigateToBack() },
                     dialogTitle = "¿Quieres volver al inicio?",
-                    dialogText = "Cancelaras la creacion de la cuenta de pago actual."
+                    dialogText = "Cancelaras la creacion actual."
                 )
             }
 
