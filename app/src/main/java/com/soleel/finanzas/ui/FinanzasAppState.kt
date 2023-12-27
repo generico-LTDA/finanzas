@@ -27,6 +27,9 @@ import kotlinx.coroutines.CoroutineScope
 fun rememberFinanzasAppState(
     navController: NavHostController = rememberNavController(),
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    showBottomBar: MutableState<Boolean> = remember { mutableStateOf(true) },
+    showAddFloating: MutableState<Boolean> = remember { mutableStateOf(true) },
+    showAddModal: MutableState<Boolean> = remember { mutableStateOf(false) },
     showCancelAlert: MutableState<Boolean> = remember { mutableStateOf(false) }
 ): FinanzasAppState {
     return remember(
@@ -37,6 +40,9 @@ fun rememberFinanzasAppState(
             FinanzasAppState(
                 navController = navController,
                 coroutineScope = coroutineScope,
+                showBottomBar = showBottomBar,
+                showAddFloating = showAddFloating,
+                showAddModal = showAddModal,
                 showCancelAlert = showCancelAlert
             )
         }
@@ -46,11 +52,17 @@ fun rememberFinanzasAppState(
 private fun createAppState(
     navController: NavHostController,
     coroutineScope: CoroutineScope,
+    showBottomBar: MutableState<Boolean>,
+    showAddFloating: MutableState<Boolean>,
+    showAddModal: MutableState<Boolean>,
     showCancelAlert: MutableState<Boolean>
 ): FinanzasAppState {
     return FinanzasAppState(
         navController = navController,
         coroutineScope = coroutineScope,
+        showBottomBar = showBottomBar,
+        showAddFloating = showAddFloating,
+        showAddModal = showAddModal,
         showCancelAlert = showCancelAlert
     )
 }
@@ -58,7 +70,10 @@ private fun createAppState(
 class FinanzasAppState(
     val navController: NavHostController,
     val coroutineScope: CoroutineScope,
-    val showCancelAlert: MutableState<Boolean>
+    val showBottomBar: MutableState<Boolean>,
+    val showAddFloating: MutableState<Boolean>,
+    val showAddModal: MutableState<Boolean>,
+    val showCancelAlert: MutableState<Boolean>,
 ) {
 
     @Composable
@@ -72,10 +87,6 @@ class FinanzasAppState(
             homeRoute -> TopLevelDestination.HOME
             else -> null
         }
-    }
-
-    fun shouldShowBottomBar(): Boolean {
-        return true
     }
 
     fun topLevelDestinations(): List<TopLevelDestination> {
@@ -129,8 +140,48 @@ class FinanzasAppState(
         navController.popBackStack()
     }
 
+    fun shouldShowBottomBar(): Boolean {
+        return this.showBottomBar.value
+    }
+
+    fun showBottomBar() {
+        this.showBottomBar.value = true
+    }
+
+    fun hideBottomBar() {
+        this.showBottomBar.value = false
+    }
+
+    fun shouldShowAddFloating(): Boolean {
+        return this.showAddFloating.value
+    }
+
+    fun showAddFloating() {
+        this.showAddFloating.value = true
+    }
+
+    fun hideAddFloating() {
+        this.showAddFloating.value = false
+    }
+
+    fun showAddModal() {
+        this.showAddModal.value = true
+    }
+
+    fun shouldShowAddModal(): Boolean {
+        return true
+    }
+
+    fun shouldShowCancelAlert(): Boolean {
+        return this.showCancelAlert.value
+    }
+
     fun showCancelAlert() {
-        showCancelAlert.value = true
+        this.showCancelAlert.value = true
+    }
+
+    fun hideCancelAlert() {
+        this.showCancelAlert.value = false
     }
 }
 

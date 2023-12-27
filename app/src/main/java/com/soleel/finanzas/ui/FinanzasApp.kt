@@ -50,10 +50,11 @@ fun FinanzasApp(
             }
         },
         floatingActionButton = {
-            AddFloatingActionButton(onClick = { showAddModal.value = true })
+            if (appState.shouldShowAddFloating())
+                AddFloatingActionButton(onClick = { showAddModal.value = true })
         },
         content = {
-            if (showAddModal.value) {
+            if (appState.shouldShowAddModal()) {
                 AddModalBottomSheet(
                     onCreatePaymentAccount = { appState.navigateToCreatePaymentAccount() },
                     onCreateTransaction = { appState.navigateToCreateTransaction() },
@@ -62,9 +63,9 @@ fun FinanzasApp(
                 )
             }
 
-            if (appState.showCancelAlert.value) {
+            if (appState.shouldShowCancelAlert()) {
                 CancelAlertDialog(
-                    onDismissRequest = { appState.showCancelAlert.value = false },
+                    onDismissRequest = { appState.hideCancelAlert() },
                     onConfirmation = { appState.navigateToBack() },
                     dialogTitle = "¿Quieres volver al inicio?",
                     dialogText = "Cancelaras la creacion actual."
