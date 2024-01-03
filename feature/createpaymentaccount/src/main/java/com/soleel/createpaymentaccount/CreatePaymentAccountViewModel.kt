@@ -1,6 +1,5 @@
 package com.soleel.createpaymentaccount
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
@@ -33,9 +32,7 @@ class CreatePaymentAccountViewModel @Inject constructor(
         _createPaymentAccountUiState.asStateFlow()
 
     fun savePaymentAccount() {
-
         if (_createPaymentAccountUiState.value.accountType == null) {
-            Log.d("Moneta", "Debe seleccionarse un tipo de cuenta")
             _createPaymentAccountUiState.update(
                 function = {
                     it.copy(userMessage = "Debe seleccionarse un tipo de cuenta")
@@ -44,7 +41,6 @@ class CreatePaymentAccountViewModel @Inject constructor(
         }
 
         if (_createPaymentAccountUiState.value.name.isEmpty()) {
-            Log.d("Moneta", "Nombre no puede estar vacia")
             _createPaymentAccountUiState.update(
                 function = {
                     it.copy(userMessage = "Nombre no puede estar vacia")
@@ -55,7 +51,6 @@ class CreatePaymentAccountViewModel @Inject constructor(
         if (_createPaymentAccountUiState.value.initialAmount == null
             || _createPaymentAccountUiState.value.initialAmount !in 1..9999999
         ) {
-            Log.d("Moneta", "Valor no puede ser inferior a 0 o mayor que 9999999")
             _createPaymentAccountUiState.update(
                 function = {
                     it.copy(userMessage = "Valor no puede ser inferior a 0 o mayor que 9999999")
@@ -67,13 +62,6 @@ class CreatePaymentAccountViewModel @Inject constructor(
     }
 
     private fun createPaymentAccount() {
-        Log.d("Moneta", "createPaymentAccount")
-
-//        _addPaymentAccountUiState.update(
-//            function = {
-//                it.copy(createAt = System.currentTimeMillis())
-//            })
-
         viewModelScope.launch(
             context = Dispatchers.IO,
             block = {

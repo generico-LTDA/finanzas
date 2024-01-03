@@ -1,11 +1,12 @@
 package com.soleel.finanzas.ui
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.core.os.trace
+import androidx.tracing.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -17,6 +18,10 @@ import com.soleel.createpaymentaccount.navigation.navigateToCreatePaymentAccount
 import com.soleel.createtransaction.navigation.navigateToCreateTransaction
 import com.soleel.home.navigation.homeRoute
 import com.soleel.finanzas.navigation.TopLevelDestination
+import com.soleel.finanzas.navigation.TopLevelDestination.HOME
+import com.soleel.finanzas.navigation.TopLevelDestination.STATS
+import com.soleel.finanzas.navigation.TopLevelDestination.ACCOUNTS
+import com.soleel.finanzas.navigation.TopLevelDestination.PROFILE
 import com.soleel.home.navigation.navigateToHome
 import com.soleel.profile.navigation.navigateToProfile
 import com.soleel.stats.navigation.navigateToStats
@@ -32,6 +37,7 @@ fun rememberFinanzasAppState(
     showAddModal: MutableState<Boolean> = remember { mutableStateOf(false) },
     showCancelAlert: MutableState<Boolean> = remember { mutableStateOf(false) }
 ): FinanzasAppState {
+
     return remember(
         key1 = navController,
         key2 = coroutineScope,
@@ -90,42 +96,29 @@ class FinanzasAppState(
     }
 
     fun topLevelDestinations(): List<TopLevelDestination> {
-        return TopLevelDestination.values().asList()
+        return TopLevelDestination.entries
     }
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace(
-            sectionName = "Navigation: ${topLevelDestination.name}",
+        trace(label = "Navigation: ${topLevelDestination.name}",
             block = {
-                val topLevelNavOptions = navOptions {
-                    // Pop up to the start destination of the graph to
-                    // avoid building up a large stack of destinations
-                    // on the back stack as users select items
-                    popUpTo(
-                        id = navController.graph.findStartDestination().id
-                    ) {
-                        saveState = true
-                    }
-                    // Avoid multiple copies of the same destination when
-                    // reselecting the same item
+                val topLevelNavOptions = navOptions(optionsBuilder = {
+                    popUpTo(id = navController.graph.findStartDestination().id,
+                        popUpToBuilder = { saveState = true })
                     launchSingleTop = true
-                    // Restore state when reselecting a previously selected item
                     restoreState = true
-                }
+                })
 
                 when (topLevelDestination) {
-                    TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
-                    TopLevelDestination.STATS -> navController.navigateToStats(topLevelNavOptions)
-                    TopLevelDestination.ACCOUNTS -> navController.navigateToAccounts(
-                        topLevelNavOptions
-                    )
+                    HOME -> navController.navigateToHome(topLevelNavOptions)
 
-                    TopLevelDestination.PROFILE -> navController.navigateToProfile(
-                        topLevelNavOptions
-                    )
+                    STATS -> navController.navigateToStats(topLevelNavOptions)
+
+                    ACCOUNTS -> navController.navigateToAccounts(topLevelNavOptions)
+
+                    PROFILE -> navController.navigateToProfile(topLevelNavOptions)
                 }
-            }
-        )
+            })
     }
 
     fun navigateToCreatePaymentAccount() {
@@ -164,12 +157,16 @@ class FinanzasAppState(
         this.showAddFloating.value = false
     }
 
+    fun shouldShowAddModal(): Boolean {
+        return this.showAddModal.value
+    }
+
     fun showAddModal() {
         this.showAddModal.value = true
     }
 
-    fun shouldShowAddModal(): Boolean {
-        return true
+    fun hideAddModal() {
+        this.showAddModal.value = false
     }
 
     fun shouldShowCancelAlert(): Boolean {

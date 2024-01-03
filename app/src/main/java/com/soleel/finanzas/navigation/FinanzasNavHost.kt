@@ -2,8 +2,6 @@ package com.soleel.finanzas.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.soleel.accounts.navigation.accountsScreen
 import com.soleel.createpaymentaccount.navigation.createPaymentAccountScreen
@@ -38,9 +36,10 @@ fun FinanzasNavHost(
             profileScreen()
 
             createPaymentAccountScreen(
-//                onBackClick = navController::popBackStack
-                onBackClick = appState::showCancelAlert,
-                onCreateClick = { appState.navigateToTopLevelDestination(TopLevelDestination.HOME) }
+                onShowBottomBar = appState::showBottomBar,
+                onShowAddFloating = appState::showAddFloating,
+                onBackClick = navController::popBackStack,
+                onCancelClick = appState::showCancelAlert,
             )
 
             createTransactionScreen(

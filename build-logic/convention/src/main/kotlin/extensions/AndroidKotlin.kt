@@ -29,6 +29,7 @@ internal fun Project.configureAndroidKotlin(
         dependencies {
             add("implementation", versionCatalog().findLibrary("androidx-ktx").get())
             add("implementation", versionCatalog().findLibrary("androidx-lifecycle-runtime-ktx").get())
+            add("implementation", versionCatalog().findLibrary("androidx-tracing-ktx").get())
             add("testImplementation", versionCatalog().findLibrary("junit").get())
             add("androidTestImplementation", versionCatalog().findLibrary("androidx-junit").get())
             add("androidTestImplementation", versionCatalog().findLibrary("androidx-espresso-core").get())

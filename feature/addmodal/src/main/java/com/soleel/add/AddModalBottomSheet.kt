@@ -31,6 +31,8 @@ import com.soleel.ui.R
 fun AddModalBottomSheet(
     onCreatePaymentAccount: () -> Unit,
     onCreateTransaction: () -> Unit,
+    onHideBottomBar: () -> Unit,
+    onHideAddFloating: () -> Unit,
     onDismiss: () -> Unit,
     sheetState: SheetState,
     viewModel: AddViewModel = hiltViewModel(),
@@ -43,6 +45,8 @@ fun AddModalBottomSheet(
             AddCards(
                 onCreatePaymentAccount = onCreatePaymentAccount,
                 onCreateTransaction = onCreateTransaction,
+                onHideBottomBar = onHideBottomBar,
+                onHideAddFloating = onHideAddFloating,
                 onDismiss = onDismiss,
                 viewModel = viewModel
             )
@@ -54,10 +58,11 @@ fun AddModalBottomSheet(
 private fun AddCards(
     onCreatePaymentAccount: () -> Unit,
     onCreateTransaction: () -> Unit,
+    onHideBottomBar: () -> Unit,
+    onHideAddFloating: () -> Unit,
     onDismiss: () -> Unit,
     viewModel: AddViewModel,
 ) {
-
     val paymentAccountsUiState: AddUiState by viewModel.addUiState.collectAsState()
 
     Row(
@@ -69,6 +74,8 @@ private fun AddCards(
             iconResId = R.drawable.ic_add_account,
             name = "Crear cuenta",
             onClick = onCreatePaymentAccount,
+            onHideBottomBar = onHideBottomBar,
+            onHideAddFloating = onHideAddFloating,
             onDismiss = onDismiss
         )
         AddCardItem(
@@ -76,8 +83,10 @@ private fun AddCards(
             iconResId = R.drawable.ic_add_transaction,
             name = "Crear transacción",
             onClick = onCreateTransaction,
+            onHideBottomBar = onHideBottomBar,
+            onHideAddFloating = onHideAddFloating,
             onDismiss = onDismiss,
-            paymentAccountExist = paymentAccountsUiState.isPaymentAccountSuccess,
+            isPaymentAccountEmpty = paymentAccountsUiState.isPaymentAccountEmpty,
         )
     }
 }
@@ -88,17 +97,21 @@ private fun AddCardItem(
     iconResId: Int,
     name: String,
     onClick: () -> Unit,
+    onHideBottomBar: () -> Unit,
+    onHideAddFloating: () -> Unit,
     onDismiss: () -> Unit,
-    paymentAccountExist: Boolean = true,
+    isPaymentAccountEmpty: Boolean = false,
 ) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .padding(8.dp)
             .clickable(
-                enabled = paymentAccountExist,
+                enabled = !isPaymentAccountEmpty,
                 onClick = {
                     onClick()
+                    onHideBottomBar()
+                    onHideAddFloating()
                     onDismiss()
                 }),
         content = {

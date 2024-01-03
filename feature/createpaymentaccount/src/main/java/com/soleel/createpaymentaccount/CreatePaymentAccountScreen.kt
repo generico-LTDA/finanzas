@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,17 +51,22 @@ import com.soleel.common.constants.AccountTypeConstant
 import com.soleel.createpaymentaccount.navigation.CreatePaymentAccountNavigationItems
 import com.soleel.ui.R
 
+
 @Composable
 internal fun CreatePaymentAccountRoute(
     modifier: Modifier = Modifier,
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
-    onCreateClick: () -> Unit,
+    onCancelClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel = hiltViewModel(),
 ) {
     CreatePaymentAccountScreen(
         modifier = modifier,
+        onShowBottomBar = onShowBottomBar,
+        onShowAddFloating = onShowAddFloating,
         onBackClick = onBackClick,
-        onCreateClick = onCreateClick,
+        onCancelClick = onCancelClick,
         viewModel = viewModel
     )
 }
@@ -70,22 +74,30 @@ internal fun CreatePaymentAccountRoute(
 @Composable
 internal fun CreatePaymentAccountScreen(
     modifier: Modifier,
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
-    onCreateClick: () -> Unit,
+    onCancelClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel,
 ) {
-
-    BackHandler(
-        enabled = true,
-        onBack = { onBackClick() }
-    )
 
     val addPaymentAccountUiState: CreatePaymentAccountUiState by viewModel.createPaymentAccountUiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
+    BackHandler(
+        enabled = true,
+        onBack = { onCancelClick() }
+    )
+
+    if (addPaymentAccountUiState.isPaymentAccountSaved) {
+        onShowBottomBar()
+        onShowAddFloating()
+        onBackClick()
+    }
+
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onBackClick) },
+        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -111,15 +123,6 @@ internal fun CreatePaymentAccountScreen(
                 }
             )
 
-//            LaunchedEffect(
-//                key1 = addPaymentAccountUiState.isPaymentAccountSaved,
-//                block = {
-//                    if (addPaymentAccountUiState.isPaymentAccountSaved) {
-//                        activity?.finish()
-//                    }
-//                }
-//            )
-
             addPaymentAccountUiState.userMessage?.let { userMessage ->
                 LaunchedEffect(
                     key1 = userMessage,
@@ -132,16 +135,14 @@ internal fun CreatePaymentAccountScreen(
                     }
                 )
             }
-
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePaymentAccountCenterAlignedTopAppBar(
-    onBackClick: () -> Unit
+    onCancelClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -153,7 +154,7 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { onBackClick() },
+                onClick = { onCancelClick() },
                 content = {
                     Icon(
                         imageVector = CreatePaymentAccountNavigationItems.AddPaymentAccount.icon,
