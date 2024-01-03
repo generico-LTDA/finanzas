@@ -51,10 +51,6 @@ class PaymentAccountRepository @Inject constructor(
         initialAmount: Int,
         accountType: Int
     ): String {
-        Log.d("Moneta", "name: $name")
-        Log.d("Moneta", "initialAmount: $initialAmount")
-        Log.d("Moneta", "typeAccount: $accountType")
-
         val id = withContext(
             context = dispatcher,
             block = {

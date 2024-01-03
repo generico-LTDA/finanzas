@@ -1,6 +1,5 @@
 package com.soleel.createpaymentaccount
 
-import android.app.Activity
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,36 +48,56 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.soleel.common.constants.AccountTypeConstant
-import com.soleel.createpaymentaccount.modals.CancelAlertDialog
 import com.soleel.createpaymentaccount.navigation.CreatePaymentAccountNavigationItems
 import com.soleel.ui.R
+
 
 @Composable
 internal fun CreatePaymentAccountRoute(
     modifier: Modifier = Modifier,
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
+    onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
     viewModel: CreatePaymentAccountViewModel = hiltViewModel(),
 ) {
-    CreatePaymentAccountScreen(modifier, viewModel = viewModel)
+    CreatePaymentAccountScreen(
+        modifier = modifier,
+        onShowBottomBar = onShowBottomBar,
+        onShowAddFloating = onShowAddFloating,
+        onBackClick = onBackClick,
+        onCancelClick = onCancelClick,
+        viewModel = viewModel
+    )
 }
 
 @Composable
 internal fun CreatePaymentAccountScreen(
     modifier: Modifier,
-    viewModel: CreatePaymentAccountViewModel
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
+    onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
+    viewModel: CreatePaymentAccountViewModel,
 ) {
-    val addPaymentAccountUiState: AddPaymentAccountUiState by viewModel.addPaymentAccountUiState.collectAsStateWithLifecycle()
 
-    val activity = (LocalContext.current as? Activity)
-    val showCancelBottomSheet = remember { mutableStateOf(false) }
+    val addPaymentAccountUiState: CreatePaymentAccountUiState by viewModel.createPaymentAccountUiState.collectAsStateWithLifecycle()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    BackHandler(enabled = true) {
-        showCancelBottomSheet.value = true
+    BackHandler(
+        enabled = true,
+        onBack = { onCancelClick() }
+    )
+
+    if (addPaymentAccountUiState.isPaymentAccountSaved) {
+        onShowBottomBar()
+        onShowAddFloating()
+        onBackClick()
     }
 
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(showCancelBottomSheet) },
+        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick) },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -95,14 +112,6 @@ internal fun CreatePaymentAccountScreen(
             )
         },
         content = { innerPadding ->
-            if (showCancelBottomSheet.value) {
-                CancelAlertDialog(
-                    onDismissRequest = { showCancelBottomSheet.value = false },
-                    onConfirmation = { activity?.finish() },
-                    dialogTitle = "¿Quieres volver al inicio?",
-                    dialogText = "Cancelaras la creacion de la cuenta de pago actual."
-                )
-            }
 
             Column(
                 modifier = Modifier
@@ -111,15 +120,6 @@ internal fun CreatePaymentAccountScreen(
                 content = {
                     //PaymentAccountCard(viewModel)
                     CreatePaymentAccountForm(viewModel = viewModel)
-                }
-            )
-
-            LaunchedEffect(
-                key1 = addPaymentAccountUiState.isPaymentAccountSaved,
-                block = {
-                    if (addPaymentAccountUiState.isPaymentAccountSaved) {
-                        activity?.finish()
-                    }
                 }
             )
 
@@ -135,16 +135,14 @@ internal fun CreatePaymentAccountScreen(
                     }
                 )
             }
-
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreatePaymentAccountCenterAlignedTopAppBar(
-    showCancelBottomSheet: MutableState<Boolean>
+    onCancelClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -156,9 +154,7 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = {
-                    showCancelBottomSheet.value = true
-                },
+                onClick = { onCancelClick() },
                 content = {
                     Icon(
                         imageVector = CreatePaymentAccountNavigationItems.AddPaymentAccount.icon,
@@ -175,7 +171,7 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
 fun PaymentAccountCard(
     viewModel: CreatePaymentAccountViewModel
 ) {
-    val paymentAccount by viewModel.addPaymentAccountUiState.collectAsState()
+    val paymentAccount by viewModel.createPaymentAccountUiState.collectAsState()
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -248,7 +244,7 @@ fun PaymentAccountCard(
 fun CreatePaymentAccountForm(
     viewModel: CreatePaymentAccountViewModel
 ) {
-    val addPaymentAccountUiState by viewModel.addPaymentAccountUiState.collectAsStateWithLifecycle()
+    val addPaymentAccountUiState by viewModel.createPaymentAccountUiState.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier.padding(16.dp),

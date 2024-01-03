@@ -2,7 +2,6 @@ package com.soleel.finanzas.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import com.soleel.accounts.navigation.accountsScreen
 import com.soleel.createpaymentaccount.navigation.createPaymentAccountScreen
@@ -26,15 +25,45 @@ fun FinanzasNavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
-        builder = NavGraphBuilder::moneta
+//        builder = NavGraphBuilder.finanzas(navController)
+        builder = {
+            homeScreen()
+
+            statsScreen()
+
+            accountsScreen()
+
+            profileScreen()
+
+            createPaymentAccountScreen(
+                onShowBottomBar = appState::showBottomBar,
+                onShowAddFloating = appState::showAddFloating,
+                onBackClick = navController::popBackStack,
+                onCancelClick = appState::showCancelAlert,
+            )
+
+            createTransactionScreen(
+                onBackClick = appState::showCancelAlert
+            )
+        }
     )
 }
 
-fun NavGraphBuilder.moneta() {
-    homeScreen()
-    statsScreen()
-    accountsScreen()
-    profileScreen()
-    createPaymentAccountScreen()
-    createTransactionScreen()
-}
+//fun NavGraphBuilder.finanzas(navController: NavHostController) {
+//    homeScreen()
+//
+//    statsScreen()
+//
+//    accountsScreen()
+//
+//    profileScreen()
+//
+//    createPaymentAccountScreen(
+//        onBackClick = navController::popBackStack,
+//        onCreateClick = { appState.navigateToTopLevelDestination(INTERESTS) }
+//    )
+//
+//    createTransactionScreen(
+//        onBackClick = navController::popBackStack
+//    )
+//}
