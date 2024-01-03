@@ -12,20 +12,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 
 
 @Composable
 internal fun CreateTransactionRoute(
     modifier: Modifier = Modifier,
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
-){
-    CreateTransactionScreen(modifier = modifier, onBackClick = onBackClick)
+    onCancelClick: () -> Unit,
+    viewModel: CreateTransactionViewModel = hiltViewModel(),
+) {
+    CreateTransactionScreen(
+        modifier = modifier,
+        onShowBottomBar = onShowBottomBar,
+        onShowAddFloating = onShowAddFloating,
+        onBackClick = onBackClick,
+        onCancelClick = onCancelClick,
+    )
 }
 
 @Composable
 private fun CreateTransactionScreen(
     modifier: Modifier,
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
 ) {
     BackHandler(
         enabled = true,

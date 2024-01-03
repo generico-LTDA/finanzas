@@ -43,7 +43,10 @@ fun FinanzasNavHost(
             )
 
             createTransactionScreen(
-                onBackClick = appState::showCancelAlert
+                onShowBottomBar = appState::showBottomBar,
+                onShowAddFloating = appState::showAddFloating,
+                onBackClick = appState::showCancelAlert,
+                onCancelClick = appState::showCancelAlert
             )
         }
     )

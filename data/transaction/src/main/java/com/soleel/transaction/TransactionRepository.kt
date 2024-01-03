@@ -14,6 +14,7 @@ class TransactionRepository @Inject constructor(
     private val transactionDAO: TransactionDAO,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) : ITransactionLocalDataSource {
+
     override fun getTransactions(): Flow<List<Transaction>> {
         return transactionDAO
             .getAllTransaction()

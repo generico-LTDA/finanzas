@@ -17,6 +17,7 @@ data class CreatePaymentAccountUiState(
     val name: String = "",
     val initialAmount: Int? = null,
     val accountType: Int? = null,
+
     val userMessage: String? = null,
     val isPaymentAccountSaved: Boolean = false
 )

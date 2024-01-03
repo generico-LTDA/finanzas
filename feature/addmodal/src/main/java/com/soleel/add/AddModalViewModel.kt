@@ -22,20 +22,23 @@ data class AddUiState(
 )
 
 @HiltViewModel
-class AddViewModel @Inject constructor(
+class AddModalViewModel @Inject constructor(
     private val repositoryLocalPaymentAccount: IPaymentAccountLocalDataSource
 ) : ViewModel() {
 
-    private val homeFlow: Flow<AddUiState> =
-        repositoryLocalPaymentAccount.getPaymentAccounts().map(transform = this::getData)
+//    private val homeFlow: Flow<AddUiState> =
+//        repositoryLocalPaymentAccount.getPaymentAccounts().map(transform = this::getData)
 
-    val addUiState: StateFlow<AddUiState> = homeFlow.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-        initialValue = AddUiState(
-            isPaymentAccountLoading = true
+    val addUiState: StateFlow<AddUiState> = repositoryLocalPaymentAccount
+        .getPaymentAccounts()
+        .map(transform = this::getData)
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
+            initialValue = AddUiState(
+                isPaymentAccountLoading = true
+            )
         )
-    )
 
     private fun getData(
         itemsPaymentAccount: List<PaymentAccount>
