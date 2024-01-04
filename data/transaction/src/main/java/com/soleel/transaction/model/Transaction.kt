@@ -1,6 +1,6 @@
 package com.soleel.transaction.model
 
-data class Transaction (
+data class Transaction(
     val id: String,
     val name: String,
     val amount: Int,
@@ -9,5 +9,5 @@ data class Transaction (
     val updatedAt: Long,
     val categoryType: Int,
     val transactionType: Int,
-    val paymentAccountId: Int
+    val paymentAccountId: String
 )

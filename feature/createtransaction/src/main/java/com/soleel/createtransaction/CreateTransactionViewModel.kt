@@ -2,8 +2,10 @@ package com.soleel.createtransaction
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soleel.common.createuistate.CreateUiState
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
+import com.soleel.common.createuistate.updateUserMessage
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
@@ -16,6 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
@@ -31,10 +34,13 @@ import javax.inject.Inject
 //    val isTransactionSaved: Boolean = false
 //)
 
-sealed interface CreateTransactionUiState {
-    data class Success(val transaction: Transaction) : CreateTransactionUiState
+sealed interface CreateTransactionUiState : CreateUiState {
+    data object Success : CreateTransactionUiState
     data object Error : CreateTransactionUiState
-    data object Loading : CreateTransactionUiState
+    data class Loading(
+        val transaction: Transaction,
+        val userMessage: String?
+    ) : CreateTransactionUiState
 }
 
 sealed interface PaymentAccountsUiState {
@@ -54,8 +60,25 @@ class CreateTransactionViewModel @Inject constructor(
 //    val createTransactionUiState: StateFlow<CreateTransactionUiState> =
 //        _createTransactionUiState.asStateFlow()
 
-    private val _createTransactionUiState = MutableStateFlow<CreateTransactionUiState>(CreateTransactionUiState.Loading)
-    val createTransactionUiState: StateFlow<CreateTransactionUiState> = _createTransactionUiState.asStateFlow()
+    private val _createTransactionUiState =
+        MutableStateFlow<CreateTransactionUiState>(
+            CreateTransactionUiState.Loading(
+                transaction = Transaction(
+                    id = "",
+                    name = "",
+                    amount = 0,
+                    description = "",
+                    createAt = 0,
+                    updatedAt = 0,
+                    categoryType = 0,
+                    transactionType = 0,
+                    paymentAccountId = ""
+                ),
+                userMessage = null
+            )
+        )
+    val createTransactionUiState: StateFlow<CreateTransactionUiState> =
+        _createTransactionUiState.asStateFlow()
 
     private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = paymentAccountUiState(
         paymentAccountRepository = paymentAccountRepository
@@ -83,6 +106,48 @@ class CreateTransactionViewModel @Inject constructor(
             is Result.Error -> PaymentAccountsUiState.Error
         }
     }
+
+    fun saveTransaction() {
+
+        val transaction =
+            (_createTransactionUiState.value as CreateTransactionUiState.Loading).transaction
+
+        if (transaction.name.isEmpty()) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Nombre no puede estar vacío")
+                }
+            )
+        }
+
+        // TODO: Cambiar 9999999 por el monto del PaymentAccount seleccionado
+        if (transaction.amount >= 9999999) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Monto mayor al disponible en la cuenta de pago")
+                }
+            )
+        }
+
+        if (transaction.amount <= 0) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Monto inferior a 0")
+                }
+            )
+        }
+
+    }
+
+//    private fun updateUserMessage(
+//        createTransactionUiState: CreateTransactionUiState,
+//        userMessage: String?
+//    ): CreateTransactionUiState {
+//        return when (createTransactionUiState) {
+//            is CreateTransactionUiState.Loading -> createTransactionUiState.copy(userMessage = userMessage)
+//            else -> createTransactionUiState
+//        }
+//    }
 
 }
 
