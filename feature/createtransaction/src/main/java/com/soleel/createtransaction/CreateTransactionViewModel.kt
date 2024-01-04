@@ -1,15 +1,13 @@
 package com.soleel.createtransaction
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soleel.common.createuistate.CreateUiState
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
-import com.soleel.common.createuistate.updateUserMessage
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.transaction.model.Transaction
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,26 +20,17 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
-//data class CreateTransactionUiState(
-//    val name: String? = null,
-//    val amount: Int? = null,
-//    val description: String? = null,
-//    val categoryType: Int? = null,
-//    val transactionType: Int? = null,
-//    val paymentAccountId: Int? = null,
-//
-//    val userMessage: String? = null,
-//    val isTransactionSaved: Boolean = false
-//)
+data class CreateTransactionUiState(
+    val name: String? = null,
+    val amount: Int? = null,
+    val description: String? = null,
+    val categoryType: Int? = null,
+    val transactionType: Int? = null,
+    val paymentAccountId: Int? = null,
 
-sealed interface CreateTransactionUiState : CreateUiState {
-    data object Success : CreateTransactionUiState
-    data object Error : CreateTransactionUiState
-    data class Loading(
-        val transaction: Transaction,
-        val userMessage: String?
-    ) : CreateTransactionUiState
-}
+    val userMessage: String? = null,
+    val isTransactionSaved: Boolean = false
+)
 
 sealed interface PaymentAccountsUiState {
     data class Success(val paymentAccounts: List<PaymentAccount>) : PaymentAccountsUiState
@@ -61,22 +50,7 @@ class CreateTransactionViewModel @Inject constructor(
 //        _createTransactionUiState.asStateFlow()
 
     private val _createTransactionUiState =
-        MutableStateFlow<CreateTransactionUiState>(
-            CreateTransactionUiState.Loading(
-                transaction = Transaction(
-                    id = "",
-                    name = "",
-                    amount = 0,
-                    description = "",
-                    createAt = 0,
-                    updatedAt = 0,
-                    categoryType = 0,
-                    transactionType = 0,
-                    paymentAccountId = ""
-                ),
-                userMessage = null
-            )
-        )
+        MutableStateFlow(CreateTransactionUiState())
     val createTransactionUiState: StateFlow<CreateTransactionUiState> =
         _createTransactionUiState.asStateFlow()
 
@@ -109,45 +83,96 @@ class CreateTransactionViewModel @Inject constructor(
 
     fun saveTransaction() {
 
-        val transaction =
-            (_createTransactionUiState.value as CreateTransactionUiState.Loading).transaction
-
-        if (transaction.name.isEmpty()) {
+        if (null == _createTransactionUiState.value.name
+            || true == _createTransactionUiState.value.name?.isEmpty()
+        ) {
             _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Nombre no puede estar vacío")
-                }
+                function = { updateUserMessage(it, "Nombre invalido") }
             )
+            return
         }
 
         // TODO: Cambiar 9999999 por el monto del PaymentAccount seleccionado
-        if (transaction.amount >= 9999999) {
+        if (null == _createTransactionUiState.value.amount
+            || 9999999 <= _createTransactionUiState.value.amount!!
+        ) {
             _createTransactionUiState.update(
                 function = {
                     updateUserMessage(it, "Monto mayor al disponible en la cuenta de pago")
                 }
             )
+            return
         }
 
-        if (transaction.amount <= 0) {
+        if (null == _createTransactionUiState.value.amount
+            || 0 >= _createTransactionUiState.value.amount!!
+        ) {
             _createTransactionUiState.update(
                 function = {
                     updateUserMessage(it, "Monto inferior a 0")
                 }
             )
+            return
         }
+
+        if (null == _createTransactionUiState.value.description
+            || true == _createTransactionUiState.value.description?.isEmpty()
+        ) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "La descripcion no puede estar vacia.")
+                }
+            )
+            return
+        }
+
+        if (null == _createTransactionUiState.value.categoryType
+//      todo      || _createTransactionUiState.value.categoryType? in LISTA DE CATEGORIAS
+        ) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Debe seleccionar una categoria.")
+                }
+            )
+            return
+        }
+
+        if (null == _createTransactionUiState.value.transactionType
+//      todo      || _createTransactionUiState.value.transactionType? in LISTA DE TIPOS DE TRANSACCION
+        ) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Debe seleccionar un tipo de transaccion.")
+                }
+            )
+            return
+        }
+
+        if (null == _createTransactionUiState.value.paymentAccountId
+//      todo      || _createTransactionUiState.value.paymentAccountId? in LISTA DE PAYMENTACCOUNTS
+        ) {
+            _createTransactionUiState.update(
+                function = {
+                    updateUserMessage(it, "Debe seleccionar una cuenta de pago.")
+                }
+            )
+            return
+        }
+
+        this.createTransaction()
 
     }
 
-//    private fun updateUserMessage(
-//        createTransactionUiState: CreateTransactionUiState,
-//        userMessage: String?
-//    ): CreateTransactionUiState {
-//        return when (createTransactionUiState) {
-//            is CreateTransactionUiState.Loading -> createTransactionUiState.copy(userMessage = userMessage)
-//            else -> createTransactionUiState
-//        }
-//    }
+    private fun createTransaction() {
+        TODO("Not yet implemented")
+    }
+
+    private fun updateUserMessage(
+        createTransactionUiState: CreateTransactionUiState,
+        userMessage: String?
+    ): CreateTransactionUiState {
+        return createTransactionUiState.copy(userMessage = userMessage)
+    }
 
 }
 

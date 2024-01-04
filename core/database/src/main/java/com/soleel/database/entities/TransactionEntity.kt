@@ -39,5 +39,5 @@ data class TransactionEntity(
 
     @ColumnInfo(name = "transaction_type") var transactionType: Int,
 
-    @ColumnInfo(name = "payment_account_id") var paymentAccountId: Int
+    @ColumnInfo(name = "payment_account_id") var paymentAccountId: String
 )

@@ -44,7 +44,7 @@ class CreatePaymentAccountViewModel @Inject constructor(
         if (_createPaymentAccountUiState.value.name.isEmpty()) {
             _createPaymentAccountUiState.update(
                 function = {
-                    it.copy(userMessage = "Nombre no puede estar vacia")
+                    it.copy(userMessage = "Nombre no puede estar vacio")
                 })
             return
         }
@@ -115,6 +115,13 @@ class CreatePaymentAccountViewModel @Inject constructor(
             function = {
                 it.copy(initialAmount = intValue)
             })
+    }
+
+    private fun updateUserMessage(
+        createTransactionUiState: CreatePaymentAccountUiState,
+        userMessage: String?
+    ): CreatePaymentAccountUiState {
+        return createTransactionUiState.copy(userMessage = userMessage)
     }
 
 }
