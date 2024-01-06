@@ -1,7 +1,17 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-<!--    Names: <description> <purpose> -->
+    <!-- Names: <description> <purpose> -->
 
+    <!-- COMMON STRINGS -->
+    <string name="required_field">"*requerido"</string>
+
+    <!-- CREATE TRANSACTION STRINGS -->
+    <string name="create_trasaction_title">"Crear Transaccion"</string>
+    <string name="attribute_name_trasaction_title">"Nombre de la transaccion"</string>
+
+    <string name="add_trasaction_title">"Agregar transaccion"</string>
+
+    <!-- VALIDATION MESSAGES -->
     <string name="name_can_not_be_blank_error_message">El nombre no puede estar vacio</string>
     <string name="name_too_short_error_message">El nombre es demasiado corto</string>
     <string name="name_too_long_error_message">El nombre es demasiado largo</string>
@@ -19,13 +29,4 @@
     <string name="transaction_type_not_selected_error_message">No se ha seleccionado un tipo de transaccion</string>
 
     <string name="payment_account_not_selected_error_message">No se ha seleccionado una cuenta de pago</string>
-
-    <string name="strTheEmailCanNotBeBlank">The email can\'t be blank</string>
-    <string name="strThatsNotAValidEmail">That\'s not a valid email</string>
-
-    <string name="strThePasswordNeedsToConsistOfAtLeastEightCharacters">The password needs to consist of at least 8 characters</string>
-    <string name="strThePasswordNeedsToContainAtLeastOneLetterAndDigit">The password needs to contain at least one letter and digit</string>
-
-    <string name="strThePhoneCanNotBeBlank">The phone can\'t be blank</string>
-    <string name="strThePhoneNumberShouldBeContentJustDigit">The phone number should be content just digit</string>
 </resources>

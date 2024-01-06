@@ -17,7 +17,7 @@ fun NavGraphBuilder.createTransactionScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
-    onCancelClick: () -> Unit,
+//    onCancelClick: () -> Unit,
 ) {
     composable(
         route = createTransactionRoute,
@@ -26,7 +26,7 @@ fun NavGraphBuilder.createTransactionScreen(
                 onShowBottomBar = onShowBottomBar,
                 onShowAddFloating = onShowAddFloating,
                 onBackClick = onBackClick,
-                onCancelClick = onCancelClick
+//                onCancelClick = onCancelClick
             )
         }
     )

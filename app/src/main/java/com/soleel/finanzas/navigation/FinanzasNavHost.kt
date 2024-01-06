@@ -46,7 +46,7 @@ fun FinanzasNavHost(
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
                 onBackClick = appState::showCancelAlert,
-                onCancelClick = appState::showCancelAlert
+//                onCancelClick = appState::showCancelAlert
             )
         }
     )

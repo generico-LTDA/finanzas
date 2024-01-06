@@ -294,6 +294,7 @@ fun SelectTypeAccountDropdownMenu(
 ) {
     val typesAccounts: List<Pair<Int, String>> = AccountTypeConstant.idToValueList
 
+
     var selectedOption by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }
 

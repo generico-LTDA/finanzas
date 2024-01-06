@@ -8,6 +8,11 @@ import com.soleel.validation.model.ResultValidation
 
 class NameValidator : InValidation<String, ResultValidation> {
 
+    companion object {
+        const val minCharLimit: Int = 8
+        const val maxCharLimit: Int = 24
+    }
+
     override fun execute(input: String): ResultValidation {
         if (input.isBlank()) {
             return ResultValidation(
@@ -16,14 +21,14 @@ class NameValidator : InValidation<String, ResultValidation> {
             )
         }
 
-        if (input.length < 8) {
+        if (input.length < minCharLimit) {
             return ResultValidation(
                 successful = false,
                 errorMessage = UiText.StringResource(resId = R.string.name_too_short_error_message)
             )
         }
 
-        if (input.length > 24) {
+        if (input.length > maxCharLimit) {
             return ResultValidation(
                 successful = false,
                 errorMessage = UiText.StringResource(resId = R.string.name_too_long_error_message)
@@ -36,4 +41,6 @@ class NameValidator : InValidation<String, ResultValidation> {
         )
 
     }
+
+
 }
