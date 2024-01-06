@@ -292,7 +292,7 @@ fun CreatePaymentAccountForm(
 fun SelectTypeAccountDropdownMenu(
     viewModel: CreatePaymentAccountViewModel
 ) {
-    val typesAccounts: List<Pair<Int, String>> = AccountTypeConstant.accountTypes
+    val typesAccounts: List<Pair<Int, String>> = AccountTypeConstant.idToValueList
 
     var selectedOption by remember { mutableStateOf("") }
     var expanded by remember { mutableStateOf(false) }

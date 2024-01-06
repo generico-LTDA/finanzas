@@ -3,9 +3,9 @@ plugins {
 }
 
 android {
-    namespace = "com.soleel.common"
+    namespace = "com.soleel.validation"
 }
 
 dependencies {
-//    implementation(projects.core)
+    implementation(projects.core.ui)
 }

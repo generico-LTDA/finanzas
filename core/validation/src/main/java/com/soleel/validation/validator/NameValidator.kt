@@ -1,0 +1,39 @@
+package com.soleel.validation.validator
+
+import com.soleel.ui.UiText
+import com.soleel.validation.generic.InValidation
+import com.soleel.ui.R
+import com.soleel.validation.model.ResultValidation
+
+
+class NameValidator : InValidation<String, ResultValidation> {
+
+    override fun execute(input: String): ResultValidation {
+        if (input.isBlank()) {
+            return ResultValidation(
+                successful = false,
+                errorMessage = UiText.StringResource(resId = R.string.name_can_not_be_blank_error_message)
+            )
+        }
+
+        if (input.length < 8) {
+            return ResultValidation(
+                successful = false,
+                errorMessage = UiText.StringResource(resId = R.string.name_too_short_error_message)
+            )
+        }
+
+        if (input.length > 24) {
+            return ResultValidation(
+                successful = false,
+                errorMessage = UiText.StringResource(resId = R.string.name_too_long_error_message)
+            )
+        }
+
+        return ResultValidation(
+            successful = true,
+            errorMessage = null
+        )
+
+    }
+}

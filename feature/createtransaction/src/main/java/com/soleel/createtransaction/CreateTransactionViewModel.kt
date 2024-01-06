@@ -1,36 +1,57 @@
 package com.soleel.createtransaction
 
-import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soleel.ui.UiText
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
+import com.soleel.validation.validator.AmountValidator
+import com.soleel.validation.validator.CategoryTypeValidator
+import com.soleel.validation.validator.DescriptionValidator
+import com.soleel.validation.validator.NameValidator
+import com.soleel.validation.validator.PaymentAccountIdTypeValidator
+import com.soleel.validation.validator.TransactionTypeValidator
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
 
-data class CreateTransactionUiState(
-    val name: String? = null,
-    val amount: Int? = null,
-    val description: String? = null,
-    val categoryType: Int? = null,
-    val transactionType: Int? = null,
-    val paymentAccountId: Int? = null,
+data class CreateTransactionUiCreate(
+    val name: String = "",
+    val nameError: UiText? = null,
+    val amount: Int = 0,
+    val amountError: UiText? = null,
+    val description: String = "",
+    val descriptionError: UiText? = null,
+    val categoryType: Int = 0,
+    val categoryTypeError: UiText? = null,
+    val transactionType: Int = 0,
+    val transactionTypeError: UiText? = null,
+    val paymentAccountId: String = "",
+    val paymentAccountIdError: UiText? = null,
 
-    val userMessage: String? = null,
     val isTransactionSaved: Boolean = false
 )
+
+sealed class CreateTransactionUiEvent {
+    data class NameChanged(val name: String) : CreateTransactionUiEvent()
+    data class AmountChanged(val amount: Int) : CreateTransactionUiEvent()
+    data class DescriptionChanged(val description: String) : CreateTransactionUiEvent()
+    data class CategoryTypeChanged(val categoryType: Int) : CreateTransactionUiEvent()
+    data class TransactionTypeChanged(val transactionType: Int) : CreateTransactionUiEvent()
+    data class PaymentAccountChanged(val paymentAccountId: String) : CreateTransactionUiEvent()
+    object Submit : CreateTransactionUiEvent()
+}
 
 sealed interface PaymentAccountsUiState {
     data class Success(val paymentAccounts: List<PaymentAccount>) : PaymentAccountsUiState
@@ -49,10 +70,14 @@ class CreateTransactionViewModel @Inject constructor(
 //    val createTransactionUiState: StateFlow<CreateTransactionUiState> =
 //        _createTransactionUiState.asStateFlow()
 
-    private val _createTransactionUiState =
-        MutableStateFlow(CreateTransactionUiState())
-    val createTransactionUiState: StateFlow<CreateTransactionUiState> =
-        _createTransactionUiState.asStateFlow()
+    var createTransactionUiState by mutableStateOf(CreateTransactionUiCreate())
+
+    private val nameValidator = NameValidator()
+    private val amountValidator = AmountValidator()
+    private val descriptionValidator = DescriptionValidator()
+    private val categoryTypeValidator = CategoryTypeValidator()
+    private val transactionTypeValidator = TransactionTypeValidator()
+    private val validatePaymentAccountIdUseCase = PaymentAccountIdTypeValidator()
 
     private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = paymentAccountUiState(
         paymentAccountRepository = paymentAccountRepository
@@ -81,98 +106,104 @@ class CreateTransactionViewModel @Inject constructor(
         }
     }
 
-    fun saveTransaction() {
+    fun onEvent(event: CreateTransactionUiEvent) {
+        when (event) {
+            is CreateTransactionUiEvent.NameChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(name = event.name)
+                validateName()
+            }
 
-        if (null == _createTransactionUiState.value.name
-            || true == _createTransactionUiState.value.name?.isEmpty()
-        ) {
-            _createTransactionUiState.update(
-                function = { updateUserMessage(it, "Nombre invalido") }
-            )
-            return
-        }
+            is CreateTransactionUiEvent.AmountChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(amount = event.amount)
+                validateAmount()
+            }
 
-        // TODO: Cambiar 9999999 por el monto del PaymentAccount seleccionado
-        if (null == _createTransactionUiState.value.amount
-            || 9999999 <= _createTransactionUiState.value.amount!!
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Monto mayor al disponible en la cuenta de pago")
+            is CreateTransactionUiEvent.DescriptionChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(
+                    description = event.description)
+                validateDescription()
+            }
+
+            is CreateTransactionUiEvent.CategoryTypeChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(
+                    categoryType = event.categoryType)
+                validateCategoryType()
+            }
+
+            is CreateTransactionUiEvent.TransactionTypeChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(
+                    transactionType = event.transactionType)
+                validateTransactionType()
+            }
+
+            is CreateTransactionUiEvent.PaymentAccountChanged -> {
+                createTransactionUiState = createTransactionUiState.copy(
+                    paymentAccountId = event.paymentAccountId)
+                validatePaymentAccountId()
+            }
+
+            is CreateTransactionUiEvent.Submit -> {
+                if (validateName()
+                    && validateAmount()
+                    && validateDescription()
+                    && validateCategoryType()
+                    && validateTransactionType()
+                    && validatePaymentAccountId()
+                ) {
+                    saveTransaction()
                 }
-            )
-            return
+            }
         }
-
-        if (null == _createTransactionUiState.value.amount
-            || 0 >= _createTransactionUiState.value.amount!!
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Monto inferior a 0")
-                }
-            )
-            return
-        }
-
-        if (null == _createTransactionUiState.value.description
-            || true == _createTransactionUiState.value.description?.isEmpty()
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "La descripcion no puede estar vacia.")
-                }
-            )
-            return
-        }
-
-        if (null == _createTransactionUiState.value.categoryType
-//      todo      || _createTransactionUiState.value.categoryType? in LISTA DE CATEGORIAS
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Debe seleccionar una categoria.")
-                }
-            )
-            return
-        }
-
-        if (null == _createTransactionUiState.value.transactionType
-//      todo      || _createTransactionUiState.value.transactionType? in LISTA DE TIPOS DE TRANSACCION
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Debe seleccionar un tipo de transaccion.")
-                }
-            )
-            return
-        }
-
-        if (null == _createTransactionUiState.value.paymentAccountId
-//      todo      || _createTransactionUiState.value.paymentAccountId? in LISTA DE PAYMENTACCOUNTS
-        ) {
-            _createTransactionUiState.update(
-                function = {
-                    updateUserMessage(it, "Debe seleccionar una cuenta de pago.")
-                }
-            )
-            return
-        }
-
-        this.createTransaction()
-
     }
 
-    private fun createTransaction() {
-        TODO("Not yet implemented")
+    private fun validateName(): Boolean {
+        val nameResult = nameValidator.execute(createTransactionUiState.name)
+        createTransactionUiState = createTransactionUiState.copy(
+            nameError = nameResult.errorMessage)
+        return nameResult.successful
     }
 
-    private fun updateUserMessage(
-        createTransactionUiState: CreateTransactionUiState,
-        userMessage: String?
-    ): CreateTransactionUiState {
-        return createTransactionUiState.copy(userMessage = userMessage)
+    private fun validateAmount(): Boolean {
+        val amountResult = amountValidator.execute(createTransactionUiState.amount)
+        createTransactionUiState = createTransactionUiState.copy(
+            amountError = amountResult.errorMessage)
+        return amountResult.successful
     }
 
+    private fun validateDescription(): Boolean {
+        val descriptionResult = descriptionValidator.execute(
+            createTransactionUiState.description)
+        createTransactionUiState = createTransactionUiState.copy(
+            descriptionError = descriptionResult.errorMessage)
+        return descriptionResult.successful
+    }
+
+    private fun validateCategoryType(): Boolean {
+        val categoryTypeResult = categoryTypeValidator.execute(
+            input = createTransactionUiState.categoryType)
+        createTransactionUiState = createTransactionUiState.copy(
+            categoryTypeError = categoryTypeResult.errorMessage)
+        return categoryTypeResult.successful
+    }
+
+    private fun validateTransactionType(): Boolean {
+        val transactionTypeResult = transactionTypeValidator.execute(
+            input = createTransactionUiState.transactionType)
+        createTransactionUiState = createTransactionUiState.copy(
+            transactionTypeError = transactionTypeResult.errorMessage)
+        return transactionTypeResult.successful
+    }
+
+    private fun validatePaymentAccountId(): Boolean {
+        val paymentAccountIdResult = validatePaymentAccountIdUseCase.execute(
+            input = createTransactionUiState.paymentAccountId)
+        createTransactionUiState = createTransactionUiState.copy(
+            paymentAccountIdError = paymentAccountIdResult.errorMessage)
+        return paymentAccountIdResult.successful
+    }
+
+    private fun saveTransaction() {
+
+    }
 }
 

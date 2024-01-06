@@ -66,5 +66,10 @@ gradlePlugin {
             implementationClass = "plugins.AndroidAppDataConvetionPlugin"
         }
 
+        register("androidCore") {
+            id = "conventionPluginsApp.android.core"
+            implementationClass = "plugins.AndroidAppCoreConventionPlugin"
+        }
+
     }
 }

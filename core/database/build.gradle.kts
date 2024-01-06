@@ -1,10 +1,11 @@
 plugins {
-    id("conventionPluginsApp.android.lib")
-//    id("conventionPluginsApp.android.lib.compose")
-    id("conventionPluginsApp.android.hilt")
-    id("conventionPluginsApp.android.room")
+    id("conventionPluginsApp.android.core")
 }
 
 android {
     namespace = "com.soleel.database"
+}
+
+dependencies {
+//    implementation(projects.core)
 }

@@ -1,0 +1,31 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+<!--    Names: <description> <purpose> -->
+
+    <string name="name_can_not_be_blank_error_message">El nombre no puede estar vacio</string>
+    <string name="name_too_short_error_message">El nombre es demasiado corto</string>
+    <string name="name_too_long_error_message">El nombre es demasiado largo</string>
+
+    <string name="amount_can_not_be_zero_error_message">El monto no puede ser cero.</string>
+    <string name="amount_can_not_be_negative_error_message">El monto no puede ser negativo.</string>
+    <string name="amount_can_not_be_greater_than_error_message">El monto no puede ser mayor a $99.999.999</string>
+
+    <string name="description_can_not_be_blank_error_message">La descripcion no puede estar vacio</string>
+    <string name="description_too_short_error_message">El descripcion es demasiado corto</string>
+    <string name="description_too_long_error_message">El descripcion es demasiado largo</string>
+
+    <string name="category_type_not_selected_error_message">No se ha seleccionado una categoria</string>
+
+    <string name="transaction_type_not_selected_error_message">No se ha seleccionado un tipo de transaccion</string>
+
+    <string name="payment_account_not_selected_error_message">No se ha seleccionado una cuenta de pago</string>
+
+    <string name="strTheEmailCanNotBeBlank">The email can\'t be blank</string>
+    <string name="strThatsNotAValidEmail">That\'s not a valid email</string>
+
+    <string name="strThePasswordNeedsToConsistOfAtLeastEightCharacters">The password needs to consist of at least 8 characters</string>
+    <string name="strThePasswordNeedsToContainAtLeastOneLetterAndDigit">The password needs to contain at least one letter and digit</string>
+
+    <string name="strThePhoneCanNotBeBlank">The phone can\'t be blank</string>
+    <string name="strThePhoneNumberShouldBeContentJustDigit">The phone number should be content just digit</string>
+</resources>

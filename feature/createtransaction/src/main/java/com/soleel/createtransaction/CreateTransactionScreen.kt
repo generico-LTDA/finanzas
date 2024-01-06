@@ -27,10 +27,6 @@ internal fun CreateTransactionRoute(
     onCancelClick: () -> Unit,
     viewModel: CreateTransactionViewModel = hiltViewModel(),
 ) {
-    val createTransactionViewModel: CreateTransactionUiState by viewModel.createTransactionUiState.collectAsState()
-
-    viewModel.saveTransaction()
-
     CreateTransactionScreen(
         modifier = modifier,
         onShowBottomBar = onShowBottomBar,

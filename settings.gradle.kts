@@ -22,6 +22,7 @@ include(":app")
 include(":core:common")
 include(":core:database")
 include(":core:ui")
+include(":core:validation")
 
 include(":data:paymentaccount")
 include(":data:transaction")
@@ -34,3 +35,4 @@ include(":feature:addmodal")
 include(":feature:createpaymentaccount")
 include(":feature:createtransaction")
 include(":feature:cancelalert")
+

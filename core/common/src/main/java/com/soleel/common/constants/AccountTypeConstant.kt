@@ -16,13 +16,15 @@ object AccountTypeConstant {
     const val CASH: Int = 5
     const val CASH_VALUE: String = "Efectivo"
 
-    val accountTypes: List<Pair<Int, String>> = listOf(
+    val idToValueList: List<Pair<Int, String>> = listOf(
         CREDIT to CREDIT_VALUE,
         DEBIT to DEBIT_VALUE,
         SAVING to SAVING_VALUE,
         INVESTMENT to INVESTMENT_VALUE,
         CASH to CASH_VALUE
     )
+
+    val idList: List<Int> = listOf(CREDIT, DEBIT, SAVING, INVESTMENT, CASH)
 
 }
 
