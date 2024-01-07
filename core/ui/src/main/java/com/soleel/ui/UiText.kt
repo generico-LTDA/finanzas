@@ -3,6 +3,7 @@ package com.soleel.ui
 import android.content.Context
 import androidx.annotation.StringRes
 
+// TODO: Quitar esto
 sealed class UiText {
 
     data class DynamicString(val value: String) : UiText()

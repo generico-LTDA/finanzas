@@ -1,5 +1,6 @@
 package com.soleel.createtransaction
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,12 +18,18 @@ import com.soleel.validation.validator.TransactionTypeValidator
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
+import com.soleel.common.retryflow.RetryableFlowTrigger
+import com.soleel.common.retryflow.retryableFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -59,11 +66,20 @@ sealed interface PaymentAccountsUiState {
     data object Loading : PaymentAccountsUiState
 }
 
+sealed class PaymentAccountsUiEvent {
+    object Retry : PaymentAccountsUiEvent()
+}
+
+
 @HiltViewModel
 class CreateTransactionViewModel @Inject constructor(
     private val paymentAccountRepository: IPaymentAccountLocalDataSource,
-    private val transactionRepository: ITransactionLocalDataSource
+    private val transactionRepository: ITransactionLocalDataSource,
+    private val retryableFlowTrigger: RetryableFlowTrigger
 ) : ViewModel() {
+
+    var count: Int = 0
+
 
 //    private val _createTransactionUiState: MutableStateFlow<CreateTransactionUiState> =
 //        MutableStateFlow(CreateTransactionUiState())
@@ -79,9 +95,14 @@ class CreateTransactionViewModel @Inject constructor(
     private val transactionTypeValidator = TransactionTypeValidator()
     private val validatePaymentAccountIdUseCase = PaymentAccountIdTypeValidator()
 
-    private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = paymentAccountUiState(
-        paymentAccountRepository = paymentAccountRepository
-    )
+    private var _paymentAccountsUiState: Flow<PaymentAccountsUiState> = retryableFlowTrigger
+        .retryableFlow(flowProvider = {
+            paymentAccountUiState(
+                paymentAccountRepository = paymentAccountRepository
+            )
+        })
+        .onStart(action = { delay(2000) }) // Agregar un retraso de 2000 milisegundos (2 segundos) al inicio del flujo para dar la sensacion de carga.
+
     val paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
@@ -91,22 +112,40 @@ class CreateTransactionViewModel @Inject constructor(
     private fun paymentAccountUiState(
         paymentAccountRepository: IPaymentAccountLocalDataSource,
     ): Flow<PaymentAccountsUiState> {
-        return paymentAccountRepository.getPaymentAccounts()
-            .asResult()
+        Log.d("finanzas", "paymentAccountUiState 1")
+        return paymentAccountRepository.getPaymentAccounts().asResult()
             .map(transform = this::getData)
     }
 
     private fun getData(
         itemsPaymentAccount: Result<List<PaymentAccount>>
     ): PaymentAccountsUiState {
+        Log.d("finanzas", "getData 1")
         return when (itemsPaymentAccount) {
             is Result.Success -> PaymentAccountsUiState.Success(itemsPaymentAccount.data)
-            is Result.Loading -> PaymentAccountsUiState.Loading
             is Result.Error -> PaymentAccountsUiState.Error
+            is Result.Loading -> PaymentAccountsUiState.Loading
         }
     }
 
-    fun onEvent(event: CreateTransactionUiEvent) {
+    fun onPaymentAccountsUiEvent(event: PaymentAccountsUiEvent) {
+        Log.d("finanzas", "onPaymentAccountsUiEvent")
+
+        when (event) {
+            is PaymentAccountsUiEvent.Retry -> {
+                Log.d("finanzas", "onPaymentAccountsUiEvent 1")
+
+//                TODO("Falta cambiar el estado de la pantalla antes de realizar el proceso de carga")
+
+                viewModelScope.launch {
+//                    delay(2000)
+                    retryableFlowTrigger.retry()
+                }
+            }
+        }
+    }
+
+    fun onCreateTransactionUiEvent(event: CreateTransactionUiEvent) {
         when (event) {
             is CreateTransactionUiEvent.NameChanged -> {
                 createTransactionUiCreate = createTransactionUiCreate.copy(name = event.name)
@@ -147,13 +186,7 @@ class CreateTransactionViewModel @Inject constructor(
             }
 
             is CreateTransactionUiEvent.Submit -> {
-                if (validateName()
-                    && validateAmount()
-                    && validateDescription()
-                    && validateCategoryType()
-                    && validateTransactionType()
-                    && validatePaymentAccountId()
-                ) {
+                if (validateName() && validateAmount() && validateDescription() && validateCategoryType() && validateTransactionType() && validatePaymentAccountId()) {
                     saveTransaction()
                 }
             }
@@ -163,46 +196,56 @@ class CreateTransactionViewModel @Inject constructor(
     private fun validateName(): Boolean {
         val nameResult = nameValidator.execute(input = createTransactionUiCreate.name)
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            nameError = nameResult.errorMessage)
+            nameError = nameResult.errorMessage
+        )
         return nameResult.successful
     }
 
     private fun validateAmount(): Boolean {
         val amountResult = amountValidator.execute(input = createTransactionUiCreate.amount)
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            amountError = amountResult.errorMessage)
+            amountError = amountResult.errorMessage
+        )
         return amountResult.successful
     }
 
     private fun validateDescription(): Boolean {
         val descriptionResult = descriptionValidator.execute(
-            input = createTransactionUiCreate.description)
+            input = createTransactionUiCreate.description
+        )
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            descriptionError = descriptionResult.errorMessage)
+            descriptionError = descriptionResult.errorMessage
+        )
         return descriptionResult.successful
     }
 
     private fun validateCategoryType(): Boolean {
         val categoryTypeResult = categoryTypeValidator.execute(
-            input = createTransactionUiCreate.categoryType)
+            input = createTransactionUiCreate.categoryType
+        )
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            categoryTypeError = categoryTypeResult.errorMessage)
+            categoryTypeError = categoryTypeResult.errorMessage
+        )
         return categoryTypeResult.successful
     }
 
     private fun validateTransactionType(): Boolean {
         val transactionTypeResult = transactionTypeValidator.execute(
-            input = createTransactionUiCreate.transactionType)
+            input = createTransactionUiCreate.transactionType
+        )
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            transactionTypeError = transactionTypeResult.errorMessage)
+            transactionTypeError = transactionTypeResult.errorMessage
+        )
         return transactionTypeResult.successful
     }
 
     private fun validatePaymentAccountId(): Boolean {
         val paymentAccountIdResult = validatePaymentAccountIdUseCase.execute(
-            input = createTransactionUiCreate.paymentAccountId)
+            input = createTransactionUiCreate.paymentAccountId
+        )
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            paymentAccountIdError = paymentAccountIdResult.errorMessage)
+            paymentAccountIdError = paymentAccountIdResult.errorMessage
+        )
         return paymentAccountIdResult.successful
     }
 
