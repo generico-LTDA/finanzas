@@ -21,11 +21,13 @@ import com.soleel.transaction.interfaces.ITransactionLocalDataSource
 import com.soleel.common.retryflow.RetryableFlowTrigger
 import com.soleel.common.retryflow.retryableFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.emitAll
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
@@ -78,14 +80,6 @@ class CreateTransactionViewModel @Inject constructor(
     private val retryableFlowTrigger: RetryableFlowTrigger
 ) : ViewModel() {
 
-    var count: Int = 0
-
-
-//    private val _createTransactionUiState: MutableStateFlow<CreateTransactionUiState> =
-//        MutableStateFlow(CreateTransactionUiState())
-//    val createTransactionUiState: StateFlow<CreateTransactionUiState> =
-//        _createTransactionUiState.asStateFlow()
-
     var createTransactionUiCreate by mutableStateOf(CreateTransactionUiCreate())
 
     private val nameValidator = NameValidator()
@@ -95,15 +89,12 @@ class CreateTransactionViewModel @Inject constructor(
     private val transactionTypeValidator = TransactionTypeValidator()
     private val validatePaymentAccountIdUseCase = PaymentAccountIdTypeValidator()
 
-    private var _paymentAccountsUiState: Flow<PaymentAccountsUiState> = retryableFlowTrigger
+    private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = retryableFlowTrigger
         .retryableFlow(flowProvider = {
-            paymentAccountUiState(
-                paymentAccountRepository = paymentAccountRepository
-            )
+            paymentAccountUiState(paymentAccountRepository = paymentAccountRepository)
         })
-        .onStart(action = { delay(2000) }) // Agregar un retraso de 2000 milisegundos (2 segundos) al inicio del flujo para dar la sensacion de carga.
 
-    val paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
+    var paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
         initialValue = PaymentAccountsUiState.Loading
@@ -112,15 +103,30 @@ class CreateTransactionViewModel @Inject constructor(
     private fun paymentAccountUiState(
         paymentAccountRepository: IPaymentAccountLocalDataSource,
     ): Flow<PaymentAccountsUiState> {
-        Log.d("finanzas", "paymentAccountUiState 1")
-        return paymentAccountRepository.getPaymentAccounts().asResult()
+        return paymentAccountRepository.getPaymentAccounts()
+            .asResult()
             .map(transform = this::getData)
     }
+
+//    private fun paymentAccountUiState(
+//        paymentAccountRepository: IPaymentAccountLocalDataSource,
+//    ): Flow<PaymentAccountsUiState> {
+//        return flow {
+//            emit(PaymentAccountsUiState.Loading)
+//
+//            delay(2000)
+//
+//            val itemsPaymentAccount = paymentAccountRepository.getPaymentAccounts()
+//                .asResult()
+//                .map {  getData(it)}
+//
+//            emitAll(itemsPaymentAccount)
+//        }
+//    }
 
     private fun getData(
         itemsPaymentAccount: Result<List<PaymentAccount>>
     ): PaymentAccountsUiState {
-        Log.d("finanzas", "getData 1")
         return when (itemsPaymentAccount) {
             is Result.Success -> PaymentAccountsUiState.Success(itemsPaymentAccount.data)
             is Result.Error -> PaymentAccountsUiState.Error
@@ -129,18 +135,9 @@ class CreateTransactionViewModel @Inject constructor(
     }
 
     fun onPaymentAccountsUiEvent(event: PaymentAccountsUiEvent) {
-        Log.d("finanzas", "onPaymentAccountsUiEvent")
-
         when (event) {
             is PaymentAccountsUiEvent.Retry -> {
-                Log.d("finanzas", "onPaymentAccountsUiEvent 1")
-
-//                TODO("Falta cambiar el estado de la pantalla antes de realizar el proceso de carga")
-
-                viewModelScope.launch {
-//                    delay(2000)
-                    retryableFlowTrigger.retry()
-                }
+                retryableFlowTrigger.retry()
             }
         }
     }
@@ -153,7 +150,8 @@ class CreateTransactionViewModel @Inject constructor(
             }
 
             is CreateTransactionUiEvent.AmountChanged -> {
-                createTransactionUiCreate = createTransactionUiCreate.copy(amount = event.amount)
+                createTransactionUiCreate =
+                    createTransactionUiCreate.copy(amount = event.amount)
                 validateAmount()
             }
 

@@ -64,26 +64,13 @@ internal fun CreateTransactionRoute(
     )
 
     when (paymentAccountsUiState) {
-        is PaymentAccountsUiState.Success -> {
-
-            Log.d("finanzas", "Count: " + viewModel.count)
-
-            if (viewModel.count == 0) {
-                CreateTransactionErrorScreen(
-                    modifier = modifier,
-                    onRetry = { viewModel.onPaymentAccountsUiEvent(PaymentAccountsUiEvent.Retry) }
-                )
-                viewModel.count++
-            } else {
-                CreateTransactionSuccessScreen(
-                    modifier = modifier,
-                    onShowBottomBar = onShowBottomBar,
-                    onShowAddFloating = onShowAddFloating,
-                    onBackClick = onBackClick,
-                    viewModel = viewModel
-                )
-            }
-        }
+        is PaymentAccountsUiState.Success -> CreateTransactionSuccessScreen(
+                modifier = modifier,
+                onShowBottomBar = onShowBottomBar,
+                onShowAddFloating = onShowAddFloating,
+                onBackClick = onBackClick,
+                viewModel = viewModel
+            )
 
         is PaymentAccountsUiState.Error -> CreateTransactionErrorScreen(
             modifier = modifier,
