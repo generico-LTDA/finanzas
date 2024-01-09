@@ -1,12 +1,10 @@
 package com.soleel.createtransaction
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soleel.ui.UiText
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
 import com.soleel.validation.validator.AmountValidator
@@ -21,33 +19,27 @@ import com.soleel.transaction.interfaces.ITransactionLocalDataSource
 import com.soleel.common.retryflow.RetryableFlowTrigger
 import com.soleel.common.retryflow.retryableFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
 data class CreateTransactionUiCreate(
     val name: String = "",
-    val nameError: UiText? = null,
+    val nameError: Int? = null,
     val amount: Int = 0,
-    val amountError: UiText? = null,
+    val amountError: Int? = null,
     val description: String = "",
-    val descriptionError: UiText? = null,
+    val descriptionError: Int? = null,
     val categoryType: Int = 0,
-    val categoryTypeError: UiText? = null,
+    val categoryTypeError: Int? = null,
     val transactionType: Int = 0,
-    val transactionTypeError: UiText? = null,
+    val transactionTypeError: Int? = null,
     val paymentAccountId: String = "",
-    val paymentAccountIdError: UiText? = null,
+    val paymentAccountIdError: Int? = null,
 
     val isTransactionSaved: Boolean = false
 )
@@ -59,7 +51,7 @@ sealed class CreateTransactionUiEvent {
     data class CategoryTypeChanged(val categoryType: Int) : CreateTransactionUiEvent()
     data class TransactionTypeChanged(val transactionType: Int) : CreateTransactionUiEvent()
     data class PaymentAccountChanged(val paymentAccountId: String) : CreateTransactionUiEvent()
-    object Submit : CreateTransactionUiEvent()
+    data object Submit : CreateTransactionUiEvent()
 }
 
 sealed interface PaymentAccountsUiState {
@@ -69,7 +61,7 @@ sealed interface PaymentAccountsUiState {
 }
 
 sealed class PaymentAccountsUiEvent {
-    object Retry : PaymentAccountsUiEvent()
+    data object Retry : PaymentAccountsUiEvent()
 }
 
 
@@ -94,7 +86,7 @@ class CreateTransactionViewModel @Inject constructor(
             paymentAccountUiState(paymentAccountRepository = paymentAccountRepository)
         })
 
-    var paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
+    val paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
         initialValue = PaymentAccountsUiState.Loading

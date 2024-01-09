@@ -1,10 +1,11 @@
 package com.soleel.createtransaction
 
-import android.util.Log
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,71 +29,72 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.soleel.ui.R
 
 
 @Composable
 internal fun CreateTransactionRoute(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit,
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
-    onBackClick: () -> Unit,
-    viewModel: CreateTransactionViewModel = hiltViewModel(),
+    viewModel: CreateTransactionViewModel = hiltViewModel()
 ) {
-    val paymentAccountsUiState by viewModel.paymentAccountsUiState.collectAsState()
+    val createTransactionUiCreate = viewModel.createTransactionUiCreate
+    val paymentAccountsUiState by viewModel.paymentAccountsUiState.collectAsStateWithLifecycle()
 
     BackHandler(
         enabled = true,
         onBack = { onBackClick() }
     )
 
-    when (paymentAccountsUiState) {
-        is PaymentAccountsUiState.Success -> CreateTransactionSuccessScreen(
-                modifier = modifier,
-                onShowBottomBar = onShowBottomBar,
-                onShowAddFloating = onShowAddFloating,
-                onBackClick = onBackClick,
-                viewModel = viewModel
-            )
+    CreateTransactionScreen(
+        createTransactionUiCreate = createTransactionUiCreate,
+        paymentAccountsUiState = paymentAccountsUiState,
 
-        is PaymentAccountsUiState.Error -> CreateTransactionErrorScreen(
-            modifier = modifier,
-            onRetry = { viewModel.onPaymentAccountsUiEvent(PaymentAccountsUiEvent.Retry) }
-        )
+        modifier = modifier,
 
-        is PaymentAccountsUiState.Loading -> CreateTransactionLoadingScreen()
-    }
+        onBackClick = onBackClick,
+        onShowBottomBar = onShowBottomBar,
+        onShowAddFloating = onShowAddFloating,
+
+        onCreateTransactionUiEvent = viewModel::onCreateTransactionUiEvent,
+        onPaymentAccountsUiEvent = viewModel::onPaymentAccountsUiEvent
+    )
+
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-private fun CreateTransactionSuccessScreen(
+private fun CreateTransactionScreen(
     modifier: Modifier,
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    paymentAccountsUiState: PaymentAccountsUiState,
+
+    onBackClick: () -> Unit,
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
-    onBackClick: () -> Unit,
-    viewModel: CreateTransactionViewModel
+
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    onPaymentAccountsUiEvent: (PaymentAccountsUiEvent) -> Unit
 ) {
 
     val snackbarHostState = remember { SnackbarHostState() }
 
-    if (viewModel.createTransactionUiCreate.isTransactionSaved) {
+    if (createTransactionUiCreate.isTransactionSaved) {
         onShowBottomBar()
         onShowAddFloating()
         onBackClick()
@@ -103,7 +105,7 @@ private fun CreateTransactionSuccessScreen(
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
-                onClick = { viewModel.onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
+                onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
@@ -114,18 +116,45 @@ private fun CreateTransactionSuccessScreen(
             )
         },
         content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(it),
-                content = {
-                    //PaymentAccountCard(viewModel)
-                    CreateTransactionForm(viewModel = viewModel)
-                }
-            )
+            when (paymentAccountsUiState) {
+                is PaymentAccountsUiState.Success -> CreateTransactionSuccessScreen(
+                    modifier = modifier,
+                    createTransactionUiCreate = createTransactionUiCreate,
+                    onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+                    paddingValues = it
+                )
+
+                is PaymentAccountsUiState.Error -> CreateTransactionErrorScreen(
+                    modifier = modifier,
+                    onRetry = { onPaymentAccountsUiEvent(PaymentAccountsUiEvent.Retry) }
+                )
+
+                is PaymentAccountsUiState.Loading -> CreateTransactionLoadingScreen()
+            }
         }
     )
 
+}
+
+@Composable
+private fun CreateTransactionSuccessScreen(
+    modifier: Modifier,
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    paddingValues: PaddingValues
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(paddingValues),
+        content = {
+            //PaymentAccountCard(viewModel)
+            CreateTransactionForm(
+                createTransactionUiCreate = createTransactionUiCreate,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+            )
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -157,7 +186,8 @@ fun CreateTransactionCenterAlignedTopAppBar(
 
 @Composable
 fun CreateTransactionForm(
-    viewModel: CreateTransactionViewModel
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
@@ -168,9 +198,9 @@ fun CreateTransactionForm(
 
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
-                value = viewModel.createTransactionUiCreate.name,
+                value = createTransactionUiCreate.name,
                 onValueChange = {
-                    viewModel.onCreateTransactionUiEvent(
+                    onCreateTransactionUiEvent(
                         CreateTransactionUiEvent.NameChanged(
                             it
                         )
@@ -180,14 +210,14 @@ fun CreateTransactionForm(
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = if (viewModel.createTransactionUiCreate.nameError == null)
+                        text = if (createTransactionUiCreate.nameError == null)
                             stringResource(id = R.string.required_field) else
-                            viewModel.createTransactionUiCreate.nameError!!.asString(LocalContext.current),
+                            stringResource(id = createTransactionUiCreate.nameError),
                         textAlign = TextAlign.End,
                     )
                 },
                 trailingIcon = {
-                    if (viewModel.createTransactionUiCreate.nameError != null) {
+                    if (createTransactionUiCreate.nameError != null) {
                         Icon(
                             imageVector = Icons.Filled.Info,
                             tint = Color.Red, // Cambiar color
@@ -195,7 +225,7 @@ fun CreateTransactionForm(
                         )
                     }
                 },
-                isError = viewModel.createTransactionUiCreate.nameError != null,
+                isError = createTransactionUiCreate.nameError != null,
                 singleLine = true
             )
 
