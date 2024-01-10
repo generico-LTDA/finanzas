@@ -22,12 +22,12 @@ include(":app")
 include(":core:common")
 include(":core:database")
 include(":core:ui")
-include(":core:validation")
+
 
 include(":data:paymentaccount")
 include(":data:transaction")
 
-include(":domain:exampleusecase")
+include(":domain:validation")
 
 include(":feature:home")
 include(":feature:accounts")

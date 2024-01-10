@@ -17,13 +17,12 @@ class AndroidAppFeatureConventionPlugin : Plugin<Project> {
 
             dependencies {
 //                add("implementation", project(":domain:<usecase>"))
-                add("implementation", project(":domain:exampleusecase"))
+                add("implementation", project(":domain:validation"))
 
                 add("implementation", project(":data:paymentaccount"))
                 add("implementation", project(":data:transaction"))
 
                 add("implementation", project(":core:common"))
-                add("implementation", project(":core:validation"))
                 add("implementation", project(":core:ui"))
 
                 add("implementation", versionCatalog().findLibrary("hilt-navigation-compose").get())

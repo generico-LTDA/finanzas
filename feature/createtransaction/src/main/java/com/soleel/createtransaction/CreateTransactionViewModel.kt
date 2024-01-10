@@ -11,7 +11,7 @@ import com.soleel.validation.validator.AmountValidator
 import com.soleel.validation.validator.CategoryTypeValidator
 import com.soleel.validation.validator.DescriptionValidator
 import com.soleel.validation.validator.NameValidator
-import com.soleel.validation.validator.PaymentAccountIdTypeValidator
+import com.soleel.validation.validator.PaymentAccountTypeValidator
 import com.soleel.validation.validator.TransactionTypeValidator
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
@@ -79,7 +79,7 @@ class CreateTransactionViewModel @Inject constructor(
     private val descriptionValidator = DescriptionValidator()
     private val categoryTypeValidator = CategoryTypeValidator()
     private val transactionTypeValidator = TransactionTypeValidator()
-    private val validatePaymentAccountIdUseCase = PaymentAccountIdTypeValidator()
+    private val validatePaymentAccountIdUseCase = PaymentAccountTypeValidator()
 
     private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = retryableFlowTrigger
         .retryableFlow(flowProvider = {

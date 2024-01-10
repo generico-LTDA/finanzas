@@ -3,7 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.example.exampleusecase"
+    namespace = "com.soleel.validation"
 }
-
-

@@ -4,7 +4,7 @@ import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
 import com.soleel.ui.R
 
-class PaymentAccountIdTypeValidator : InValidation<String, ResultValidation> {
+class PaymentAccountTypeValidator : InValidation<String, ResultValidation> {
 
     override fun execute(input: String): ResultValidation {
         if (input.isBlank()) {
