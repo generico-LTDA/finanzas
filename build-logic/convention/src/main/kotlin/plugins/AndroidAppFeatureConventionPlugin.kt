@@ -16,7 +16,6 @@ class AndroidAppFeatureConventionPlugin : Plugin<Project> {
             }
 
             dependencies {
-//                add("implementation", project(":domain:<usecase>"))
                 add("implementation", project(":domain:validation"))
 
                 add("implementation", project(":data:paymentaccount"))

@@ -38,8 +38,10 @@ data class CreateTransactionUiCreate(
     val categoryTypeError: Int? = null,
     val transactionType: Int = 0,
     val transactionTypeError: Int? = null,
-    val paymentAccountId: String = "",
-    val paymentAccountIdError: Int? = null,
+    val paymentAccount: PaymentAccount = PaymentAccount(
+        id = "", name = "", initialAmount = 0, createAt = 0, updatedAt = 0, accountType = 0
+    ),
+    val paymentAccountError: Int? = null,
 
     val isTransactionSaved: Boolean = false
 )
@@ -50,7 +52,7 @@ sealed class CreateTransactionUiEvent {
     data class DescriptionChanged(val description: String) : CreateTransactionUiEvent()
     data class CategoryTypeChanged(val categoryType: Int) : CreateTransactionUiEvent()
     data class TransactionTypeChanged(val transactionType: Int) : CreateTransactionUiEvent()
-    data class PaymentAccountChanged(val paymentAccountId: String) : CreateTransactionUiEvent()
+    data class PaymentAccountChanged(val paymentAccount: PaymentAccount) : CreateTransactionUiEvent()
     data object Submit : CreateTransactionUiEvent()
 }
 
@@ -170,7 +172,7 @@ class CreateTransactionViewModel @Inject constructor(
 
             is CreateTransactionUiEvent.PaymentAccountChanged -> {
                 createTransactionUiCreate = createTransactionUiCreate.copy(
-                    paymentAccountId = event.paymentAccountId
+                    paymentAccount = event.paymentAccount
                 )
                 validatePaymentAccountId()
             }
@@ -230,13 +232,13 @@ class CreateTransactionViewModel @Inject constructor(
     }
 
     private fun validatePaymentAccountId(): Boolean {
-        val paymentAccountIdResult = validatePaymentAccountIdUseCase.execute(
-            input = createTransactionUiCreate.paymentAccountId
+        val paymentAccountResult = validatePaymentAccountIdUseCase.execute(
+            input = createTransactionUiCreate.paymentAccount
         )
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            paymentAccountIdError = paymentAccountIdResult.errorMessage
+            paymentAccountError = paymentAccountResult.errorMessage
         )
-        return paymentAccountIdResult.successful
+        return paymentAccountResult.successful
     }
 
     private fun saveTransaction() {

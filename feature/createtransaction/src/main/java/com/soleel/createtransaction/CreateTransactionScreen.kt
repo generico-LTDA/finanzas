@@ -18,7 +18,10 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,12 +29,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.ui.R
 
 
@@ -92,8 +96,6 @@ private fun CreateTransactionScreen(
     onPaymentAccountsUiEvent: (PaymentAccountsUiEvent) -> Unit
 ) {
 
-    val snackbarHostState = remember { SnackbarHostState() }
-
     if (createTransactionUiCreate.isTransactionSaved) {
         onShowBottomBar()
         onShowAddFloating()
@@ -102,7 +104,6 @@ private fun CreateTransactionScreen(
 
     Scaffold(
         topBar = { CreateTransactionCenterAlignedTopAppBar(onBackClick = onBackClick) },
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
@@ -120,6 +121,7 @@ private fun CreateTransactionScreen(
                 is PaymentAccountsUiState.Success -> CreateTransactionSuccessScreen(
                     modifier = modifier,
                     createTransactionUiCreate = createTransactionUiCreate,
+                    paymentAccounts = paymentAccountsUiState.paymentAccounts,
                     onCreateTransactionUiEvent = onCreateTransactionUiEvent,
                     paddingValues = it
                 )
@@ -140,6 +142,7 @@ private fun CreateTransactionScreen(
 private fun CreateTransactionSuccessScreen(
     modifier: Modifier,
     createTransactionUiCreate: CreateTransactionUiCreate,
+    paymentAccounts: List<PaymentAccount>,
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -151,6 +154,7 @@ private fun CreateTransactionSuccessScreen(
             //PaymentAccountCard(viewModel)
             CreateTransactionForm(
                 createTransactionUiCreate = createTransactionUiCreate,
+                paymentAccounts = paymentAccounts,
                 onCreateTransactionUiEvent = onCreateTransactionUiEvent
             )
         }
@@ -187,12 +191,18 @@ fun CreateTransactionCenterAlignedTopAppBar(
 @Composable
 fun CreateTransactionForm(
     createTransactionUiCreate: CreateTransactionUiCreate,
+    paymentAccounts: List<PaymentAccount>,
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
         content = {
-//            SelectTypeAccountDropdownMenu(viewModel)
+
+            SelectPaymentAccountDropdownMenu(
+                createTransactionUiCreate = createTransactionUiCreate,
+                paymentAccounts = paymentAccounts,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -245,6 +255,77 @@ fun CreateTransactionForm(
 //                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
 //                singleLine = true
 //            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectPaymentAccountDropdownMenu(
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    paymentAccounts: List<PaymentAccount>,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+) {
+
+    var selectedOption by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        modifier = Modifier.fillMaxWidth(),
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        content = {
+            OutlinedTextField(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                readOnly = true,
+                value = selectedOption,
+                onValueChange = {
+//                    onCreateTransactionUiEvent(
+//                        CreateTransactionUiEvent.PaymentAccountChanged(
+//                            it
+//                        )
+//                    )
+                },
+                label = { Text("Cuenta de pago") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                supportingText = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = if (createTransactionUiCreate.paymentAccountError == null)
+                            stringResource(id = R.string.required_field) else
+                            stringResource(id = createTransactionUiCreate.paymentAccountError),
+                        textAlign = TextAlign.End,
+                    )
+                }
+            )
+            ExposedDropdownMenu(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                content = {
+                    paymentAccounts.forEach(
+                        action = { paymentAccount ->
+                            DropdownMenuItem(
+                                text = { Text(text = paymentAccount.name) },
+                                onClick = {
+                                    selectedOption = paymentAccount.name
+                                    expanded = false
+                                    onCreateTransactionUiEvent(
+                                        CreateTransactionUiEvent.PaymentAccountChanged(
+                                            paymentAccount
+                                        )
+                                    )
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            )
+                        }
+                    )
+                }
+            )
         }
     )
 }

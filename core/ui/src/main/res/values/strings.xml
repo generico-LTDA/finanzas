@@ -29,4 +29,6 @@
     <string name="transaction_type_not_selected_error_message">No se ha seleccionado un tipo de transaccion</string>
 
     <string name="payment_account_not_selected_error_message">No se ha seleccionado una cuenta de pago</string>
+    <string name="payment_account_not_have_funds_error_message">La cuenta de pago no tiene fondos</string>
+
 </resources>
