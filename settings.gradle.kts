@@ -27,6 +27,8 @@ include(":core:validation")
 include(":data:paymentaccount")
 include(":data:transaction")
 
+include(":domain:exampleusecase")
+
 include(":feature:home")
 include(":feature:accounts")
 include(":feature:profile")
@@ -35,4 +37,3 @@ include(":feature:addmodal")
 include(":feature:createpaymentaccount")
 include(":feature:createtransaction")
 include(":feature:cancelalert")
-

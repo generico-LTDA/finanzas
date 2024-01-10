@@ -61,6 +61,11 @@ gradlePlugin {
             implementationClass = "plugins.AndroidAppFeatureConventionPlugin"
         }
 
+        register("androidDomain") {
+            id = "conventionPluginsApp.android.domain"
+            implementationClass = "plugins.AndroidAppDomainConventionPlugin"
+        }
+
         register("androidData") {
             id = "conventionPluginsApp.android.data"
             implementationClass = "plugins.AndroidAppDataConvetionPlugin"
