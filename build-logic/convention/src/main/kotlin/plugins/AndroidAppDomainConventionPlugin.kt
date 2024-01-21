@@ -10,6 +10,7 @@ class AndroidAppDomainConventionPlugin : Plugin<Project> {
         with(project) {
             with(pluginManager) {
                 apply("conventionPluginsApp.android.lib")
+                apply("conventionPluginsApp.android.lib.compose")
                 apply("conventionPluginsApp.android.hilt")
             }
 
@@ -20,7 +21,7 @@ class AndroidAppDomainConventionPlugin : Plugin<Project> {
                 add("implementation", project(":core:common"))
                 add("implementation", project(":core:ui"))
 
-                add("implementation", versionCatalog().findLibrary("kotlinx-coroutines-android").get())
+//                add("implementation", versionCatalog().findLibrary("kotlinx-coroutines-android").get())
             }
         }
     }

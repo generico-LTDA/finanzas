@@ -19,6 +19,7 @@ internal fun Project.configureAndroidCompose(
 
             add("implementation", platform(versionCatalog().findLibrary("compose-bom").get()))
             add("implementation", versionCatalog().findLibrary("compose-ui").get())
+            add("implementation", versionCatalog().findLibrary("compose-ui-text").get())
             add("implementation", versionCatalog().findLibrary("compose-ui-graphics").get())
             add("implementation", versionCatalog().findLibrary("compose-ui-tooling-preview").get())
             add("implementation", versionCatalog().findLibrary("compose-material3").get())
