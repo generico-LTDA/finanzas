@@ -8,6 +8,7 @@
     <!-- CREATE TRANSACTION STRINGS -->
     <string name="create_trasaction_title">"Crear Transaccion"</string>
     <string name="attribute_name_trasaction_title">"Nombre de la transaccion"</string>
+    <string name="attribute_amount_trasaction_title">"Monto de la transaccion"</string>
 
     <string name="add_trasaction_title">"Agregar transaccion"</string>
 
@@ -16,9 +17,10 @@
     <string name="name_too_short_error_message">El nombre es demasiado corto</string>
     <string name="name_too_long_error_message">El nombre es demasiado largo</string>
 
-    <string name="amount_can_not_be_zero_error_message">El monto no puede ser cero.</string>
-    <string name="amount_can_not_be_negative_error_message">El monto no puede ser negativo.</string>
-    <string name="amount_can_not_be_greater_than_error_message">El monto no puede ser mayor a $99.999.999</string>
+    <string name="amount_can_not_be_blank_error_message">El monto no puede estar vacio</string>
+    <string name="amount_can_not_be_zero_error_message">El monto no puede ser cero</string>
+    <string name="amount_can_not_be_negative_error_message">El monto no puede ser negativo</string>
+    <string name="amount_can_not_be_greater_than_error_message">El monto no puede ser mayor a $9.999.999</string>
 
     <string name="description_can_not_be_blank_error_message">La descripcion no puede estar vacio</string>
     <string name="description_too_short_error_message">El descripcion es demasiado corto</string>

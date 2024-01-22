@@ -9,7 +9,7 @@ class PaymentAccountDbModel {
             return PaymentAccount(
                 id = paymentAccountEntity.id,
                 name = paymentAccountEntity.name,
-                initialAmount = paymentAccountEntity.initialAmount,
+                amount = paymentAccountEntity.amount,
                 createAt = paymentAccountEntity.createAt,
                 updatedAt = paymentAccountEntity.updatedAt,
                 accountType = paymentAccountEntity.accountType,
@@ -24,7 +24,7 @@ class PaymentAccountDbModel {
             return PaymentAccountEntity(
                 id = paymentAccount.id,
                 name = paymentAccount.name,
-                initialAmount = paymentAccount.initialAmount,
+                amount = paymentAccount.amount,
                 createAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis(),
                 accountType = paymentAccount.accountType

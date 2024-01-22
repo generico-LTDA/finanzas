@@ -8,6 +8,7 @@ import com.soleel.ui.R
 class PaymentAccountTypeValidator : InValidation<PaymentAccount, ResultValidation> {
 
     override fun execute(input: PaymentAccount): ResultValidation {
+        
         if (input.id.isBlank()) {
             return ResultValidation(
                 successful = false,
@@ -15,7 +16,7 @@ class PaymentAccountTypeValidator : InValidation<PaymentAccount, ResultValidatio
             )
         }
 
-        if (0 >= input.initialAmount) {
+        if (0 >= input.amount) {
             return ResultValidation(
                 successful = false,
                 errorMessage = R.string.payment_account_not_have_funds_error_message

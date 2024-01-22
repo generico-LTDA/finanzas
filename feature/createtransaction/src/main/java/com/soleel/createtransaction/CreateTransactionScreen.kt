@@ -1,6 +1,7 @@
 package com.soleel.createtransaction
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
@@ -42,14 +44,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
-import com.soleel.transformation.visualtransformation.rememberCurrencyVisualTransformation
 import com.soleel.ui.R
+import com.soleel.validation.validator.AmountValidator
 
 
 @Composable
@@ -196,6 +199,11 @@ fun CreateTransactionForm(
     paymentAccounts: List<PaymentAccount>,
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
 ) {
+
+    val currencyVisualTransformation by remember(calculation = {
+        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+    })
+
     Column(
         modifier = Modifier.padding(16.dp),
         content = {
@@ -243,10 +251,44 @@ fun CreateTransactionForm(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-//            OutlinedTextField(
-//
-//            )
+            OutlinedTextField(
+                value = createTransactionUiCreate.amount,
+                onValueChange = { input ->
 
+                    val trimmed = input
+                        .trimStart('0')
+                        .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
+
+                    if (trimmed.isNotEmpty() && trimmed.length <= AmountValidator.maxCharLimit) {
+                        onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
+                    }
+
+                },
+                modifier = Modifier.fillMaxWidth(),
+                label = { Text(text = stringResource(id = R.string.attribute_amount_trasaction_title)) },
+                trailingIcon = {
+                    if (createTransactionUiCreate.amountError != null) {
+                        Icon(
+                            imageVector = Icons.Filled.Info,
+                            tint = Color.Red, // Cambiar color
+                            contentDescription = "Monto de la transaccion a crear"
+                        )
+                    }
+                },
+                supportingText = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = if (createTransactionUiCreate.amountError == null)
+                            stringResource(id = R.string.required_field) else
+                            stringResource(id = createTransactionUiCreate.amountError),
+                        textAlign = TextAlign.End,
+                    )
+                },
+                isError = createTransactionUiCreate.amountError != null,
+                visualTransformation = currencyVisualTransformation,
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                singleLine = true
+            )
         }
     )
 }
@@ -259,15 +301,17 @@ fun SelectPaymentAccountDropdownMenu(
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
 ) {
 
-    var selectedOption by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
+    var selectedOption by remember(calculation = { mutableStateOf("") })
+    var expanded by remember(calculation = { mutableStateOf(false) })
 
-    val currencyVisualTransformation = rememberCurrencyVisualTransformation(currency = "USD")
+    val currencyVisualTransformation by remember(calculation = {
+        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+    })
 
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
         expanded = expanded,
-        onExpandedChange = { expanded = !expanded },
+        onExpandedChange = { expanded = false == expanded },
         content = {
             OutlinedTextField(
                 value = selectedOption,
@@ -286,7 +330,8 @@ fun SelectPaymentAccountDropdownMenu(
                             stringResource(id = createTransactionUiCreate.paymentAccountError),
                         textAlign = TextAlign.End,
                     )
-                }
+                },
+                isError = createTransactionUiCreate.paymentAccountError != null,
             )
             ExposedDropdownMenu(
                 modifier = Modifier
@@ -298,9 +343,8 @@ fun SelectPaymentAccountDropdownMenu(
                     paymentAccounts.forEach(
                         action = { paymentAccount ->
 
-                            val transformedInitialAmount = currencyVisualTransformation.filter(
-                                AnnotatedString(text = paymentAccount.initialAmount.toString())
-                            )
+                            val transformedAmount = currencyVisualTransformation.filter(
+                                AnnotatedString(text = paymentAccount.amount.toString()))
 
                             DropdownMenuItem(
                                 text = {
@@ -309,13 +353,14 @@ fun SelectPaymentAccountDropdownMenu(
                                         horizontalArrangement = Arrangement.SpaceBetween,
                                         content = {
                                             Text(text = paymentAccount.name)
-                                            Text(text = "${transformedInitialAmount.text}")
+                                            Text(text = "${transformedAmount.text}")
                                         }
                                     )
                                 },
                                 onClick = {
 
-                                    selectedOption = "${paymentAccount.name} - ${transformedInitialAmount.text}"
+                                    selectedOption =
+                                        "${paymentAccount.name} - ${transformedAmount.text}"
                                     expanded = false
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.PaymentAccountChanged(

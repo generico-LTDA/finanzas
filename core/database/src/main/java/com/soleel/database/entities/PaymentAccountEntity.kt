@@ -13,7 +13,7 @@ data class PaymentAccountEntity(
 
     @ColumnInfo(name = "name") var name: String,
 
-    @ColumnInfo(name = "initial_amount") var initialAmount: Int,
+    @ColumnInfo(name = "amount") var amount: Int,
 
     @ColumnInfo(name = "create_at") var createAt: Long,
 

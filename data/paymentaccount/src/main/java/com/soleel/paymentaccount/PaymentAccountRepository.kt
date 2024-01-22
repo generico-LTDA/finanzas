@@ -1,6 +1,5 @@
 package com.soleel.paymentaccount
 
-import android.util.Log
 import com.soleel.database.daos.PaymentAccountDAO
 import com.soleel.paymentaccount.di.DefaultDispatcher
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
@@ -60,7 +59,7 @@ class PaymentAccountRepository @Inject constructor(
         val paymentAccount = PaymentAccount(
             id = id,
             name = name,
-            initialAmount = initialAmount,
+            amount = initialAmount,
             createAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis(),
             accountType = accountType

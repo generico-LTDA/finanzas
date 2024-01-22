@@ -18,7 +18,6 @@ class CurrencyVisualTransformation(
 ) : VisualTransformation {
 
     // README: https://en.wikipedia.org/wiki/ISO_4217
-
     private val numberFormatter = NumberFormat.getCurrencyInstance().apply(
         block = {
             currency = Currency.getInstance(currencyCode)
@@ -72,8 +71,7 @@ class CurrencyVisualTransformation(
          */
         return TransformedText(
             AnnotatedString(formattedText),
-            CurrencyOffsetMapping(originalText, formattedText)
-        )
+            CurrencyOffsetMapping(originalText, formattedText))
     }
 }
 
