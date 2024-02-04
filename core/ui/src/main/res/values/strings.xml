@@ -13,14 +13,19 @@
     <string name="add_trasaction_title">"Agregar transaccion"</string>
 
     <!-- VALIDATION MESSAGES -->
+    <string name="payment_account_not_selected_error_message">No se ha seleccionado una cuenta de pago</string>
+    <string name="payment_account_not_have_funds_error_message">La cuenta de pago no tiene fondos</string>
+
     <string name="name_can_not_be_blank_error_message">El nombre no puede estar vacio</string>
     <string name="name_too_short_error_message">El nombre es demasiado corto</string>
     <string name="name_too_long_error_message">El nombre es demasiado largo</string>
 
     <string name="amount_can_not_be_blank_error_message">El monto no puede estar vacio</string>
-    <string name="amount_can_not_be_zero_error_message">El monto no puede ser cero</string>
-    <string name="amount_can_not_be_negative_error_message">El monto no puede ser negativo</string>
-    <string name="amount_can_not_be_greater_than_error_message">El monto no puede ser mayor a $9.999.999</string>
+<!--    <string name="amount_can_not_be_zero_error_message">El monto no puede ser cero</string>-->
+<!--    <string name="amount_can_not_be_negative_error_message">El monto no puede ser negativo</string>-->
+    <string name="amount_can_not_be_gt_error_message">El monto no puede ser mayor a $9.999.999</string>
+    <string name="amount_can_not_be_gt_payment_account_error_message">El monto no puede ser mayor que el de la cuenta</string>
+    <string name="amount_more_payment_account_can_not_be_gt_error_message">El monto mas el de la cuenta no puede ser mayor a $9.999.999</string>
 
     <string name="description_can_not_be_blank_error_message">La descripcion no puede estar vacio</string>
     <string name="description_too_short_error_message">El descripcion es demasiado corto</string>
@@ -29,8 +34,5 @@
     <string name="category_type_not_selected_error_message">No se ha seleccionado una categoria</string>
 
     <string name="transaction_type_not_selected_error_message">No se ha seleccionado un tipo de transaccion</string>
-
-    <string name="payment_account_not_selected_error_message">No se ha seleccionado una cuenta de pago</string>
-    <string name="payment_account_not_have_funds_error_message">La cuenta de pago no tiene fondos</string>
 
 </resources>

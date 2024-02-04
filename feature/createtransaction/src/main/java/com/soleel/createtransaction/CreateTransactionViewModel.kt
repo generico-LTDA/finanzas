@@ -28,20 +28,25 @@ import javax.inject.Inject
 
 
 data class CreateTransactionUiCreate(
-    val name: String = "",
-    val nameError: Int? = null,
-    val amount: String = "",
-    val amountError: Int? = null,
-    val description: String = "",
-    val descriptionError: Int? = null,
-    val categoryType: Int = 0,
-    val categoryTypeError: Int? = null,
-    val transactionType: Int = 0,
-    val transactionTypeError: Int? = null,
     val paymentAccount: PaymentAccount = PaymentAccount(
         id = "", name = "", amount = 0, createAt = 0, updatedAt = 0, accountType = 0
     ),
     val paymentAccountError: Int? = null,
+
+    val transactionType: Int = 0,
+    val transactionTypeError: Int? = null,
+
+    val categoryType: Int = 0,
+    val categoryTypeError: Int? = null,
+
+    val name: String = "",
+    val nameError: Int? = null,
+
+    val description: String = "",
+    val descriptionError: Int? = null,
+
+    val amount: String = "",
+    val amountError: Int? = null,
 
     val isTransactionSaved: Boolean = false
 )
@@ -52,7 +57,9 @@ sealed class CreateTransactionUiEvent {
     data class DescriptionChanged(val description: String) : CreateTransactionUiEvent()
     data class CategoryTypeChanged(val categoryType: Int) : CreateTransactionUiEvent()
     data class TransactionTypeChanged(val transactionType: Int) : CreateTransactionUiEvent()
-    data class PaymentAccountChanged(val paymentAccount: PaymentAccount) : CreateTransactionUiEvent()
+    data class PaymentAccountChanged(val paymentAccount: PaymentAccount) :
+        CreateTransactionUiEvent()
+
     data object Submit : CreateTransactionUiEvent()
 }
 
@@ -91,8 +98,7 @@ class CreateTransactionViewModel @Inject constructor(
     val paymentAccountsUiState: StateFlow<PaymentAccountsUiState> = _paymentAccountsUiState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(stopTimeoutMillis = 5_000),
-        initialValue = PaymentAccountsUiState.Loading
-    )
+        initialValue = PaymentAccountsUiState.Loading)
 
     private fun paymentAccountUiState(
         paymentAccountRepository: IPaymentAccountLocalDataSource,
@@ -151,8 +157,7 @@ class CreateTransactionViewModel @Inject constructor(
             }
 
             is CreateTransactionUiEvent.AmountChanged -> {
-                createTransactionUiCreate =
-                    createTransactionUiCreate.copy(amount = event.amount)
+                createTransactionUiCreate = createTransactionUiCreate.copy(amount = event.amount)
                 validateAmount()
             }
 
@@ -178,11 +183,27 @@ class CreateTransactionViewModel @Inject constructor(
             }
 
             is CreateTransactionUiEvent.Submit -> {
-                if (validatePaymentAccount() && validateName() && validateAmount() && validateDescription() && validateCategoryType() && validateTransactionType()) {
+                if (validatePaymentAccount()
+                    && validateName()
+                    && validateAmount()
+                    && validateDescription()
+                    && validateCategoryType()
+                    && validateTransactionType()
+                ) {
                     saveTransaction()
                 }
             }
         }
+    }
+
+    private fun validatePaymentAccount(): Boolean {
+        val paymentAccountResult = validatePaymentAccountUseCase.execute(
+            input = createTransactionUiCreate.paymentAccount
+        )
+        createTransactionUiCreate = createTransactionUiCreate.copy(
+            paymentAccountError = paymentAccountResult.errorMessage
+        )
+        return paymentAccountResult.successful
     }
 
     private fun validateName(): Boolean {
@@ -194,10 +215,15 @@ class CreateTransactionViewModel @Inject constructor(
     }
 
     private fun validateAmount(): Boolean {
-        val amountResult = amountValidator.execute(input = createTransactionUiCreate.amount)
+        val input = Triple<String, Int, Int>(
+            first = createTransactionUiCreate.amount,
+            second = createTransactionUiCreate.paymentAccount.amount,
+            third = createTransactionUiCreate.transactionType)
+
+        val amountResult = amountValidator.execute(input = input)
+
         createTransactionUiCreate = createTransactionUiCreate.copy(
-            amountError = amountResult.errorMessage
-        )
+            amountError = amountResult.errorMessage)
         return amountResult.successful
     }
 
@@ -229,16 +255,6 @@ class CreateTransactionViewModel @Inject constructor(
             transactionTypeError = transactionTypeResult.errorMessage
         )
         return transactionTypeResult.successful
-    }
-
-    private fun validatePaymentAccount(): Boolean {
-        val paymentAccountResult = validatePaymentAccountUseCase.execute(
-            input = createTransactionUiCreate.paymentAccount
-        )
-        createTransactionUiCreate = createTransactionUiCreate.copy(
-            paymentAccountError = paymentAccountResult.errorMessage
-        )
-        return paymentAccountResult.successful
     }
 
     private fun saveTransaction() {

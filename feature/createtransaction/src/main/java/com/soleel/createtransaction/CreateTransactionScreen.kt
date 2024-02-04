@@ -1,7 +1,6 @@
 package com.soleel.createtransaction
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -49,11 +48,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.soleel.common.constants.AccountTypeConstant
+import com.soleel.common.constants.CategoryTypeConstant
+import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
 import com.soleel.validation.validator.AmountValidator
 
+// TODO: 1. Actualizacion dinamica del formulario cuando la cuenta de pago cambia
+// TODO: 2. Actualizacion dinamica del formulario cuando el tipo de transaccion cambia
 
 @Composable
 internal fun CreateTransactionRoute(
@@ -216,6 +220,20 @@ fun CreateTransactionForm(
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            SelectTransactionTypeDropdownMenu(
+                createTransactionUiCreate = createTransactionUiCreate,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            SelectCategoryTypeDropdownMenu(
+                createTransactionUiCreate = createTransactionUiCreate,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = createTransactionUiCreate.name,
@@ -259,10 +277,9 @@ fun CreateTransactionForm(
                         .trimStart('0')
                         .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
 
-                    if (trimmed.isNotEmpty() && trimmed.length <= AmountValidator.maxCharLimit) {
+                    if (trimmed.length <= AmountValidator.maxCharLimit) {
                         onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
                     }
-
                 },
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = stringResource(id = R.string.attribute_amount_trasaction_title)) },
@@ -344,7 +361,8 @@ fun SelectPaymentAccountDropdownMenu(
                         action = { paymentAccount ->
 
                             val transformedAmount = currencyVisualTransformation.filter(
-                                AnnotatedString(text = paymentAccount.amount.toString()))
+                                AnnotatedString(text = paymentAccount.amount.toString())
+                            )
 
                             DropdownMenuItem(
                                 text = {
@@ -365,6 +383,141 @@ fun SelectPaymentAccountDropdownMenu(
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.PaymentAccountChanged(
                                             paymentAccount = paymentAccount
+                                        )
+                                    )
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            )
+                        }
+                    )
+                }
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectTransactionTypeDropdownMenu(
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+) {
+    val transactionTypes: List<Pair<Int, String>> = TransactionTypeConstant.idToValueList
+
+    var selectedOption by remember(calculation = { mutableStateOf("") })
+    var expanded by remember(calculation = { mutableStateOf(false) })
+
+    ExposedDropdownMenuBox(
+        modifier = Modifier.fillMaxWidth(),
+        expanded = expanded,
+        onExpandedChange = { expanded = false == expanded },
+        content = {
+            OutlinedTextField(
+                value = selectedOption,
+                onValueChange = {},
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                readOnly = true,
+                label = { Text("Tipo de transaccion") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                supportingText = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = if (createTransactionUiCreate.transactionTypeError == null)
+                            stringResource(id = R.string.required_field) else
+                            stringResource(id = createTransactionUiCreate.transactionTypeError),
+                        textAlign = TextAlign.End,
+                    )
+                },
+                isError = createTransactionUiCreate.transactionTypeError != null,
+            )
+            ExposedDropdownMenu(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                content = {
+                    transactionTypes.forEach(
+                        action = { transactionType ->
+                            DropdownMenuItem(
+                                text = { Text(text = transactionType.second) },
+                                onClick = {
+                                    selectedOption = transactionType.second
+                                    expanded = false
+                                    onCreateTransactionUiEvent(
+                                        CreateTransactionUiEvent.TransactionTypeChanged(
+                                            transactionType = transactionType.first
+                                        )
+                                    )
+                                },
+                                contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                            )
+                        }
+                    )
+                }
+            )
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SelectCategoryTypeDropdownMenu(
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+) {
+    val categoryTypes: List<Pair<Int, String>> = CategoryTypeConstant.idToValueList(
+        transactionType = createTransactionUiCreate.transactionType,
+        accountType = createTransactionUiCreate.paymentAccount.accountType
+    )
+
+    var selectedOption by remember(calculation = { mutableStateOf("") })
+    var expanded by remember(calculation = { mutableStateOf(false) })
+
+    ExposedDropdownMenuBox(
+        modifier = Modifier.fillMaxWidth(),
+        expanded = expanded,
+        onExpandedChange = { expanded = false == expanded },
+        content = {
+            OutlinedTextField(
+                value = selectedOption,
+                onValueChange = {},
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                readOnly = true,
+                label = { Text("Categoria de transaccion") },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                supportingText = {
+                    Text(
+                        modifier = Modifier.fillMaxWidth(),
+                        text = if (createTransactionUiCreate.categoryTypeError == null)
+                            stringResource(id = R.string.required_field) else
+                            stringResource(id = createTransactionUiCreate.categoryTypeError),
+                        textAlign = TextAlign.End,
+                    )
+                },
+                isError = createTransactionUiCreate.categoryTypeError != null,
+            )
+            ExposedDropdownMenu(
+                modifier = Modifier
+                    .menuAnchor()
+                    .fillMaxWidth(),
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                content = {
+                    categoryTypes.forEach(
+                        action = { categoryType ->
+                            DropdownMenuItem(
+                                text = { Text(text = categoryType.second) },
+                                onClick = {
+                                    selectedOption = categoryType.second
+                                    expanded = false
+                                    onCreateTransactionUiEvent(
+                                        CreateTransactionUiEvent.CategoryTypeChanged(
+                                            categoryType = categoryType.first
                                         )
                                     )
                                 },
