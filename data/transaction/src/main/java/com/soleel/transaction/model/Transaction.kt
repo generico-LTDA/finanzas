@@ -4,7 +4,6 @@ data class Transaction(
     val id: String,
     var name: String,
     val amount: Int,
-    val description: String,
     val createAt: Long,
     val updatedAt: Long,
     val categoryType: Int,

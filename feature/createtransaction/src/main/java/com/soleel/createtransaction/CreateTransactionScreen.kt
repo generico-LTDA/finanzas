@@ -33,6 +33,7 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -56,8 +57,6 @@ import com.soleel.transformation.visualtransformation.CurrencyVisualTransformati
 import com.soleel.ui.R
 import com.soleel.validation.validator.AmountValidator
 
-// TODO: 1. Actualizacion dinamica del formulario cuando la cuenta de pago cambia
-// TODO: 2. Actualizacion dinamica del formulario cuando el tipo de transaccion cambia
 
 @Composable
 internal fun CreateTransactionRoute(
@@ -197,6 +196,7 @@ fun CreateTransactionCenterAlignedTopAppBar(
     )
 }
 
+@SuppressLint("UnrememberedMutableState")
 @Composable
 fun CreateTransactionForm(
     createTransactionUiCreate: CreateTransactionUiCreate,
@@ -204,9 +204,14 @@ fun CreateTransactionForm(
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
 ) {
 
-    val currencyVisualTransformation by remember(calculation = {
-        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
-    })
+    var selectedPaymentAccountOption by remember(calculation = { mutableStateOf("") })
+    var expandedPaymentAccount by remember(calculation = { mutableStateOf(false) })
+
+    var selectedTransactionTypeOption by remember(calculation = { mutableStateOf("") })
+    var expandedTransactionType by remember(calculation = { mutableStateOf(false) })
+
+    var selectedCategoryTypeOption by remember(calculation = { mutableStateOf("") })
+    var expandedCategoryType by remember(calculation = { mutableStateOf(false) })
 
     Column(
         modifier = Modifier.padding(16.dp),
@@ -215,97 +220,74 @@ fun CreateTransactionForm(
             SelectPaymentAccountDropdownMenu(
                 createTransactionUiCreate = createTransactionUiCreate,
                 paymentAccounts = paymentAccounts,
-                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+
+                selectedPaymentAccountOption = selectedPaymentAccountOption,
+                changeSelectedPaymentAccountOption = { value: String ->
+                    selectedPaymentAccountOption = value
+                },
+
+                expandedPaymentAccount = expandedPaymentAccount,
+                changeExpandedPaymentAccount = { value: Boolean -> expandedPaymentAccount = value },
+
+                resetOtherFields = {
+                    selectedTransactionTypeOption = ""
+                    selectedCategoryTypeOption = ""
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             SelectTransactionTypeDropdownMenu(
                 createTransactionUiCreate = createTransactionUiCreate,
-                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+
+                selectedTransactionTypeOption = selectedTransactionTypeOption,
+                changeSelectedTransactionTypeOption = { value: String ->
+                    selectedTransactionTypeOption = value
+                },
+
+                expandedTransactionType = expandedTransactionType,
+                changeExpandedPaymentAccount = { value: Boolean ->
+                    expandedTransactionType = value
+                },
+
+                resetOtherFields = {
+                    selectedCategoryTypeOption = ""
+                }
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             SelectCategoryTypeDropdownMenu(
                 createTransactionUiCreate = createTransactionUiCreate,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+
+                selectedCategoryTypeOption = selectedCategoryTypeOption,
+                changeSelectedCategoryTypeOption = { value: String ->
+                    selectedCategoryTypeOption = value
+                },
+
+                expandedCategoryType = expandedCategoryType,
+                changeExpandedCategoryType = { value: Boolean ->
+                    expandedCategoryType = value
+                }
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            EnterTransactionNameTextField(
+                createTransactionUiCreate = createTransactionUiCreate,
                 onCreateTransactionUiEvent = onCreateTransactionUiEvent
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                value = createTransactionUiCreate.name,
-                onValueChange = {
-                    onCreateTransactionUiEvent(
-                        CreateTransactionUiEvent.NameChanged(
-                            it
-                        )
-                    )
-                },
-                label = { Text(text = stringResource(id = R.string.attribute_name_trasaction_title)) },
-                supportingText = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = if (createTransactionUiCreate.nameError == null)
-                            stringResource(id = R.string.required_field) else
-                            stringResource(id = createTransactionUiCreate.nameError),
-                        textAlign = TextAlign.End,
-                    )
-                },
-                trailingIcon = {
-                    if (createTransactionUiCreate.nameError != null) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            tint = Color.Red, // Cambiar color
-                            contentDescription = "Nombre de la transaccion a crear"
-                        )
-                    }
-                },
-                isError = createTransactionUiCreate.nameError != null,
-                singleLine = true
+            EnterTransactionAmountTextFlied(
+                createTransactionUiCreate = createTransactionUiCreate,
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            OutlinedTextField(
-                value = createTransactionUiCreate.amount,
-                onValueChange = { input ->
-
-                    val trimmed = input
-                        .trimStart('0')
-                        .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
-
-                    if (trimmed.length <= AmountValidator.maxCharLimit) {
-                        onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
-                    }
-                },
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text(text = stringResource(id = R.string.attribute_amount_trasaction_title)) },
-                trailingIcon = {
-                    if (createTransactionUiCreate.amountError != null) {
-                        Icon(
-                            imageVector = Icons.Filled.Info,
-                            tint = Color.Red, // Cambiar color
-                            contentDescription = "Monto de la transaccion a crear"
-                        )
-                    }
-                },
-                supportingText = {
-                    Text(
-                        modifier = Modifier.fillMaxWidth(),
-                        text = if (createTransactionUiCreate.amountError == null)
-                            stringResource(id = R.string.required_field) else
-                            stringResource(id = createTransactionUiCreate.amountError),
-                        textAlign = TextAlign.End,
-                    )
-                },
-                isError = createTransactionUiCreate.amountError != null,
-                visualTransformation = currencyVisualTransformation,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                singleLine = true
-            )
         }
     )
 }
@@ -315,11 +297,16 @@ fun CreateTransactionForm(
 fun SelectPaymentAccountDropdownMenu(
     createTransactionUiCreate: CreateTransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
-) {
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
 
-    var selectedOption by remember(calculation = { mutableStateOf("") })
-    var expanded by remember(calculation = { mutableStateOf(false) })
+    selectedPaymentAccountOption: String,
+    changeSelectedPaymentAccountOption: (String) -> Unit,
+
+    expandedPaymentAccount: Boolean,
+    changeExpandedPaymentAccount: (Boolean) -> Unit,
+
+    resetOtherFields: () -> Unit
+) {
 
     val currencyVisualTransformation by remember(calculation = {
         mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
@@ -327,18 +314,18 @@ fun SelectPaymentAccountDropdownMenu(
 
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
-        expanded = expanded,
-        onExpandedChange = { expanded = false == expanded },
+        expanded = expandedPaymentAccount,
+        onExpandedChange = { changeExpandedPaymentAccount(false == expandedPaymentAccount) },
         content = {
             OutlinedTextField(
-                value = selectedOption,
+                value = selectedPaymentAccountOption,
                 onValueChange = {},
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
                 readOnly = true,
                 label = { Text("Cuenta de pago") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedPaymentAccount) },
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -354,8 +341,8 @@ fun SelectPaymentAccountDropdownMenu(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = expandedPaymentAccount,
+                onDismissRequest = { changeExpandedPaymentAccount(false) },
                 content = {
                     paymentAccounts.forEach(
                         action = { paymentAccount ->
@@ -376,15 +363,16 @@ fun SelectPaymentAccountDropdownMenu(
                                     )
                                 },
                                 onClick = {
+                                    changeSelectedPaymentAccountOption("${paymentAccount.name} - ${transformedAmount.text}")
+                                    changeExpandedPaymentAccount(false)
 
-                                    selectedOption =
-                                        "${paymentAccount.name} - ${transformedAmount.text}"
-                                    expanded = false
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.PaymentAccountChanged(
                                             paymentAccount = paymentAccount
                                         )
                                     )
+
+                                    resetOtherFields()
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                             )
@@ -400,27 +388,33 @@ fun SelectPaymentAccountDropdownMenu(
 @Composable
 fun SelectTransactionTypeDropdownMenu(
     createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+
+    selectedTransactionTypeOption: String,
+    changeSelectedTransactionTypeOption: (String) -> Unit,
+
+    expandedTransactionType: Boolean,
+    changeExpandedPaymentAccount: (Boolean) -> Unit,
+
+    resetOtherFields: () -> Unit
 ) {
     val transactionTypes: List<Pair<Int, String>> = TransactionTypeConstant.idToValueList
 
-    var selectedOption by remember(calculation = { mutableStateOf("") })
-    var expanded by remember(calculation = { mutableStateOf(false) })
-
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
-        expanded = expanded,
-        onExpandedChange = { expanded = false == expanded },
+        expanded = expandedTransactionType,
+        onExpandedChange = { changeExpandedPaymentAccount(false == expandedTransactionType) },
         content = {
             OutlinedTextField(
-                value = selectedOption,
+                value = selectedTransactionTypeOption,
                 onValueChange = {},
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
+                enabled = createTransactionUiCreate.paymentAccount.id.isNotBlank(),
                 readOnly = true,
                 label = { Text("Tipo de transaccion") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedTransactionType) },
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -436,21 +430,22 @@ fun SelectTransactionTypeDropdownMenu(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = expandedTransactionType,
+                onDismissRequest = { changeExpandedPaymentAccount(false) },
                 content = {
                     transactionTypes.forEach(
                         action = { transactionType ->
                             DropdownMenuItem(
                                 text = { Text(text = transactionType.second) },
                                 onClick = {
-                                    selectedOption = transactionType.second
-                                    expanded = false
+                                    changeSelectedTransactionTypeOption(transactionType.second)
+                                    changeExpandedPaymentAccount(false)
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.TransactionTypeChanged(
                                             transactionType = transactionType.first
                                         )
                                     )
+                                    resetOtherFields()
                                 },
                                 contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                             )
@@ -466,30 +461,34 @@ fun SelectTransactionTypeDropdownMenu(
 @Composable
 fun SelectCategoryTypeDropdownMenu(
     createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+
+    selectedCategoryTypeOption: String,
+    changeSelectedCategoryTypeOption: (String) -> Unit,
+
+    expandedCategoryType: Boolean,
+    changeExpandedCategoryType: (Boolean) -> Unit
 ) {
     val categoryTypes: List<Pair<Int, String>> = CategoryTypeConstant.idToValueList(
         transactionType = createTransactionUiCreate.transactionType,
         accountType = createTransactionUiCreate.paymentAccount.accountType
     )
 
-    var selectedOption by remember(calculation = { mutableStateOf("") })
-    var expanded by remember(calculation = { mutableStateOf(false) })
-
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
-        expanded = expanded,
-        onExpandedChange = { expanded = false == expanded },
+        expanded = expandedCategoryType,
+        onExpandedChange = { changeExpandedCategoryType(false == expandedCategoryType) },
         content = {
             OutlinedTextField(
-                value = selectedOption,
+                value = selectedCategoryTypeOption,
                 onValueChange = {},
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
+                enabled = 0 != createTransactionUiCreate.transactionType,
                 readOnly = true,
                 label = { Text("Categoria de transaccion") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedCategoryType) },
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
@@ -505,16 +504,16 @@ fun SelectCategoryTypeDropdownMenu(
                 modifier = Modifier
                     .menuAnchor()
                     .fillMaxWidth(),
-                expanded = expanded,
-                onDismissRequest = { expanded = false },
+                expanded = expandedCategoryType,
+                onDismissRequest = { changeExpandedCategoryType(false) },
                 content = {
                     categoryTypes.forEach(
                         action = { categoryType ->
                             DropdownMenuItem(
                                 text = { Text(text = categoryType.second) },
                                 onClick = {
-                                    selectedOption = categoryType.second
-                                    expanded = false
+                                    changeSelectedCategoryTypeOption(categoryType.second)
+                                    changeExpandedCategoryType(false)
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.CategoryTypeChanged(
                                             categoryType = categoryType.first
@@ -528,6 +527,95 @@ fun SelectCategoryTypeDropdownMenu(
                 }
             )
         }
+    )
+}
+
+@Composable
+fun EnterTransactionNameTextField(
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+) {
+    OutlinedTextField(
+        value = createTransactionUiCreate.name,
+        onValueChange = {
+            onCreateTransactionUiEvent(
+                CreateTransactionUiEvent.NameChanged(
+                    it
+                )
+            )
+        },
+        modifier = Modifier.fillMaxWidth(),
+        enabled = 0 != createTransactionUiCreate.categoryType,
+        label = { Text(text = stringResource(id = R.string.attribute_name_trasaction_title)) },
+        supportingText = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = if (createTransactionUiCreate.nameError == null)
+                    stringResource(id = R.string.required_field) else
+                    stringResource(id = createTransactionUiCreate.nameError),
+                textAlign = TextAlign.End,
+            )
+        },
+        trailingIcon = {
+            if (createTransactionUiCreate.nameError != null) {
+                Icon(
+                    imageVector = Icons.Filled.Info,
+                    tint = Color.Red, // Cambiar color
+                    contentDescription = "Nombre de la transaccion a crear"
+                )
+            }
+        },
+        isError = createTransactionUiCreate.nameError != null,
+        singleLine = true
+    )
+}
+
+@Composable
+fun EnterTransactionAmountTextFlied(
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+) {
+
+    val currencyVisualTransformation by remember(calculation = {
+        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+    })
+
+    OutlinedTextField(
+        value = createTransactionUiCreate.amount,
+        onValueChange = { input ->
+            val trimmed = input
+                .trimStart('0')
+                .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
+
+            if (trimmed.length <= AmountValidator.maxCharLimit) {
+                onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
+            }
+        },
+        modifier = Modifier.fillMaxWidth(),
+        enabled = 0 != createTransactionUiCreate.categoryType,
+        label = { Text(text = stringResource(id = R.string.attribute_amount_trasaction_title)) },
+        trailingIcon = {
+            if (createTransactionUiCreate.amountError != null) {
+                Icon(
+                    imageVector = Icons.Filled.Info,
+                    tint = Color.Red, // Cambiar color
+                    contentDescription = "Monto de la transaccion a crear"
+                )
+            }
+        },
+        supportingText = {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = if (createTransactionUiCreate.amountError == null)
+                    stringResource(id = R.string.required_field) else
+                    stringResource(id = createTransactionUiCreate.amountError),
+                textAlign = TextAlign.End,
+            )
+        },
+        isError = createTransactionUiCreate.amountError != null,
+        visualTransformation = currencyVisualTransformation,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        singleLine = true
     )
 }
 

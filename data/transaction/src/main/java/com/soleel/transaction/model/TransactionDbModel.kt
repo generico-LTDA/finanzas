@@ -11,7 +11,6 @@ class TransactionDbModel {
                 id = transactionEntity.id,
                 name = transactionEntity.name,
                 amount = transactionEntity.amount,
-                description = transactionEntity.description,
                 createAt = transactionEntity.createAt,
                 updatedAt = transactionEntity.updatedAt,
                 categoryType = transactionEntity.categoryType,

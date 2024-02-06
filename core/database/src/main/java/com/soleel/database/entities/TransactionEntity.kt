@@ -29,8 +29,6 @@ data class TransactionEntity(
 
     @ColumnInfo(name = "amount") var amount: Int,
 
-    @ColumnInfo(name = "description") var description: String,
-
     @ColumnInfo(name = "create_at") var createAt: Long,
 
     @ColumnInfo(name = "updated_at") var updatedAt: Long,
