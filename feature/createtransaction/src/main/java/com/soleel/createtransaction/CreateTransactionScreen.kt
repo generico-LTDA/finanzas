@@ -1,6 +1,5 @@
 package com.soleel.createtransaction
 
-import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -33,7 +32,6 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,61 +47,67 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.soleel.common.constants.AccountTypeConstant
 import com.soleel.common.constants.CategoryTypeConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
-import com.soleel.validation.validator.AmountValidator
+import com.soleel.validation.validator.TransactionAmountValidator
 
 
 @Composable
 internal fun CreateTransactionRoute(
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit,
+
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
+
+    onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
+
     viewModel: CreateTransactionViewModel = hiltViewModel()
 ) {
     val createTransactionUiCreate = viewModel.createTransactionUiCreate
     val paymentAccountsUiState by viewModel.paymentAccountsUiState.collectAsStateWithLifecycle()
 
-    BackHandler(
-        enabled = true,
-        onBack = { onBackClick() }
-    )
-
     CreateTransactionScreen(
-        createTransactionUiCreate = createTransactionUiCreate,
-        paymentAccountsUiState = paymentAccountsUiState,
-
         modifier = modifier,
 
-        onBackClick = onBackClick,
         onShowBottomBar = onShowBottomBar,
         onShowAddFloating = onShowAddFloating,
+
+        onBackClick = onBackClick,
+        onCancelClick = onCancelClick,
+
+        createTransactionUiCreate = createTransactionUiCreate,
+        paymentAccountsUiState = paymentAccountsUiState,
 
         onCreateTransactionUiEvent = viewModel::onCreateTransactionUiEvent,
         onPaymentAccountsUiEvent = viewModel::onPaymentAccountsUiEvent
     )
-
 }
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun CreateTransactionScreen(
     modifier: Modifier,
-    createTransactionUiCreate: CreateTransactionUiCreate,
-    paymentAccountsUiState: PaymentAccountsUiState,
 
-    onBackClick: () -> Unit,
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
+
+    onBackClick: () -> Unit,
+    onCancelClick: () -> Unit,
+
+    createTransactionUiCreate: CreateTransactionUiCreate,
+    paymentAccountsUiState: PaymentAccountsUiState,
 
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
     onPaymentAccountsUiEvent: (PaymentAccountsUiEvent) -> Unit
 ) {
+
+    BackHandler(
+        enabled = true,
+        onBack = { onCancelClick() }
+    )
 
     if (createTransactionUiCreate.isTransactionSaved) {
         onShowBottomBar()
@@ -112,14 +116,14 @@ private fun CreateTransactionScreen(
     }
 
     Scaffold(
-        topBar = { CreateTransactionCenterAlignedTopAppBar(onBackClick = onBackClick) },
+        topBar = { CreateTransactionCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
         floatingActionButton = {
             ExtendedFloatingActionButton(
                 onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
                 icon = {
                     Icon(
                         imageVector = Icons.Filled.Add,
-                        contentDescription = "Save payment account"
+                        contentDescription = "Save transaction"
                     )
                 },
                 text = { Text(text = stringResource(id = R.string.add_trasaction_title)) },
@@ -150,8 +154,10 @@ private fun CreateTransactionScreen(
 @Composable
 private fun CreateTransactionSuccessScreen(
     modifier: Modifier,
+
     createTransactionUiCreate: CreateTransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
+
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
     paddingValues: PaddingValues
 ) {
@@ -172,7 +178,7 @@ private fun CreateTransactionSuccessScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateTransactionCenterAlignedTopAppBar(
-    onBackClick: () -> Unit
+    onCancelClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -184,7 +190,7 @@ fun CreateTransactionCenterAlignedTopAppBar(
         },
         navigationIcon = {
             IconButton(
-                onClick = { onBackClick() },
+                onClick = { onCancelClick() },
                 content = {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -196,7 +202,6 @@ fun CreateTransactionCenterAlignedTopAppBar(
     )
 }
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
 fun CreateTransactionForm(
     createTransactionUiCreate: CreateTransactionUiCreate,
@@ -587,7 +592,7 @@ fun EnterTransactionAmountTextFlied(
                 .trimStart('0')
                 .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
 
-            if (trimmed.length <= AmountValidator.maxCharLimit) {
+            if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
                 onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
             }
         },

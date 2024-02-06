@@ -1,13 +1,12 @@
 package com.soleel.validation.validator
 
-import android.util.Log
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.validation.model.ResultValidation
 import com.soleel.ui.R
 import com.soleel.validation.generic.InValidation
 
 
-class AmountValidator : InValidation<Triple<String, Int, Int>, ResultValidation> {
+class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, ResultValidation> {
 
     companion object {
         const val maxCharLimit: Int = 8

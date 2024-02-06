@@ -6,6 +6,14 @@
     <string name="required_field">"*requerido"</string>
 
     <!-- CREATE TRANSACTION STRINGS -->
+    <string name="create_payment_account_title">"Crear Cuenta de Pago"</string>
+    <string name="attribute_type_payment_account_title">"Tipo de cuenta de pago"</string>
+    <string name="attribute_name_payment_account_title">"Nombre de la cuenta de pago"</string>
+    <string name="attribute_amount_payment_account_title">"Monto de la cuenta de pago"</string>
+
+    <string name="add_payment_account_title">"Agregar cuenta de pago"</string>
+
+    <!-- CREATE TRANSACTION STRINGS -->
     <string name="create_trasaction_title">"Crear Transaccion"</string>
     <string name="attribute_name_trasaction_title">"Nombre de la transaccion"</string>
     <string name="attribute_amount_trasaction_title">"Monto de la transaccion"</string>
@@ -31,8 +39,10 @@
     <string name="description_too_short_error_message">El descripcion es demasiado corto</string>
     <string name="description_too_long_error_message">El descripcion es demasiado largo</string>
 
-    <string name="category_type_not_selected_error_message">No se ha seleccionado una categoria</string>
+    <string name="account_type_not_selected_error_message">No se ha seleccionado un tipo de cuenta</string>
 
     <string name="transaction_type_not_selected_error_message">No se ha seleccionado un tipo de transaccion</string>
+
+    <string name="category_type_not_selected_error_message">No se ha seleccionado una categoria</string>
 
 </resources>

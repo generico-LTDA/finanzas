@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
-import com.soleel.validation.validator.AmountValidator
+import com.soleel.validation.validator.TransactionAmountValidator
 import com.soleel.validation.validator.CategoryTypeValidator
 import com.soleel.validation.validator.NameValidator
 import com.soleel.validation.validator.PaymentAccountTypeValidator
@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -82,7 +81,7 @@ class CreateTransactionViewModel @Inject constructor(
     var createTransactionUiCreate by mutableStateOf(CreateTransactionUiCreate())
 
     private val nameValidator = NameValidator()
-    private val amountValidator = AmountValidator()
+    private val amountValidator = TransactionAmountValidator()
     private val categoryTypeValidator = CategoryTypeValidator()
     private val transactionTypeValidator = TransactionTypeValidator()
     private val validatePaymentAccountUseCase = PaymentAccountTypeValidator()
