@@ -117,16 +117,26 @@ private fun CreateTransactionScreen(
 
     Scaffold(
         topBar = { CreateTransactionCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = "Save transaction"
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = {
+                    Button(
+                        onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(64.dp),
+                        enabled = createTransactionUiCreate.paymentAccount.id.isNotBlank()
+                                && 0 != createTransactionUiCreate.transactionType
+                                && 0 != createTransactionUiCreate.categoryType
+                                && createTransactionUiCreate.name.isNotBlank()
+                                && createTransactionUiCreate.amount.isNotBlank(),
+                        content = { Text(text = stringResource(id = R.string.add_trasaction_title)) }
                     )
-                },
-                text = { Text(text = stringResource(id = R.string.add_trasaction_title)) },
+                }
             )
         },
         content = {
@@ -218,6 +228,8 @@ fun CreateTransactionForm(
     var selectedCategoryTypeOption by remember(calculation = { mutableStateOf("") })
     var expandedCategoryType by remember(calculation = { mutableStateOf(false) })
 
+    TODO("ALGO ESTA HACIENDO QUE LOS DROPDOWNMENU SE RENDERICEN CONSTANTEMENTE")
+    
     Column(
         modifier = Modifier.padding(16.dp),
         content = {

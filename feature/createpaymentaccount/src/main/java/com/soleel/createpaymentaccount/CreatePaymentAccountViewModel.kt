@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.validation.validator.AccountAmountValidator
 import com.soleel.validation.validator.AccountTypeValidator
-import com.soleel.validation.validator.TransactionAmountValidator
 import com.soleel.validation.validator.NameValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
