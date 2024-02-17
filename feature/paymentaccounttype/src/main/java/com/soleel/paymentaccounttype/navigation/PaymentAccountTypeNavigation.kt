@@ -13,11 +13,17 @@ fun NavController.navigateToPaymentAccountTypeRoute(navOptions: NavOptions? = nu
     this.navigate(paymentAccountTypeRoute, navOptions)
 }
 
-fun NavGraphBuilder.paymentAccountTypeScreen() {
+fun NavGraphBuilder.paymentAccountTypeScreen(
+    onCancelClick: () -> Unit,
+    fromTypeToName: () -> Unit
+) {
     composable(
         route = paymentAccountTypeRoute,
         content = {
-            CreateSelectPaymentAccountTypeRoute()
+            CreateSelectPaymentAccountTypeRoute(
+                onCancelClick = onCancelClick,
+                fromTypeToName = fromTypeToName
+            )
         }
     )
 }

@@ -21,7 +21,7 @@ import com.soleel.finanzas.navigation.TopLevelDestination.PROFILE
 import com.soleel.finanzas.navigation.TopLevelDestination.STATS
 import com.soleel.home.navigation.homeRoute
 import com.soleel.home.navigation.navigateToHome
-import com.soleel.paymentaccountcreate.navigation.navigateToCreatePaymentAccountGraph
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountCreateGraph
 import com.soleel.profile.navigation.navigateToProfile
 import com.soleel.stats.navigation.navigateToStats
 import kotlinx.coroutines.CoroutineScope
@@ -121,7 +121,7 @@ class FinanzasAppState(
     }
 
     fun navigateToCreatePaymentAccount() {
-        navController.navigateToCreatePaymentAccountGraph()
+        navController.navigateToPaymentAccountCreateGraph()
     }
 
     fun navigateToCreateTransaction() {

@@ -13,11 +13,21 @@ fun NavController.navigateToPaymentAccountAmountRoute(navOptions: NavOptions? = 
     this.navigate(paymentAccountAmountRoute, navOptions)
 }
 
-fun NavGraphBuilder.paymentAccountAmountScreen() {
+fun NavGraphBuilder.paymentAccountAmountScreen(
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
+    onCancelClick: () -> Unit,
+    onBackClick: () -> Unit
+) {
     composable(
         route = paymentAccountAmountRoute,
         content = {
-            PaymentAccountAmountRoute()
+            PaymentAccountAmountRoute(
+                onShowBottomBar = onShowBottomBar,
+                onShowAddFloating = onShowAddFloating,
+                onCancelClick = onCancelClick,
+                onBackClick = onBackClick
+            )
         }
     )
 }

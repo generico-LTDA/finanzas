@@ -5,3 +5,6 @@ plugins {
 android {
     namespace = "com.soleel.paymentaccountname"
 }
+dependencies {
+    implementation(project(":feature:paymentaccountcreate"))
+}

@@ -13,11 +13,19 @@ fun NavController.navigateToPaymentAccountNameRoute(navOptions: NavOptions? = nu
     this.navigate(paymentAccountNameRoute, navOptions)
 }
 
-fun NavGraphBuilder.paymentAccountNameScreen() {
+fun NavGraphBuilder.paymentAccountNameScreen(
+    onCancelClick: () -> Unit,
+    onBackClick: () -> Unit,
+    fromNameToAmount: () -> Unit
+) {
     composable(
         route = paymentAccountNameRoute,
         content = {
-            PaymentAccountNameRoute()
+            PaymentAccountNameRoute(
+                onCancelClick = onCancelClick,
+                onBackClick = onBackClick,
+                fromNameToAmount = fromNameToAmount
+            )
         }
     )
 }

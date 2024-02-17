@@ -38,12 +38,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.soleel.common.constants.AccountTypeConstant
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
+import com.soleel.ui.PaymentAccountCreateUi
+import com.soleel.ui.PaymentAccountCreateEventUi
 import com.soleel.ui.R
 import com.soleel.validation.validator.TransactionAmountValidator
 
 
 @Composable
-internal fun CreatePaymentAccountRoute(
+internal fun PaymentAccountCreateRoute(
     modifier: Modifier = Modifier,
 
     onShowBottomBar: () -> Unit,
@@ -52,9 +54,9 @@ internal fun CreatePaymentAccountRoute(
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
 
-    viewModel: CreatePaymentAccountViewModel = hiltViewModel(),
+    viewModel: PaymentAccountCreateViewModel = hiltViewModel()
 ) {
-    val createPaymentAccountUiCreate = viewModel.createPaymentAccountUiCreate
+    val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
 
     CreatePaymentAccountScreen(
         modifier = modifier,
@@ -65,9 +67,9 @@ internal fun CreatePaymentAccountRoute(
         onBackClick = onBackClick,
         onCancelClick = onCancelClick,
 
-        createPaymentAccountUiCreate = createPaymentAccountUiCreate,
+        paymentAccountCreateUi = paymentAccountCreateUi,
 
-        onCreatePaymentAccountUiEvent = viewModel::onCreatePaymentAccountUiEvent
+        onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi
     )
 }
 
@@ -81,9 +83,9 @@ internal fun CreatePaymentAccountScreen(
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
 
-    createPaymentAccountUiCreate: CreatePaymentAccountUiCreate,
+    paymentAccountCreateUi: PaymentAccountCreateUi,
 
-    onCreatePaymentAccountUiEvent: (CreatePaymentAccountUiEvent) -> Unit
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
 
     BackHandler(
@@ -91,7 +93,7 @@ internal fun CreatePaymentAccountScreen(
         onBack = { onCancelClick() }
     )
 
-    if (createPaymentAccountUiCreate.isPaymentAccountSaved) {
+    if (paymentAccountCreateUi.isPaymentAccountSaved) {
         onShowBottomBar()
         onShowAddFloating()
         onBackClick()
@@ -105,11 +107,11 @@ internal fun CreatePaymentAccountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
-                        onClick = { onCreatePaymentAccountUiEvent(CreatePaymentAccountUiEvent.Submit) },
+                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.Submit) },
                         modifier = Modifier.fillMaxWidth(0.9f).height(64.dp),
-                        enabled = 0 != createPaymentAccountUiCreate.accountType
-                                && createPaymentAccountUiCreate.name.isNotBlank()
-                                && createPaymentAccountUiCreate.amount.isNotBlank(),
+                        enabled = 0 != paymentAccountCreateUi.accountType
+                                && paymentAccountCreateUi.name.isNotBlank()
+                                && paymentAccountCreateUi.amount.isNotBlank(),
                         content = { Text(text = stringResource(id = R.string.add_payment_account_title)) }
                     )
                 }
@@ -122,9 +124,9 @@ internal fun CreatePaymentAccountScreen(
                     .fillMaxWidth()
                     .padding(paddingValues),
                 content = {
-                    CreatePaymentAccountForm(
-                        createPaymentAccountUiCreate = createPaymentAccountUiCreate,
-                        onCreatePaymentAccountUiEvent = onCreatePaymentAccountUiEvent
+                    PaymentAccountCreateForm(
+                        paymentAccountCreateUi = paymentAccountCreateUi,
+                        onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
                     )
                 }
             )
@@ -162,9 +164,9 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
 //@Preview
 //@Composable
 //fun PaymentAccountCard(
-//    viewModel: CreatePaymentAccountViewModel
+//    viewModel: PaymentAccountCreateViewModel
 //) {
-//    val paymentAccount by viewModel.createPaymentAccountUiCreate
+//    val paymentAccount by viewModel.paymentAccountUiCreate
 //
 //    Card(
 //        modifier = Modifier.fillMaxWidth(),
@@ -234,30 +236,30 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
 //}
 
 @Composable
-fun CreatePaymentAccountForm(
-    createPaymentAccountUiCreate: CreatePaymentAccountUiCreate,
-    onCreatePaymentAccountUiEvent: (CreatePaymentAccountUiEvent) -> Unit
+fun PaymentAccountCreateForm(
+    paymentAccountCreateUi: PaymentAccountCreateUi,
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
     Column(
         modifier = Modifier.padding(16.dp),
         content = {
             SelectTypeAccountDropdownMenu(
-                createPaymentAccountUiCreate = createPaymentAccountUiCreate,
-                onCreatePaymentAccountUiEvent = onCreatePaymentAccountUiEvent
+                paymentAccountCreateUi = paymentAccountCreateUi,
+                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             EnterTransactionNameTextField(
-                createPaymentAccountUiCreate = createPaymentAccountUiCreate,
-                onCreatePaymentAccountUiEvent = onCreatePaymentAccountUiEvent
+                paymentAccountCreateUi = paymentAccountCreateUi,
+                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             EnterTransactionAmountTextFlied(
-                createPaymentAccountUiCreate = createPaymentAccountUiCreate,
-                onCreatePaymentAccountUiEvent = onCreatePaymentAccountUiEvent
+                paymentAccountCreateUi = paymentAccountCreateUi,
+                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
             )
         }
     )
@@ -266,8 +268,8 @@ fun CreatePaymentAccountForm(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectTypeAccountDropdownMenu(
-    createPaymentAccountUiCreate: CreatePaymentAccountUiCreate,
-    onCreatePaymentAccountUiEvent: (CreatePaymentAccountUiEvent) -> Unit
+    paymentAccountCreateUi: PaymentAccountCreateUi,
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
     val accountTypes: List<Pair<Int, String>> = AccountTypeConstant.idToValueList
 
@@ -291,13 +293,13 @@ fun SelectTypeAccountDropdownMenu(
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = if (createPaymentAccountUiCreate.accountTypeError == null)
+                        text = if (paymentAccountCreateUi.accountTypeError == null)
                             stringResource(id = R.string.required_field) else
-                            stringResource(id = createPaymentAccountUiCreate.accountTypeError),
+                            stringResource(id = paymentAccountCreateUi.accountTypeError!!),
                         textAlign = TextAlign.End,
                     )
                 },
-                isError = createPaymentAccountUiCreate.accountTypeError != null,
+                isError = paymentAccountCreateUi.accountTypeError != null,
             )
             ExposedDropdownMenu(
                 modifier = Modifier
@@ -314,8 +316,8 @@ fun SelectTypeAccountDropdownMenu(
 
                                     selectedOption = accountType.second
                                     expanded = false
-                                    onCreatePaymentAccountUiEvent(
-                                        CreatePaymentAccountUiEvent.AccountTypeChanged(
+                                    onPaymentAccountCreateEventUi(
+                                        PaymentAccountCreateEventUi.AccountTypeChangedUi(
                                             accountType = accountType.first
                                         )
                                     )
@@ -332,30 +334,30 @@ fun SelectTypeAccountDropdownMenu(
 
 @Composable
 fun EnterTransactionNameTextField(
-    createPaymentAccountUiCreate: CreatePaymentAccountUiCreate,
-    onCreatePaymentAccountUiEvent: (CreatePaymentAccountUiEvent) -> Unit
+    paymentAccountCreateUi: PaymentAccountCreateUi,
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
     OutlinedTextField(
-        value = createPaymentAccountUiCreate.name,
+        value = paymentAccountCreateUi.name,
         onValueChange = {
-            onCreatePaymentAccountUiEvent(
-                CreatePaymentAccountUiEvent.NameChanged(it)
+            onPaymentAccountCreateEventUi(
+                PaymentAccountCreateEventUi.NameChanged(it)
             )
         },
         modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createPaymentAccountUiCreate.accountType,
+        enabled = 0 != paymentAccountCreateUi.accountType,
         label = { Text(text = stringResource(id = R.string.attribute_name_payment_account_title)) },
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (createPaymentAccountUiCreate.nameError == null)
+                text = if (paymentAccountCreateUi.nameError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = createPaymentAccountUiCreate.nameError),
+                    stringResource(id = paymentAccountCreateUi.nameError!!),
                 textAlign = TextAlign.End,
             )
         },
         trailingIcon = {
-            if (createPaymentAccountUiCreate.nameError != null) {
+            if (paymentAccountCreateUi.nameError != null) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     tint = Color.Red, // Cambiar color
@@ -363,15 +365,15 @@ fun EnterTransactionNameTextField(
                 )
             }
         },
-        isError = createPaymentAccountUiCreate.nameError != null,
+        isError = paymentAccountCreateUi.nameError != null,
         singleLine = true
     )
 }
 
 @Composable
 fun EnterTransactionAmountTextFlied(
-    createPaymentAccountUiCreate: CreatePaymentAccountUiCreate,
-    onCreatePaymentAccountUiEvent: (CreatePaymentAccountUiEvent) -> Unit
+    paymentAccountCreateUi: PaymentAccountCreateUi,
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
 
     val currencyVisualTransformation by remember(calculation = {
@@ -379,21 +381,21 @@ fun EnterTransactionAmountTextFlied(
     })
 
     OutlinedTextField(
-        value = createPaymentAccountUiCreate.amount,
+        value = paymentAccountCreateUi.amount,
         onValueChange = {
             val trimmed = it
                 .trimStart('0')
                 .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onCreatePaymentAccountUiEvent(CreatePaymentAccountUiEvent.AmountChanged(trimmed))
+                onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.AmountChanged(trimmed))
             }
         },
         modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createPaymentAccountUiCreate.accountType,
+        enabled = 0 != paymentAccountCreateUi.accountType,
         label = { Text(text = stringResource(id = R.string.attribute_amount_payment_account_title)) },
         trailingIcon = {
-            if (createPaymentAccountUiCreate.amountError != null) {
+            if (paymentAccountCreateUi.amountError != null) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     tint = Color.Red, // Cambiar color
@@ -404,13 +406,13 @@ fun EnterTransactionAmountTextFlied(
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (createPaymentAccountUiCreate.amountError == null)
+                text = if (paymentAccountCreateUi.amountError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = createPaymentAccountUiCreate.amountError),
+                    stringResource(id = paymentAccountCreateUi.amountError!!),
                 textAlign = TextAlign.End,
             )
         },
-        isError = createPaymentAccountUiCreate.amountError != null,
+        isError = paymentAccountCreateUi.amountError != null,
         visualTransformation = currencyVisualTransformation,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true
