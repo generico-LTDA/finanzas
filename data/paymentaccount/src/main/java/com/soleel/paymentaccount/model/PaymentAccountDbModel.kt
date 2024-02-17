@@ -17,7 +17,7 @@ class PaymentAccountDbModel {
         }
 
         fun asExternalModelList(paymentAccountEntities: List<PaymentAccountEntity>): List<PaymentAccount> {
-            return paymentAccountEntities.map(transform = Companion::asExternalModel)
+            return paymentAccountEntities.map(transform = ::asExternalModel)
         }
 
         fun asInternalModel(paymentAccount: PaymentAccount): PaymentAccountEntity {

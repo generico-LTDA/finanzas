@@ -1,16 +1,25 @@
 package com.soleel.createtransaction
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -19,6 +28,7 @@ import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -32,6 +42,7 @@ import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +50,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -228,8 +241,10 @@ fun CreateTransactionForm(
     var selectedCategoryTypeOption by remember(calculation = { mutableStateOf("") })
     var expandedCategoryType by remember(calculation = { mutableStateOf(false) })
 
-    TODO("ALGO ESTA HACIENDO QUE LOS DROPDOWNMENU SE RENDERICEN CONSTANTEMENTE")
-    
+    val currencyVisualTransformation by remember(calculation = {
+        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+    })
+
     Column(
         modifier = Modifier.padding(16.dp),
         content = {
@@ -238,6 +253,8 @@ fun CreateTransactionForm(
                 createTransactionUiCreate = createTransactionUiCreate,
                 paymentAccounts = paymentAccounts,
                 onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+
+                currencyVisualTransformation = currencyVisualTransformation,
 
                 selectedPaymentAccountOption = selectedPaymentAccountOption,
                 changeSelectedPaymentAccountOption = { value: String ->
@@ -265,7 +282,7 @@ fun CreateTransactionForm(
                 },
 
                 expandedTransactionType = expandedTransactionType,
-                changeExpandedPaymentAccount = { value: Boolean ->
+                changeExpandedTransactionType = { value: Boolean ->
                     expandedTransactionType = value
                 },
 
@@ -302,12 +319,15 @@ fun CreateTransactionForm(
 
             EnterTransactionAmountTextFlied(
                 createTransactionUiCreate = createTransactionUiCreate,
-                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+
+                currencyVisualTransformation = currencyVisualTransformation
             )
 
         }
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -315,6 +335,8 @@ fun SelectPaymentAccountDropdownMenu(
     createTransactionUiCreate: CreateTransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
     onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+
+    currencyVisualTransformation: CurrencyVisualTransformation,
 
     selectedPaymentAccountOption: String,
     changeSelectedPaymentAccountOption: (String) -> Unit,
@@ -324,11 +346,6 @@ fun SelectPaymentAccountDropdownMenu(
 
     resetOtherFields: () -> Unit
 ) {
-
-    val currencyVisualTransformation by remember(calculation = {
-        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
-    })
-
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
         expanded = expandedPaymentAccount,
@@ -411,7 +428,7 @@ fun SelectTransactionTypeDropdownMenu(
     changeSelectedTransactionTypeOption: (String) -> Unit,
 
     expandedTransactionType: Boolean,
-    changeExpandedPaymentAccount: (Boolean) -> Unit,
+    changeExpandedTransactionType: (Boolean) -> Unit,
 
     resetOtherFields: () -> Unit
 ) {
@@ -420,7 +437,7 @@ fun SelectTransactionTypeDropdownMenu(
     ExposedDropdownMenuBox(
         modifier = Modifier.fillMaxWidth(),
         expanded = expandedTransactionType,
-        onExpandedChange = { changeExpandedPaymentAccount(false == expandedTransactionType) },
+        onExpandedChange = { changeExpandedTransactionType(false == expandedTransactionType) },
         content = {
             OutlinedTextField(
                 value = selectedTransactionTypeOption,
@@ -448,7 +465,7 @@ fun SelectTransactionTypeDropdownMenu(
                     .menuAnchor()
                     .fillMaxWidth(),
                 expanded = expandedTransactionType,
-                onDismissRequest = { changeExpandedPaymentAccount(false) },
+                onDismissRequest = { changeExpandedTransactionType(false) },
                 content = {
                     transactionTypes.forEach(
                         action = { transactionType ->
@@ -456,7 +473,7 @@ fun SelectTransactionTypeDropdownMenu(
                                 text = { Text(text = transactionType.second) },
                                 onClick = {
                                     changeSelectedTransactionTypeOption(transactionType.second)
-                                    changeExpandedPaymentAccount(false)
+                                    changeExpandedTransactionType(false)
                                     onCreateTransactionUiEvent(
                                         CreateTransactionUiEvent.TransactionTypeChanged(
                                             transactionType = transactionType.first
@@ -590,13 +607,10 @@ fun EnterTransactionNameTextField(
 @Composable
 fun EnterTransactionAmountTextFlied(
     createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+
+    currencyVisualTransformation: CurrencyVisualTransformation,
 ) {
-
-    val currencyVisualTransformation by remember(calculation = {
-        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
-    })
-
     OutlinedTextField(
         value = createTransactionUiCreate.amount,
         onValueChange = { input ->
