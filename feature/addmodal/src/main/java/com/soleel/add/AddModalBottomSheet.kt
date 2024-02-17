@@ -35,7 +35,7 @@ fun AddModalBottomSheet(
     onHideAddFloating: () -> Unit,
     onDismiss: () -> Unit,
     sheetState: SheetState,
-    viewModel: AddViewModel = hiltViewModel(),
+    viewModel: AddModalViewModel = hiltViewModel(),
 ) {
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },
@@ -61,7 +61,7 @@ private fun AddCards(
     onHideBottomBar: () -> Unit,
     onHideAddFloating: () -> Unit,
     onDismiss: () -> Unit,
-    viewModel: AddViewModel,
+    viewModel: AddModalViewModel,
 ) {
     val paymentAccountsUiState: AddUiState by viewModel.addUiState.collectAsState()
 

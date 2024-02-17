@@ -1,19 +1,24 @@
 package com.soleel.transaction
 
 import com.soleel.database.daos.TransactionDAO
+import com.soleel.database.entities.TransactionEntity
 import com.soleel.transaction.di.DefaultDispatcher
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
 import com.soleel.transaction.model.Transaction
 import com.soleel.transaction.model.TransactionDbModel
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
+import java.util.UUID
 import javax.inject.Inject
 
 class TransactionRepository @Inject constructor(
     private val transactionDAO: TransactionDAO,
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) : ITransactionLocalDataSource {
+
     override fun getTransactions(): Flow<List<Transaction>> {
         return transactionDAO
             .getAllTransaction()
@@ -39,15 +44,38 @@ class TransactionRepository @Inject constructor(
     }
 
     override suspend fun createTransaction(
-        transactionName: String,
-        transactionAmount: Int,
-        transactionDescription: String,
-        transactionCreateAt: Long,
-        paymentAccountId: Int,
-        typeTransactionId: Int,
-        categoryId: Int
+        name: String,
+        amount: Int,
+        transactionType: Int,
+        categoryType: Int,
+        paymentAccountId: String
     ): String {
-        TODO("Not yet implemented")
+
+        val id = withContext(
+            context = dispatcher,
+            block = {
+                UUID.randomUUID().toString()
+            })
+
+        val transaction = TransactionEntity(
+            id = id,
+            name = name,
+            amount = amount,
+            createAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
+            categoryType = transactionType,
+            transactionType = categoryType,
+            paymentAccountId = paymentAccountId
+        )
+
+        withContext(
+            context = Dispatchers.IO,
+            block = {
+                transactionDAO.insert((transaction))
+            }
+        )
+
+        return id
     }
 
     override suspend fun updateTransaction(

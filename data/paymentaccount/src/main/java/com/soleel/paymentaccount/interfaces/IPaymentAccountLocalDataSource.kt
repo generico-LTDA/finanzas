@@ -22,7 +22,7 @@ interface IPaymentAccountLocalDataSource {
 
     suspend fun createPaymentAccount(
         name: String,
-        initialAmount: Int,
+        amount: Int,
         accountType: Int
     ): String
 

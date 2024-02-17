@@ -23,8 +23,12 @@ include(":core:common")
 include(":core:database")
 include(":core:ui")
 
+
 include(":data:paymentaccount")
 include(":data:transaction")
+
+include(":domain:validation")
+include(":domain:transformation")
 
 include(":feature:home")
 include(":feature:accounts")

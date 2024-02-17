@@ -4,10 +4,6 @@ plugins {
     `kotlin-dsl`
 }
 
-
-
-
-
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -61,9 +57,19 @@ gradlePlugin {
             implementationClass = "plugins.AndroidAppFeatureConventionPlugin"
         }
 
+        register("androidDomain") {
+            id = "conventionPluginsApp.android.domain"
+            implementationClass = "plugins.AndroidAppDomainConventionPlugin"
+        }
+
         register("androidData") {
             id = "conventionPluginsApp.android.data"
             implementationClass = "plugins.AndroidAppDataConvetionPlugin"
+        }
+
+        register("androidCore") {
+            id = "conventionPluginsApp.android.core"
+            implementationClass = "plugins.AndroidAppCoreConventionPlugin"
         }
 
     }

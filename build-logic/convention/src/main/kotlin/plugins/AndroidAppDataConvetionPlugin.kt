@@ -15,6 +15,7 @@ class AndroidAppDataConvetionPlugin : Plugin<Project> {
 
             dependencies {
                 add("implementation", project(":core:database"))
+//                add("implementation", project(":core:network"))
             }
         }
     }

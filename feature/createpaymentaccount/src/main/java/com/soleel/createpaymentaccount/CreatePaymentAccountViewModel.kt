@@ -1,119 +1,124 @@
 package com.soleel.createpaymentaccount
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
+import com.soleel.validation.validator.AccountAmountValidator
+import com.soleel.validation.validator.AccountTypeValidator
+import com.soleel.validation.validator.NameValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
-data class CreatePaymentAccountUiState(
+data class CreatePaymentAccountUiCreate(
     val name: String = "",
-    val initialAmount: Int? = null,
-    val accountType: Int? = null,
-    val userMessage: String? = null,
+    val nameError: Int? = null,
+
+    val amount: String = "",
+    val amountError: Int? = null,
+
+    val accountType: Int = 0,
+    val accountTypeError: Int? = null,
+
     val isPaymentAccountSaved: Boolean = false
 )
+
+sealed class CreatePaymentAccountUiEvent {
+    data class NameChanged(val name: String) : CreatePaymentAccountUiEvent()
+    data class AmountChanged(val amount: String) : CreatePaymentAccountUiEvent()
+    data class AccountTypeChanged(val accountType: Int) : CreatePaymentAccountUiEvent()
+
+    data object Submit : CreatePaymentAccountUiEvent()
+}
+
 
 @HiltViewModel
 class CreatePaymentAccountViewModel @Inject constructor(
     private val paymentAccountRepository: IPaymentAccountLocalDataSource
 ) : ViewModel() {
 
-    private val _createPaymentAccountUiState: MutableStateFlow<CreatePaymentAccountUiState> =
-        MutableStateFlow(CreatePaymentAccountUiState())
-    val createPaymentAccountUiState: StateFlow<CreatePaymentAccountUiState> =
-        _createPaymentAccountUiState.asStateFlow()
+    var createPaymentAccountUiCreate by mutableStateOf(CreatePaymentAccountUiCreate())
 
-    fun savePaymentAccount() {
-        if (_createPaymentAccountUiState.value.accountType == null) {
-            _createPaymentAccountUiState.update(
-                function = {
-                    it.copy(userMessage = "Debe seleccionarse un tipo de cuenta")
-                })
-            return
+    private val nameValidator = NameValidator()
+    private val accountAmountValidator = AccountAmountValidator()
+    private val accountTypeValidator = AccountTypeValidator()
+
+    fun onCreatePaymentAccountUiEvent(event: CreatePaymentAccountUiEvent) {
+        when (event) {
+            is CreatePaymentAccountUiEvent.AccountTypeChanged -> {
+                createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(
+                    accountType = event.accountType
+                )
+                validateAccountType()
+            }
+
+            is CreatePaymentAccountUiEvent.NameChanged -> {
+                createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(name = event.name)
+                validateName()
+            }
+
+            is CreatePaymentAccountUiEvent.AmountChanged -> {
+                createPaymentAccountUiCreate =
+                    createPaymentAccountUiCreate.copy(amount = event.amount)
+                validateAmount()
+            }
+
+            is CreatePaymentAccountUiEvent.Submit -> {
+                if (validateAccountType()
+                    && validateName()
+                    && validateAmount()
+                ) {
+                    savePaymentAccount()
+                }
+            }
         }
-
-        if (_createPaymentAccountUiState.value.name.isEmpty()) {
-            _createPaymentAccountUiState.update(
-                function = {
-                    it.copy(userMessage = "Nombre no puede estar vacia")
-                })
-            return
-        }
-
-        if (_createPaymentAccountUiState.value.initialAmount == null
-            || _createPaymentAccountUiState.value.initialAmount !in 1..9999999
-        ) {
-            _createPaymentAccountUiState.update(
-                function = {
-                    it.copy(userMessage = "Valor no puede ser inferior a 0 o mayor que 9999999")
-                })
-            return
-        }
-
-        this.createPaymentAccount()
     }
 
-    private fun createPaymentAccount() {
+    private fun validateAccountType(): Boolean {
+        val accountTypeResult = accountTypeValidator.execute(
+            input = createPaymentAccountUiCreate.accountType
+        )
+        createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(
+            accountTypeError = accountTypeResult.errorMessage
+        )
+        return accountTypeResult.successful
+    }
+
+    private fun validateName(): Boolean {
+        val nameResult = nameValidator.execute(input = createPaymentAccountUiCreate.name)
+        createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(
+            nameError = nameResult.errorMessage
+        )
+        return nameResult.successful
+    }
+
+    private fun validateAmount(): Boolean {
+        val amountResult =
+            accountAmountValidator.execute(input = createPaymentAccountUiCreate.amount)
+        createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(
+            amountError = amountResult.errorMessage
+        )
+        return amountResult.successful
+    }
+
+    private fun savePaymentAccount() {
         viewModelScope.launch(
             context = Dispatchers.IO,
             block = {
                 paymentAccountRepository.createPaymentAccount(
-                    name = _createPaymentAccountUiState.value.name,
-                    initialAmount = _createPaymentAccountUiState.value.initialAmount ?: 0,
-                    accountType = _createPaymentAccountUiState.value.accountType ?: 0
+                    name = createPaymentAccountUiCreate.name,
+                    amount = createPaymentAccountUiCreate.amount.toInt(),
+                    accountType = createPaymentAccountUiCreate.accountType
                 )
 
-                _createPaymentAccountUiState.update(
-                    function = {
-                        it.copy(isPaymentAccountSaved = true)
-                    }
+                createPaymentAccountUiCreate = createPaymentAccountUiCreate.copy(
+                    isPaymentAccountSaved = true
                 )
             })
     }
-
-    fun userMessageShown() {
-        _createPaymentAccountUiState.update(
-            function = {
-                it.copy(userMessage = null)
-            })
-    }
-
-    fun updateTypeAccount(newAccountType: Int) {
-        _createPaymentAccountUiState.update(
-            function = {
-                it.copy(accountType = newAccountType)
-            })
-    }
-
-    fun updateName(newName: String) {
-
-        if (30 <= newName.length) {
-            return
-        }
-
-        _createPaymentAccountUiState.update(
-            function = {
-                it.copy(name = newName)
-            })
-    }
-
-    fun updateInitialAmount(newInitialAmount: String) {
-        // README: Esto tambien soluciona el intento de ingresar letras.
-        // Si se intenta ingresar letras desde un teclado fisico, simplementa no cambiara el valor
-        // en el estado del UI
-        val intValue = newInitialAmount.toIntOrNull()
-        _createPaymentAccountUiState.update(
-            function = {
-                it.copy(initialAmount = intValue)
-            })
-    }
-
 }

@@ -9,7 +9,7 @@ class PaymentAccountDbModel {
             return PaymentAccount(
                 id = paymentAccountEntity.id,
                 name = paymentAccountEntity.name,
-                initialAmount = paymentAccountEntity.initialAmount,
+                amount = paymentAccountEntity.amount,
                 createAt = paymentAccountEntity.createAt,
                 updatedAt = paymentAccountEntity.updatedAt,
                 accountType = paymentAccountEntity.accountType,
@@ -17,14 +17,14 @@ class PaymentAccountDbModel {
         }
 
         fun asExternalModelList(paymentAccountEntities: List<PaymentAccountEntity>): List<PaymentAccount> {
-            return paymentAccountEntities.map(transform = Companion::asExternalModel)
+            return paymentAccountEntities.map(transform = ::asExternalModel)
         }
 
         fun asInternalModel(paymentAccount: PaymentAccount): PaymentAccountEntity {
             return PaymentAccountEntity(
                 id = paymentAccount.id,
                 name = paymentAccount.name,
-                initialAmount = paymentAccount.initialAmount,
+                amount = paymentAccount.amount,
                 createAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis(),
                 accountType = paymentAccount.accountType

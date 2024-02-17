@@ -14,11 +14,21 @@ fun NavController.navigateToCreateTransaction(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.createTransactionScreen(
+    onShowBottomBar: () -> Unit,
+    onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
+    onCancelClick: () -> Unit
 ) {
     composable(
         route = createTransactionRoute,
-        content = { CreateTransactionRoute(onBackClick = onBackClick) }
+        content = {
+            CreateTransactionRoute(
+                onShowBottomBar = onShowBottomBar,
+                onShowAddFloating = onShowAddFloating,
+                onBackClick = onBackClick,
+                onCancelClick = onCancelClick
+            )
+        }
     )
 }
 

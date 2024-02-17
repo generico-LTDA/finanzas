@@ -1,13 +1,12 @@
 package com.soleel.transaction.model
 
-data class Transaction (
+data class Transaction(
     val id: String,
-    val name: String,
+    var name: String,
     val amount: Int,
-    val description: String,
     val createAt: Long,
     val updatedAt: Long,
     val categoryType: Int,
     val transactionType: Int,
-    val paymentAccountId: Int
+    val paymentAccountId: String
 )
