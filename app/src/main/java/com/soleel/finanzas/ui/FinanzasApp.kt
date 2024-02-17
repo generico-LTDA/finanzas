@@ -30,11 +30,7 @@ import com.soleel.finanzas.navigation.TopLevelDestination
 fun FinanzasApp(
     appState: FinanzasAppState = rememberFinanzasAppState()
 ) {
-
-//    val showAddModal = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-//    val showCancelAlert = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier,

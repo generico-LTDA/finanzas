@@ -23,7 +23,6 @@ include(":core:common")
 include(":core:database")
 include(":core:ui")
 
-
 include(":data:paymentaccount")
 include(":data:transaction")
 
@@ -35,6 +34,11 @@ include(":feature:accounts")
 include(":feature:profile")
 include(":feature:stats")
 include(":feature:addmodal")
-include(":feature:createpaymentaccount")
-include(":feature:createtransaction")
 include(":feature:cancelalert")
+
+include(":feature:paymentaccountcreate")
+include(":feature:paymentaccounttype")
+include(":feature:paymentaccountname")
+include(":feature:paymentaccountamount")
+
+include(":feature:createtransaction")
