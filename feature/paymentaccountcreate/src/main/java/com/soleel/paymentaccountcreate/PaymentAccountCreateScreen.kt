@@ -26,9 +26,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.soleel.paymentaccountcreate.screen.EnterTransactionAmountTextFlied
 import com.soleel.paymentaccountcreate.screen.EnterTransactionNameTextField
 import com.soleel.paymentaccountcreate.screen.SelectTypeAccountDropdownMenu
-import com.soleel.ui.state.PaymentAccountCreateUi
-import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.R
+import com.soleel.ui.state.PaymentAccountCreateEventUi
+import com.soleel.ui.state.PaymentAccountCreateUi
 
 
 @Composable

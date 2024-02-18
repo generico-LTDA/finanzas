@@ -1,9 +1,9 @@
 package com.soleel.validation.validator
 
 import com.soleel.common.constants.TransactionTypeConstant
-import com.soleel.validation.model.ResultValidation
 import com.soleel.ui.R
 import com.soleel.validation.generic.InValidation
+import com.soleel.validation.model.ResultValidation
 
 
 class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, ResultValidation> {

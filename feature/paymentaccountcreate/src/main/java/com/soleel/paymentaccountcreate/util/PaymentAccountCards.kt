@@ -1,7 +1,5 @@
 package com.soleel.paymentaccountcreate.util
 
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.ui.R
 import com.soleel.ui.template.PaymentAccountCardItem

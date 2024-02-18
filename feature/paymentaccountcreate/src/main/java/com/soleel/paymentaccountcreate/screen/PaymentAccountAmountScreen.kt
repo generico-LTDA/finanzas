@@ -30,9 +30,9 @@ import androidx.compose.ui.unit.dp
 import com.soleel.paymentaccountcreate.CreatePaymentAccountCenterAlignedTopAppBar
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
+import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
-import com.soleel.ui.R
 import com.soleel.validation.validator.TransactionAmountValidator
 
 

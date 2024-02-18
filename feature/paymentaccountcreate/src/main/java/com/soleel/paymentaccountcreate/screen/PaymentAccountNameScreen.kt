@@ -25,9 +25,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.soleel.paymentaccountcreate.CreatePaymentAccountCenterAlignedTopAppBar
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
+import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
-import com.soleel.ui.R
 
 
 @Composable

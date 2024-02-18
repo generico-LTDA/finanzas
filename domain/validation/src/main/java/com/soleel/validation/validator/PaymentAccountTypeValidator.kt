@@ -1,9 +1,9 @@
 package com.soleel.validation.validator
 
 import com.soleel.paymentaccount.model.PaymentAccount
+import com.soleel.ui.R
 import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
-import com.soleel.ui.R
 
 
 class PaymentAccountTypeValidator : InValidation<PaymentAccount, ResultValidation> {
