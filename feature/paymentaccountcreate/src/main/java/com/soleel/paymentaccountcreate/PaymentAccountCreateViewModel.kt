@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
-import com.soleel.ui.PaymentAccountCreateUi
-import com.soleel.ui.PaymentAccountCreateEventUi
+import com.soleel.ui.state.PaymentAccountCreateUi
+import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.validation.validator.AccountAmountValidator
 import com.soleel.validation.validator.AccountTypeValidator
 import com.soleel.validation.validator.NameValidator

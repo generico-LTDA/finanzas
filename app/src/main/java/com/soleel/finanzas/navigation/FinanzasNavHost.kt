@@ -8,13 +8,9 @@ import com.soleel.createtransaction.navigation.createTransactionScreen
 import com.soleel.finanzas.ui.FinanzasAppState
 import com.soleel.home.navigation.homeRoute
 import com.soleel.home.navigation.homeScreen
-import com.soleel.paymentaccountamount.navigation.navigateToPaymentAccountAmountRoute
-import com.soleel.paymentaccountamount.navigation.paymentAccountAmountScreen
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountAmountRoute
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountNameRoute
 import com.soleel.paymentaccountcreate.navigation.paymentAccountCreateGraph
-import com.soleel.paymentaccountname.navigation.navigateToPaymentAccountNameRoute
-import com.soleel.paymentaccountname.navigation.paymentAccountNameScreen
-import com.soleel.paymentaccounttype.navigation.paymentAccountTypeRoute
-import com.soleel.paymentaccounttype.navigation.paymentAccountTypeScreen
 import com.soleel.profile.navigation.profileScreen
 import com.soleel.stats.navigation.statsScreen
 
@@ -42,25 +38,13 @@ fun FinanzasNavHost(
             profileScreen()
 
             paymentAccountCreateGraph(
-                startDestination = paymentAccountTypeRoute,
-
-                nestedGraphs = {
-                    paymentAccountTypeScreen(
-                        onCancelClick = appState::showCancelAlert,
-                        fromTypeToName = navController::navigateToPaymentAccountNameRoute
-                    )
-                    paymentAccountNameScreen(
-                        onCancelClick = appState::showCancelAlert,
-                        onBackClick = navController::popBackStack,
-                        fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
-                    )
-                    paymentAccountAmountScreen(
-                        onShowBottomBar = appState::showBottomBar,
-                        onShowAddFloating = appState::showAddFloating,
-                        onCancelClick = appState::showCancelAlert,
-                        onBackClick = navController::popBackStack
-                    )
-                }
+                navController = navController,
+                onShowBottomBar = appState::showBottomBar,
+                onShowAddFloating = appState::showAddFloating,
+                onCancelClick = appState::showCancelAlert,
+                onBackClick = navController::popBackStack,
+                fromTypeToName = navController::navigateToPaymentAccountNameRoute,
+                fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
             )
 
             createTransactionScreen(

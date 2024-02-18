@@ -10,6 +10,7 @@ class AndroidAppCoreConventionPlugin : Plugin<Project>{
         with(project) {
             with(pluginManager) {
                 apply("conventionPluginsApp.android.lib")
+                apply("conventionPluginsApp.android.lib.compose")
                 apply("conventionPluginsApp.android.hilt")
                 apply("conventionPluginsApp.android.room")
             }

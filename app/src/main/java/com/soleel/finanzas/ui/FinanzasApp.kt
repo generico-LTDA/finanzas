@@ -1,7 +1,6 @@
 package com.soleel.finanzas.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -63,7 +62,7 @@ fun FinanzasApp(
                 CancelAlertDialog(
                     onShowBottomBar = appState::showBottomBar,
                     onShowAddFloating = appState::showAddFloating,
-                    onConfirmation = appState::navigateToBack,
+                    onConfirmation = appState::backToHome,
                     onDismissRequest = appState::hideCancelAlert,
                     dialogTitle = "¿Quieres volver al inicio?",
                     dialogText = "Cancelaras la creacion actual."

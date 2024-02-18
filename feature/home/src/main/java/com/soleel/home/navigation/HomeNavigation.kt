@@ -9,7 +9,7 @@ import com.soleel.home.HomeRoute
 
 const val homeRoute = "home_route"
 
-fun NavController.navigateToHome(navOptions: NavOptions? = null) {
+fun NavController.backToHome(navOptions: NavOptions? = null) {
     this.navigate(homeRoute, navOptions)
 }
 

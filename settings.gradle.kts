@@ -35,10 +35,5 @@ include(":feature:profile")
 include(":feature:stats")
 include(":feature:addmodal")
 include(":feature:cancelalert")
-
 include(":feature:paymentaccountcreate")
-include(":feature:paymentaccounttype")
-include(":feature:paymentaccountname")
-include(":feature:paymentaccountamount")
-
 include(":feature:createtransaction")
