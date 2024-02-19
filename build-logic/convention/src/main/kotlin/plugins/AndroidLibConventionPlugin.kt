@@ -1,6 +1,5 @@
 package plugins
 
-import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import com.android.build.gradle.LibraryExtension
 import config.Config
 import extensions.configureAndroidKotlin

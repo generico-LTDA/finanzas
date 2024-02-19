@@ -1,7 +1,6 @@
 package com.soleel.finanzas.ui
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -30,11 +29,7 @@ import com.soleel.finanzas.navigation.TopLevelDestination
 fun FinanzasApp(
     appState: FinanzasAppState = rememberFinanzasAppState()
 ) {
-
-//    val showAddModal = remember { mutableStateOf(false) }
     val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-//    val showCancelAlert = remember { mutableStateOf(false) }
 
     Scaffold(
         modifier = Modifier,
@@ -67,7 +62,7 @@ fun FinanzasApp(
                 CancelAlertDialog(
                     onShowBottomBar = appState::showBottomBar,
                     onShowAddFloating = appState::showAddFloating,
-                    onConfirmation = appState::navigateToBack,
+                    onConfirmation = appState::backToHome,
                     onDismissRequest = appState::hideCancelAlert,
                     dialogTitle = "¿Quieres volver al inicio?",
                     dialogText = "Cancelaras la creacion actual."

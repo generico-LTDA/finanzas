@@ -7,16 +7,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
-import com.soleel.validation.validator.TransactionAmountValidator
-import com.soleel.validation.validator.CategoryTypeValidator
-import com.soleel.validation.validator.NameValidator
-import com.soleel.validation.validator.PaymentAccountTypeValidator
-import com.soleel.validation.validator.TransactionTypeValidator
+import com.soleel.common.retryflow.RetryableFlowTrigger
+import com.soleel.common.retryflow.retryableFlow
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.common.retryflow.RetryableFlowTrigger
-import com.soleel.common.retryflow.retryableFlow
+import com.soleel.validation.validator.CategoryTypeValidator
+import com.soleel.validation.validator.NameValidator
+import com.soleel.validation.validator.PaymentAccountTypeValidator
+import com.soleel.validation.validator.TransactionAmountValidator
+import com.soleel.validation.validator.TransactionTypeValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -265,7 +265,7 @@ class CreateTransactionViewModel @Inject constructor(
                     amount = createTransactionUiCreate.amount.toInt(),
                     transactionType = createTransactionUiCreate.transactionType,
                     categoryType = createTransactionUiCreate.categoryType,
-                    paymentAccountId = createTransactionUiCreate.paymentAccount.id,
+                    paymentAccountId = createTransactionUiCreate.paymentAccount.id
                 )
 
                 createTransactionUiCreate = createTransactionUiCreate.copy(

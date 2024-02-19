@@ -2,7 +2,6 @@ package plugins
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.kotlin.dsl.dependencies
 
 class AndroidAppCoreConventionPlugin : Plugin<Project>{
 
@@ -10,6 +9,7 @@ class AndroidAppCoreConventionPlugin : Plugin<Project>{
         with(project) {
             with(pluginManager) {
                 apply("conventionPluginsApp.android.lib")
+                apply("conventionPluginsApp.android.lib.compose")
                 apply("conventionPluginsApp.android.hilt")
                 apply("conventionPluginsApp.android.room")
             }

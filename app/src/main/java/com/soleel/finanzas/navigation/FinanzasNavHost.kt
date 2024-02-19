@@ -2,15 +2,15 @@ package com.soleel.finanzas.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.soleel.accounts.navigation.accountsScreen
-import com.soleel.createpaymentaccount.navigation.createPaymentAccountScreen
 import com.soleel.createtransaction.navigation.createTransactionScreen
+import com.soleel.finanzas.ui.FinanzasAppState
 import com.soleel.home.navigation.homeRoute
 import com.soleel.home.navigation.homeScreen
-import com.soleel.finanzas.ui.FinanzasAppState
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountAmountRoute
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountNameRoute
+import com.soleel.paymentaccountcreate.navigation.paymentAccountCreateGraph
 import com.soleel.profile.navigation.profileScreen
 import com.soleel.stats.navigation.statsScreen
 
@@ -37,11 +37,14 @@ fun FinanzasNavHost(
 
             profileScreen()
 
-            createPaymentAccountScreen(
+            paymentAccountCreateGraph(
+                navController = navController,
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
-                onBackClick = navController::popBackStack,
                 onCancelClick = appState::showCancelAlert,
+                onBackClick = navController::popBackStack,
+                fromTypeToName = navController::navigateToPaymentAccountNameRoute,
+                fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
             )
 
             createTransactionScreen(
@@ -54,7 +57,7 @@ fun FinanzasNavHost(
     )
 }
 
-//fun NavGraphBuilder.finanzas(navController: NavHostController) {
+//fun NavGraphBuilder.finanzas(navController: NavHostController): NavGraphBuilder {
 //    homeScreen()
 //
 //    statsScreen()
@@ -63,11 +66,16 @@ fun FinanzasNavHost(
 //
 //    profileScreen()
 //
-//    createPaymentAccountScreen(
+//    createPaymentAccountGraph(
 //        onShowBottomBar = appState::showBottomBar,
 //        onShowAddFloating = appState::showAddFloating,
 //        onBackClick = navController::popBackStack,
 //        onCancelClick = appState::showCancelAlert,
+//        nestedGraphs = {
+//            selectTypePaymentAccountScreen()
+//            enterTransactionNameScreen()
+//            enterTransactionAmountScreen()
+//        }
 //    )
 //
 //    createTransactionScreen(

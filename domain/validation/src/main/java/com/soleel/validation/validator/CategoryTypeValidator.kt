@@ -1,8 +1,8 @@
 package com.soleel.validation.validator
 
+import com.soleel.ui.R
 import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
-import com.soleel.ui.R
 
 
 class CategoryTypeValidator : InValidation<Int, ResultValidation> {

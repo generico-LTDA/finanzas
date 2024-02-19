@@ -59,12 +59,12 @@ object CategoryTypeConstant {
 
     private fun idIncomeToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
-            AccountTypeConstant.CREDIT -> listOf(
+            PaymentAccountTypeConstant.CREDIT -> listOf(
                 INCOME_TRANSFER to INCOME_TRANSFER_VALUE,
                 INCOME_OTHER to INCOME_OTHER_VALUE
             )
 
-            AccountTypeConstant.DEBIT -> listOf(
+            PaymentAccountTypeConstant.DEBIT -> listOf(
                 INCOME_TRANSFER to INCOME_TRANSFER_VALUE,
                 INCOME_SALARY to INCOME_SALARY_VALUE,
                 INCOME_SERVICE to INCOME_SERVICE_VALUE,
@@ -74,13 +74,13 @@ object CategoryTypeConstant {
                 INCOME_OTHER to INCOME_OTHER_VALUE
             )
 
-            AccountTypeConstant.SAVING,
-            AccountTypeConstant.INVESTMENT -> listOf(
+            PaymentAccountTypeConstant.SAVING,
+            PaymentAccountTypeConstant.INVESTMENT -> listOf(
                 INCOME_TRANSFER to INCOME_TRANSFER_VALUE,
                 INCOME_OTHER to INCOME_OTHER_VALUE
             )
 
-            AccountTypeConstant.CASH -> listOf(
+            PaymentAccountTypeConstant.CASH -> listOf(
                 INCOME_TRANSFER to INCOME_TRANSFER_VALUE,
                 INCOME_SALARY to INCOME_SALARY_VALUE,
                 INCOME_SERVICE to INCOME_SERVICE_VALUE,
@@ -96,7 +96,7 @@ object CategoryTypeConstant {
 
     private fun idExpeditureToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
-            AccountTypeConstant.CREDIT -> listOf(
+            PaymentAccountTypeConstant.CREDIT -> listOf(
                 EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
                 EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,
                 EXPEDITURE_ACQUISITION to EXPEDITURE_ACQUISITION_VALUE,
@@ -105,7 +105,7 @@ object CategoryTypeConstant {
                 EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
             )
 
-            AccountTypeConstant.DEBIT -> listOf(
+            PaymentAccountTypeConstant.DEBIT -> listOf(
                 EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
                 EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
                 EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,
@@ -115,13 +115,13 @@ object CategoryTypeConstant {
                 EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
             )
 
-            AccountTypeConstant.SAVING,
-            AccountTypeConstant.INVESTMENT -> listOf(
+            PaymentAccountTypeConstant.SAVING,
+            PaymentAccountTypeConstant.INVESTMENT -> listOf(
                 EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
                 EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
             )
 
-            AccountTypeConstant.CASH -> listOf(
+            PaymentAccountTypeConstant.CASH -> listOf(
                 EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
                 EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
                 EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,

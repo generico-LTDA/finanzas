@@ -1,28 +1,27 @@
 package com.soleel.finanzas.ui
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.tracing.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import androidx.tracing.trace
 import com.soleel.accounts.navigation.navigateToAccounts
-import com.soleel.createpaymentaccount.navigation.navigateToCreatePaymentAccount
 import com.soleel.createtransaction.navigation.navigateToCreateTransaction
-import com.soleel.home.navigation.homeRoute
 import com.soleel.finanzas.navigation.TopLevelDestination
-import com.soleel.finanzas.navigation.TopLevelDestination.HOME
-import com.soleel.finanzas.navigation.TopLevelDestination.STATS
 import com.soleel.finanzas.navigation.TopLevelDestination.ACCOUNTS
+import com.soleel.finanzas.navigation.TopLevelDestination.HOME
 import com.soleel.finanzas.navigation.TopLevelDestination.PROFILE
-import com.soleel.home.navigation.navigateToHome
+import com.soleel.finanzas.navigation.TopLevelDestination.STATS
+import com.soleel.home.navigation.backToHome
+import com.soleel.home.navigation.homeRoute
+import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountCreateGraph
 import com.soleel.profile.navigation.navigateToProfile
 import com.soleel.stats.navigation.navigateToStats
 import kotlinx.coroutines.CoroutineScope
@@ -110,7 +109,7 @@ class FinanzasAppState(
                 })
 
                 when (topLevelDestination) {
-                    HOME -> navController.navigateToHome(topLevelNavOptions)
+                    HOME -> navController.backToHome(topLevelNavOptions)
 
                     STATS -> navController.navigateToStats(topLevelNavOptions)
 
@@ -122,15 +121,15 @@ class FinanzasAppState(
     }
 
     fun navigateToCreatePaymentAccount() {
-        navController.navigateToCreatePaymentAccount()
+        navController.navigateToPaymentAccountCreateGraph()
     }
 
     fun navigateToCreateTransaction() {
         navController.navigateToCreateTransaction()
     }
 
-    fun navigateToBack() {
-        navController.popBackStack()
+    fun backToHome() {
+        navController.popBackStack(route = homeRoute, inclusive = false)
     }
 
     fun shouldShowBottomBar(): Boolean {
