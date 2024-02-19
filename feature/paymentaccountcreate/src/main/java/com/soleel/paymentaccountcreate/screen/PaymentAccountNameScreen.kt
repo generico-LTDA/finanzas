@@ -1,14 +1,12 @@
 package com.soleel.paymentaccountcreate.screen
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
@@ -17,17 +15,24 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soleel.paymentaccountcreate.CreatePaymentAccountCenterAlignedTopAppBar
+import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
+import com.soleel.paymentaccountcreate.util.PaymentAccountCards.getPaymentAccountCards
 import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
+import com.soleel.ui.template.PaymentAccountCard
+import com.soleel.ui.template.PaymentAccountCardItem
+import com.soleel.ui.template.PaymentAccountCreateTopAppBar
+import com.soleel.validation.validator.NameValidator
 
 
 @Composable
@@ -43,8 +48,6 @@ internal fun PaymentAccountNameRoute(
 ) {
     val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
 
-    Log.d("finanzas", "PaymentAccountNameRoute.type: ${paymentAccountCreateUi.accountType}")
-
     PaymentAccountNameScreen(
         modifier = modifier,
 
@@ -55,6 +58,22 @@ internal fun PaymentAccountNameRoute(
         onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi,
 
         fromNameToAmount = fromNameToAmount
+    )
+}
+
+@Preview
+@Composable
+internal fun PaymentAccountNameScreenPreview() {
+    PaymentAccountNameScreen(
+        modifier = Modifier,
+        onBackClick = {},
+        onCancelClick = {},
+        paymentAccountCreateUi = PaymentAccountCreateUi(
+            type = PaymentAccountTypeConstant.CREDIT,
+            name = "Inversion en bolsa",
+        ),
+        onPaymentAccountCreateEventUi = {},
+        fromNameToAmount = {}
     )
 }
 
@@ -74,7 +93,12 @@ internal fun PaymentAccountNameScreen(
     )
 
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
+        topBar = {
+            PaymentAccountCreateTopAppBar(
+                subTitle = R.string.payment_account_name_top_app_bar_subtitle,
+                onCancelClick = onCancelClick
+            )
+        },
         bottomBar = {
             Column(
                 modifier = Modifier
@@ -87,20 +111,41 @@ internal fun PaymentAccountNameScreen(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(64.dp),
-                        enabled = paymentAccountCreateUi.name.isNotBlank(),
-                        content = { Text(text = "Avanzar a amount") }
+                        enabled = null == paymentAccountCreateUi.nameError &&
+                                paymentAccountCreateUi.name.isNotBlank(),
+                        content = { Text(text = stringResource(id = R.string.next_step)) }
                     )
                 }
             )
         },
         content = {
+
+            val paymentAccountCardItem: PaymentAccountCardItem = remember(calculation = {
+                getPaymentAccountCards(
+                    paymentAccountCreateUi.type
+                )
+            })
+
+            val originTypeDescription: String = remember(calculation = {
+                paymentAccountCardItem.typeNameAccount
+            })
+
+            if (paymentAccountCreateUi.name.isNotBlank()) {
+                paymentAccountCardItem.typeNameAccount = paymentAccountCreateUi.name
+            } else {
+                paymentAccountCardItem.typeNameAccount = originTypeDescription
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-                    .padding(16.dp),
+                    .padding(top = it.calculateTopPadding()),
                 content = {
-                    EnterTransactionNameTextField(
+                    PaymentAccountCard(
+                        paymentAccountCardItem = paymentAccountCardItem,
+                        onClickEnable = false
+                    )
+                    EnterPaymentAccountNameTextField(
                         paymentAccountCreateUi = paymentAccountCreateUi,
                         onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
                     )
@@ -111,19 +156,23 @@ internal fun PaymentAccountNameScreen(
 }
 
 @Composable
-fun EnterTransactionNameTextField(
+fun EnterPaymentAccountNameTextField(
     paymentAccountCreateUi: PaymentAccountCreateUi,
     onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
 ) {
     OutlinedTextField(
         value = paymentAccountCreateUi.name,
         onValueChange = {
-            onPaymentAccountCreateEventUi(
-                PaymentAccountCreateEventUi.NameChanged(it)
-            )
+            if (it.length <= NameValidator.maxCharLimit) {
+                onPaymentAccountCreateEventUi(
+                    PaymentAccountCreateEventUi.NameChanged(it)
+                )
+            }
         },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != paymentAccountCreateUi.accountType,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        enabled = 0 != paymentAccountCreateUi.type,
         label = { Text(text = stringResource(id = R.string.attribute_name_payment_account_title)) },
         supportingText = {
             Text(

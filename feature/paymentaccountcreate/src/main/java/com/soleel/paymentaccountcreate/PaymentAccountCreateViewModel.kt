@@ -5,7 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soleel.common.constants.CategoryTypeConstant
+import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
+import com.soleel.transaction.interfaces.ITransactionLocalDataSource
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.validation.validator.AccountAmountValidator
@@ -19,20 +22,21 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PaymentAccountCreateViewModel @Inject constructor(
-    private val paymentAccountRepository: IPaymentAccountLocalDataSource
+    private val paymentAccountRepository: IPaymentAccountLocalDataSource,
+    private val transactionRepository: ITransactionLocalDataSource
 ) : ViewModel() {
 
     var paymentAccountCreateUi by mutableStateOf(PaymentAccountCreateUi())
 
+    private val accountTypeValidator = AccountTypeValidator()
     private val nameValidator = NameValidator()
     private val accountAmountValidator = AccountAmountValidator()
-    private val accountTypeValidator = AccountTypeValidator()
 
     fun onPaymentAccountCreateEventUi(event: PaymentAccountCreateEventUi) {
         when (event) {
             is PaymentAccountCreateEventUi.AccountTypeChangedUi -> {
                 paymentAccountCreateUi = paymentAccountCreateUi.copy(
-                    accountType = event.accountType
+                    type = event.accountType
                 )
                 validateAccountType()
             }
@@ -61,10 +65,10 @@ class PaymentAccountCreateViewModel @Inject constructor(
 
     private fun validateAccountType(): Boolean {
         val accountTypeResult = accountTypeValidator.execute(
-            input = paymentAccountCreateUi.accountType
+            input = paymentAccountCreateUi.type
         )
         paymentAccountCreateUi = paymentAccountCreateUi.copy(
-            accountTypeError = accountTypeResult.errorMessage
+            typeError = accountTypeResult.errorMessage
         )
         return accountTypeResult.successful
     }
@@ -90,10 +94,18 @@ class PaymentAccountCreateViewModel @Inject constructor(
         viewModelScope.launch(
             context = Dispatchers.IO,
             block = {
-                paymentAccountRepository.createPaymentAccount(
+                val paymentAccountId = paymentAccountRepository.createPaymentAccount(
                     name = paymentAccountCreateUi.name,
                     amount = paymentAccountCreateUi.amount.toInt(),
-                    accountType = paymentAccountCreateUi.accountType
+                    accountType = paymentAccountCreateUi.type
+                )
+
+                transactionRepository.createTransaction(
+                    name = "Monto inicial",
+                    amount =paymentAccountCreateUi.amount.toInt(),
+                    transactionType = TransactionTypeConstant.INCOME,
+                    categoryType = CategoryTypeConstant.INCOME_TRANSFER,
+                    paymentAccountId = paymentAccountId
                 )
 
                 paymentAccountCreateUi = paymentAccountCreateUi.copy(

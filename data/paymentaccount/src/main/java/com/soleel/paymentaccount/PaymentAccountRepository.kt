@@ -47,7 +47,7 @@ class PaymentAccountRepository @Inject constructor(
 
     override suspend fun createPaymentAccount(
         name: String,
-        initialAmount: Int,
+        amount: Int,
         accountType: Int
     ): String {
         val id = withContext(
@@ -59,7 +59,7 @@ class PaymentAccountRepository @Inject constructor(
         val paymentAccount = PaymentAccount(
             id = id,
             name = name,
-            amount = initialAmount,
+            amount = amount,
             createAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis(),
             accountType = accountType

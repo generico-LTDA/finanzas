@@ -6,29 +6,20 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.soleel.paymentaccountcreate.screen.EnterTransactionAmountTextFlied
-import com.soleel.paymentaccountcreate.screen.EnterTransactionNameTextField
 import com.soleel.paymentaccountcreate.screen.SelectTypeAccountDropdownMenu
 import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
+import com.soleel.ui.template.PaymentAccountCreateTopAppBar
 
 
 @Composable
@@ -87,16 +78,25 @@ internal fun CreatePaymentAccountScreen(
     }
 
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
+        topBar = {
+            PaymentAccountCreateTopAppBar(
+                subTitle = R.string.create_payment_account_title,
+                onCancelClick = onCancelClick
+            )
+        },
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
                         onClick = { onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.Submit) },
-                        modifier = Modifier.fillMaxWidth(0.9f).height(64.dp),
-                        enabled = 0 != paymentAccountCreateUi.accountType
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(64.dp),
+                        enabled = 0 != paymentAccountCreateUi.type
                                 && paymentAccountCreateUi.name.isNotBlank()
                                 && paymentAccountCreateUi.amount.isNotBlank(),
                         content = { Text(text = stringResource(id = R.string.add_payment_account_title)) }
@@ -120,32 +120,38 @@ internal fun CreatePaymentAccountScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun CreatePaymentAccountCenterAlignedTopAppBar(
-    onCancelClick: () -> Unit
-) {
-    CenterAlignedTopAppBar(
-        title = {
-            Text(
-                text = stringResource(id = R.string.create_payment_account_title),
-                fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
-            )
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = { onCancelClick() },
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Volver a la pantalla anterior",
-                    )
-                }
-            )
-        }
-    )
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun CreatePaymentAccountCenterAlignedTopAppBar(
+//    subTitle: Int,
+//    onCancelClick: () -> Unit
+//) {
+//    CenterAlignedTopAppBar(
+//        title = {
+//            Text(
+//                text = stringResource(id = R.string.create_payment_account_title),
+//                fontWeight = FontWeight.Bold,
+//                style = MaterialTheme.typography.titleMedium
+//            )
+//            Text(
+//                text = stringResource(id = subTitle),
+//                fontWeight = FontWeight.Bold,
+//                style = MaterialTheme.typography.titleSmall
+//            )
+//        },
+//        navigationIcon = {
+//            IconButton(
+//                onClick = { onCancelClick() },
+//                content = {
+//                    Icon(
+//                        imageVector = Icons.Filled.ArrowBack,
+//                        contentDescription = "Volver a la pantalla principal",
+//                    )
+//                }
+//            )
+//        }
+//    )
+//}
 
 //@Preview
 //@Composable
@@ -178,7 +184,7 @@ fun CreatePaymentAccountCenterAlignedTopAppBar(
 //                                        tint = Color.Black
 //                                    )
 //                                    Text(
-//                                        text = paymentAccount.accountType.toString(),
+//                                        text = paymentAccount.type.toString(),
 //                                        style = MaterialTheme.typography.titleMedium
 //                                    )
 //                                }
@@ -236,17 +242,17 @@ fun PaymentAccountCreateForm(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            EnterTransactionNameTextField(
-                paymentAccountCreateUi = paymentAccountCreateUi,
-                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
-            )
+//            EnterTransactionNameTextField(
+//                paymentAccountCreateUi = paymentAccountCreateUi,
+//                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
+//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            EnterTransactionAmountTextFlied(
-                paymentAccountCreateUi = paymentAccountCreateUi,
-                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
-            )
+//            EnterTransactionAmountTextFlied(
+//                paymentAccountCreateUi = paymentAccountCreateUi,
+//                onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
+//            )
         }
     )
 }
@@ -279,13 +285,13 @@ fun PaymentAccountCreateForm(
 //                supportingText = {
 //                    Text(
 //                        modifier = Modifier.fillMaxWidth(),
-//                        text = if (paymentAccountCreateUi.accountTypeError == null)
+//                        text = if (paymentAccountCreateUi.typeError == null)
 //                            stringResource(id = R.string.required_field) else
-//                            stringResource(id = paymentAccountCreateUi.accountTypeError!!),
+//                            stringResource(id = paymentAccountCreateUi.typeError!!),
 //                        textAlign = TextAlign.End,
 //                    )
 //                },
-//                isError = paymentAccountCreateUi.accountTypeError != null,
+//                isError = paymentAccountCreateUi.typeError != null,
 //            )
 //            ExposedDropdownMenu(
 //                modifier = Modifier
@@ -295,16 +301,16 @@ fun PaymentAccountCreateForm(
 //                onDismissRequest = { expanded = false },
 //                content = {
 //                    accountTypes.forEach(
-//                        action = { accountType ->
+//                        action = { type ->
 //                            DropdownMenuItem(
-//                                text = { Text(text = accountType.second) },
+//                                text = { Text(text = type.second) },
 //                                onClick = {
 //
-//                                    selectedOption = accountType.second
+//                                    selectedOption = type.second
 //                                    expanded = false
 //                                    onPaymentAccountCreateEventUi(
 //                                        PaymentAccountCreateEventUi.AccountTypeChangedUi(
-//                                            accountType = accountType.first
+//                                            type = type.first
 //                                        )
 //                                    )
 //                                },
@@ -331,7 +337,7 @@ fun PaymentAccountCreateForm(
 //            )
 //        },
 //        modifier = Modifier.fillMaxWidth(),
-//        enabled = 0 != paymentAccountCreateUi.accountType,
+//        enabled = 0 != paymentAccountCreateUi.type,
 //        label = { Text(text = stringResource(id = R.string.attribute_name_payment_account_title)) },
 //        supportingText = {
 //            Text(
@@ -378,7 +384,7 @@ fun PaymentAccountCreateForm(
 //            }
 //        },
 //        modifier = Modifier.fillMaxWidth(),
-//        enabled = 0 != paymentAccountCreateUi.accountType,
+//        enabled = 0 != paymentAccountCreateUi.type,
 //        label = { Text(text = stringResource(id = R.string.attribute_amount_payment_account_title)) },
 //        trailingIcon = {
 //            if (paymentAccountCreateUi.amountError != null) {

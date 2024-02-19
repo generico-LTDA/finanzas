@@ -26,14 +26,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import com.soleel.common.constants.PaymentAccountTypeConstant
-import com.soleel.paymentaccountcreate.CreatePaymentAccountCenterAlignedTopAppBar
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
 import com.soleel.paymentaccountcreate.util.PaymentAccountCards
 import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.ui.template.PaymentAccountCard
+import com.soleel.ui.template.PaymentAccountCreateTopAppBar
 
 
 @Composable
@@ -57,6 +58,18 @@ internal fun CreateSelectPaymentAccountTypeRoute(
     )
 }
 
+@Preview
+@Composable
+fun CreateSelectPaymentAccountTypeScreenPreview() {
+    CreateSelectPaymentAccountTypeScreen(
+        modifier = Modifier,
+        onCancelClick = {},
+        paymentAccountCreateUi = PaymentAccountCreateUi(),
+        onPaymentAccountCreateEventUi = {},
+        fromTypeToName = {}
+    )
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun CreateSelectPaymentAccountTypeScreen(
@@ -72,7 +85,12 @@ internal fun CreateSelectPaymentAccountTypeScreen(
     )
 
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
+        topBar = {
+            PaymentAccountCreateTopAppBar(
+                subTitle = R.string.payment_account_type_top_app_bar_subtitle,
+                onCancelClick = onCancelClick
+            )
+        },
 //        bottomBar = {
 //            Column(
 //                modifier = Modifier
@@ -85,7 +103,7 @@ internal fun CreateSelectPaymentAccountTypeScreen(
 //                        modifier = Modifier
 //                            .fillMaxWidth(0.9f)
 //                            .height(64.dp),
-//                        enabled = 0 != paymentAccountCreateUi.accountType,
+//                        enabled = 0 != paymentAccountCreateUi.type,
 //                        content = { Text(text = "Avanzar a Name") }
 //                    )
 //                }
@@ -167,13 +185,13 @@ fun SelectTypeAccountDropdownMenu(
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = if (paymentAccountCreateUi.accountTypeError == null)
+                        text = if (paymentAccountCreateUi.typeError == null)
                             stringResource(id = R.string.required_field) else
-                            stringResource(id = paymentAccountCreateUi.accountTypeError!!),
+                            stringResource(id = paymentAccountCreateUi.typeError!!),
                         textAlign = TextAlign.End,
                     )
                 },
-                isError = paymentAccountCreateUi.accountTypeError != null,
+                isError = paymentAccountCreateUi.typeError != null,
             )
             ExposedDropdownMenu(
                 modifier = Modifier

@@ -25,7 +25,8 @@ import androidx.compose.ui.unit.dp
 data class PaymentAccountCardItem(
     val type: Int,
     val typeName: String,
-    val typeDescription: String,
+    var typeNameAccount: String,
+    var amount: String = "$1,000,000",
     val letterColor: Color,
     val gradientBrush: Brush,
     val icon: Int
@@ -34,13 +35,14 @@ data class PaymentAccountCardItem(
 @Composable
 fun PaymentAccountCard(
     paymentAccountCardItem: PaymentAccountCardItem,
-    onClick: () -> Unit
+    onClick: () -> Unit = {},
+    onClickEnable: Boolean = true
 ) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .clickable(onClick = onClick),
+            .clickable(enabled = onClickEnable, onClick = onClick),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -63,7 +65,7 @@ fun PaymentAccountCard(
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Text(
-                                text = "$3.000.000",
+                                text = paymentAccountCardItem.amount,
                                 modifier = Modifier.padding(16.dp),
                                 color = paymentAccountCardItem.letterColor,
                                 style = MaterialTheme.typography.titleLarge
@@ -101,7 +103,7 @@ fun PaymentAccountCard(
                                     )
                                     Text(
                                         modifier = Modifier,
-                                        text = paymentAccountCardItem.typeDescription,
+                                        text = paymentAccountCardItem.typeNameAccount,
                                         color = paymentAccountCardItem.letterColor,
                                         style = MaterialTheme.typography.titleLarge,
                                         textAlign = TextAlign.Center

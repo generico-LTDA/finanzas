@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Info
@@ -24,15 +23,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.soleel.paymentaccountcreate.CreatePaymentAccountCenterAlignedTopAppBar
+import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
+import com.soleel.paymentaccountcreate.util.PaymentAccountCards
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
 import com.soleel.ui.state.PaymentAccountCreateEventUi
 import com.soleel.ui.state.PaymentAccountCreateUi
+import com.soleel.ui.template.PaymentAccountCard
+import com.soleel.ui.template.PaymentAccountCardItem
+import com.soleel.ui.template.PaymentAccountCreateTopAppBar
 import com.soleel.validation.validator.TransactionAmountValidator
 
 
@@ -61,6 +66,23 @@ internal fun PaymentAccountAmountRoute(
     )
 }
 
+@Preview
+@Composable
+fun PaymentAccountAmountScreenPreview() {
+    PaymentAccountAmountScreen(
+        modifier = Modifier,
+        onBackClick = {},
+        onShowBottomBar = {},
+        onShowAddFloating = {},
+        onCancelClick = {},
+        paymentAccountCreateUi = PaymentAccountCreateUi(
+            type = PaymentAccountTypeConstant.INVESTMENT,
+            amount = "$340,000"
+        ),
+        onPaymentAccountCreateEventUi = {}
+    )
+}
+
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 internal fun PaymentAccountAmountScreen(
@@ -84,33 +106,72 @@ internal fun PaymentAccountAmountScreen(
     }
 
     Scaffold(
-        topBar = { CreatePaymentAccountCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
+        topBar = {
+            PaymentAccountCreateTopAppBar(
+                subTitle = R.string.payment_account_amount_top_app_bar_subtitle,
+                onCancelClick = onCancelClick
+            )
+        },
         bottomBar = {
             Column(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
-                        onClick = {  },
-                        modifier = Modifier.fillMaxWidth(0.9f).height(64.dp),
-                        enabled = 0 != paymentAccountCreateUi.accountType
+                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.Submit) },
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .height(64.dp),
+                        enabled = 0 != paymentAccountCreateUi.type
                                 && paymentAccountCreateUi.name.isNotBlank()
                                 && paymentAccountCreateUi.amount.isNotBlank(),
-                        content = { Text(text = "guardar payment") }
+                        content = { Text(text = stringResource(id = R.string.add_payment_account_title)) }
                     )
                 }
             )
         },
         content = {
+
+            val currencyVisualTransformation by remember(calculation = {
+                mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+            })
+
+            val paymentAccountCardItem: PaymentAccountCardItem = remember(calculation = {
+                PaymentAccountCards.getPaymentAccountCards(
+                    paymentAccountCreateUi.type
+                )
+            })
+
+            paymentAccountCardItem.typeNameAccount = paymentAccountCreateUi.name
+
+            val originAmount: String = remember(calculation = {
+                paymentAccountCardItem.amount
+            })
+
+            if (paymentAccountCreateUi.amount.isNotBlank()) {
+                paymentAccountCardItem.amount = currencyVisualTransformation
+                    .filter(AnnotatedString(text = paymentAccountCreateUi.amount))
+                    .text
+                    .toString()
+            } else {
+                paymentAccountCardItem.amount = originAmount
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-                    .padding(16.dp),
+                    .padding(top = it.calculateTopPadding()),
                 content = {
-                    EnterTransactionAmountTextFlied(
+                    PaymentAccountCard(
+                        paymentAccountCardItem = paymentAccountCardItem,
+                        onClickEnable = false
+                    )
+                    EnterPaymentAccountAmountTextFlied(
                         paymentAccountCreateUi = paymentAccountCreateUi,
-                        onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi
+                        onPaymentAccountCreateEventUi = onPaymentAccountCreateEventUi,
+                        currencyVisualTransformation = currencyVisualTransformation
                     )
                 }
             )
@@ -119,31 +180,30 @@ internal fun PaymentAccountAmountScreen(
 }
 
 @Composable
-fun EnterTransactionAmountTextFlied(
+fun EnterPaymentAccountAmountTextFlied(
     paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
+    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit,
+    currencyVisualTransformation: CurrencyVisualTransformation
 ) {
-
-    val currencyVisualTransformation by remember(calculation = {
-        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
-    })
-
     OutlinedTextField(
         value = paymentAccountCreateUi.amount,
-        onValueChange = {
-            val trimmed = it
+        onValueChange = { input ->
+            val trimmed = input
                 .trimStart('0')
-                .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
+                .trim(predicate = { it.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
                 onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.AmountChanged(trimmed))
             }
         },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != paymentAccountCreateUi.accountType,
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        enabled = 0 != paymentAccountCreateUi.type
+                && paymentAccountCreateUi.name.isNotBlank(),
         label = { Text(text = stringResource(id = R.string.attribute_amount_payment_account_title)) },
         trailingIcon = {
-            if (paymentAccountCreateUi.amountError != null) {
+            if (null != paymentAccountCreateUi.amountError) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     tint = Color.Red, // Cambiar color

@@ -9,7 +9,7 @@ class NameValidator : InValidation<String, ResultValidation> {
 
     companion object {
         const val minCharLimit: Int = 8
-        const val maxCharLimit: Int = 24
+        const val maxCharLimit: Int = 32
     }
 
     override fun execute(input: String): ResultValidation {

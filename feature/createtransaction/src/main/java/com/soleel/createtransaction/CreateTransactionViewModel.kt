@@ -265,7 +265,7 @@ class CreateTransactionViewModel @Inject constructor(
                     amount = createTransactionUiCreate.amount.toInt(),
                     transactionType = createTransactionUiCreate.transactionType,
                     categoryType = createTransactionUiCreate.categoryType,
-                    paymentAccountId = createTransactionUiCreate.paymentAccount.id,
+                    paymentAccountId = createTransactionUiCreate.paymentAccount.id
                 )
 
                 createTransactionUiCreate = createTransactionUiCreate.copy(

@@ -22,58 +22,70 @@ import com.soleel.ui.util.paymentAccountCardLinearGradient
 
 object PaymentAccountCards {
 
-    private fun getPaymentAccountCards(typePaymentAccount: Int): PaymentAccountCardItem {
+    fun getPaymentAccountCards(typePaymentAccount: Int): PaymentAccountCardItem {
         return when (typePaymentAccount) {
             PaymentAccountTypeConstant.CREDIT -> PaymentAccountCardItem(
-                typePaymentAccount,
-                "CREDITO",
-                "Tarjeta de credito",
-                CreditLetterColor,
-                paymentAccountCardLinearGradient(CreditGradientColor1, CreditGradientColor2),
-                R.drawable.ic_credit
+                type = typePaymentAccount,
+                typeName = "CREDITO",
+                typeNameAccount = "Tarjeta de credito",
+                letterColor = CreditLetterColor,
+                gradientBrush = paymentAccountCardLinearGradient(
+                    CreditGradientColor1,
+                    CreditGradientColor2
+                ),
+                icon = R.drawable.ic_credit
             )
 
             PaymentAccountTypeConstant.DEBIT -> PaymentAccountCardItem(
-                typePaymentAccount,
-                "DEBITO",
-                "Tarjeta de debito",
-                DebitLetterColor,
-                paymentAccountCardLinearGradient(DebitGradientColor1, DebitGradientColor2),
-                R.drawable.ic_debit
+                type = typePaymentAccount,
+                typeName = "DEBITO",
+                typeNameAccount = "Tarjeta de debito",
+                letterColor = DebitLetterColor,
+                gradientBrush = paymentAccountCardLinearGradient(
+                    DebitGradientColor1,
+                    DebitGradientColor2
+                ),
+                icon = R.drawable.ic_debit
             )
 
 
             PaymentAccountTypeConstant.SAVING -> PaymentAccountCardItem(
-                typePaymentAccount,
-                "AHORRO",
-                "Cuenta de ahorro",
-                SavingLetterColor,
-                paymentAccountCardLinearGradient(SavingGradientColor1, SavingGradientColor2),
-                R.drawable.ic_saving
+                type = typePaymentAccount,
+                typeName = "AHORRO",
+                typeNameAccount = "Cuenta de ahorro",
+                letterColor = SavingLetterColor,
+                gradientBrush = paymentAccountCardLinearGradient(
+                    SavingGradientColor1,
+                    SavingGradientColor2
+                ),
+                icon = R.drawable.ic_saving
             )
 
 
             PaymentAccountTypeConstant.INVESTMENT -> PaymentAccountCardItem(
-                typePaymentAccount,
-                "INVERSION",
-                "Bolsa de inversion",
-                InvestmentLetterColor,
-                paymentAccountCardLinearGradient(
+                type = typePaymentAccount,
+                typeName = "INVERSION",
+                typeNameAccount = "Bolsa de inversion",
+                letterColor = InvestmentLetterColor,
+                gradientBrush = paymentAccountCardLinearGradient(
                     InvestmentGradientColor1,
                     InvestmentGradientColor2
                 ),
-                R.drawable.ic_investment
+                icon = R.drawable.ic_investment
             )
 
 //            PaymentAccountTypeConstant.CASH ->
             else ->
                 PaymentAccountCardItem(
-                    typePaymentAccount,
-                    "EFECTIVO",
-                    "Efectivo en bolsillo",
-                    CashLetterColor,
-                    paymentAccountCardLinearGradient(CashGradientColor1, CashGradientColor2),
-                    R.drawable.ic_money
+                    type = typePaymentAccount,
+                    typeName = "EFECTIVO",
+                    typeNameAccount = "Efectivo en bolsillo",
+                    letterColor = CashLetterColor,
+                    gradientBrush = paymentAccountCardLinearGradient(
+                        CashGradientColor1,
+                        CashGradientColor2
+                    ),
+                    icon = R.drawable.ic_money
                 )
         }
     }
