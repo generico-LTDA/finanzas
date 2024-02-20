@@ -103,6 +103,8 @@ internal fun PaymentAccountAmountScreen(
         onShowBottomBar()
         onShowAddFloating()
         onBackClick()
+    // TODO: Esto deberia ser FinanzasAppState.backToHome, ya que al ser onBackClick lo que esta
+    //  haciendo en verdad es invocar a navController::popBackStack
     }
 
     Scaffold(

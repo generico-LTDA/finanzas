@@ -99,14 +99,19 @@ class FinanzasAppState(
     }
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace(label = "Navigation: ${topLevelDestination.name}",
+        trace(
+            label = "Navigation: ${topLevelDestination.name}",
             block = {
-                val topLevelNavOptions = navOptions(optionsBuilder = {
-                    popUpTo(id = navController.graph.findStartDestination().id,
-                        popUpToBuilder = { saveState = true })
-                    launchSingleTop = true
-                    restoreState = true
-                })
+                val topLevelNavOptions = navOptions(
+                    optionsBuilder = {
+                        popUpTo(
+                            id = navController.graph.findStartDestination().id,
+                            popUpToBuilder = { saveState = true }
+                        )
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                )
 
                 when (topLevelDestination) {
                     HOME -> navController.backToHome(topLevelNavOptions)
@@ -117,7 +122,8 @@ class FinanzasAppState(
 
                     PROFILE -> navController.navigateToProfile(topLevelNavOptions)
                 }
-            })
+            }
+        )
     }
 
     fun navigateToCreatePaymentAccount() {

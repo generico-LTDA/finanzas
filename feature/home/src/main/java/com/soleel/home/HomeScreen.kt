@@ -1,5 +1,6 @@
 package com.soleel.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,108 +26,68 @@ import com.soleel.transaction.model.Transaction
 
 @Composable
 internal fun HomeRoute(
-    modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel()
-){
-    HomeScreen(modifier = modifier, viewModel = viewModel)
+    modifier: Modifier = Modifier, viewModel: HomeViewModel = hiltViewModel()
+) {
+    val homeUi: HomeUiState by viewModel.homeUiState.collectAsState()
+
+    HomeScreen(
+        modifier = modifier, homeUi = homeUi
+    )
 }
 
+@Preview
+@Composable
+fun HomeScreenPreview() {
+    HomeScreen(
+        modifier = Modifier.background(Color.White),
+        homeUi = HomeUiState(
+            isPaymentAccountLoading = false,
+            isPaymentAccountSuccess = true,
+            isTransactionLoading = false,
+            isTransactionSuccess = true
+        )
+    )
+}
 
 @Composable
 fun HomeScreen(
-    modifier: Modifier,
-    viewModel: HomeViewModel
+    modifier: Modifier, homeUi: HomeUiState
 ) {
-    val homeUiState: HomeUiState by viewModel.homeUiState.collectAsState()
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(Alignment.Center),
-        content = {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .wrapContentSize(Alignment.Center), content = {
 
-            if (homeUiState.isPaymentAccountLoading && homeUiState.isTransactionLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .fillMaxSize()
-                        .wrapContentSize(Alignment.Center)
+        if (homeUi.isPaymentAccountLoading && homeUi.isTransactionLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxSize()
+                    .wrapContentSize(Alignment.Center)
+            )
+        }
+
+        if (homeUi.isPaymentAccountSuccess && homeUi.isTransactionSuccess) {
+            val transactions: List<Transaction> = homeUi.itemsTransaction
+
+            if (transactions.isEmpty()) {
+                Text(
+                    text = "No existen transacciones actualmente.",
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black,
+                    modifier = Modifier.align(Alignment.CenterHorizontally),
+                    textAlign = TextAlign.Center,
+                    fontSize = 16.sp
                 )
-            }
-
-            if (homeUiState.isPaymentAccountSuccess && homeUiState.isTransactionSuccess) {
-                val transactions: List<Transaction> = homeUiState.itemsTransaction
-
-                if (transactions.isEmpty()) {
-                    Text(
-                        text = "No existen transacciones actualmente.",
-                        fontWeight = FontWeight.Bold,
-                        color = Color.Black,
-                        modifier = Modifier.align(Alignment.CenterHorizontally),
-                        textAlign = TextAlign.Center,
-                        fontSize = 16.sp
-                    )
-                } else {
-                    LazyColumn {
-                        items(transactions) { transaction ->
-                            TransactionItem(transaction)
-                        }
+            } else {
+                LazyColumn {
+                    items(transactions) { transaction ->
+                        TransactionItem(transaction)
                     }
                 }
             }
-
-
-//            when (homeUiState) {
-//                is HomeUiState.Loading -> {
-//                    // Muestra una pantalla de carga
-//                    CircularProgressIndicator(
-//                        modifier = Modifier
-//                            .padding(16.dp)
-//                            .fillMaxSize()
-//                            .wrapContentSize(Alignment.Center)
-//                    )
-//                }
-//
-//                is HomeUiState.Success<*> -> {
-//                    // Muestra los datos exitosos
-//                    val transactions: List<TransactionEntity> =
-//                        (homeUiState as HomeUiState.Success<List<TransactionEntity>>).data
-//
-//                    if (transactions.isEmpty()) {
-//                        Text(
-//                            text = "No existen transacciones actualmente.",
-//                            fontWeight = FontWeight.Bold,
-//                            color = Color.Black,
-//                            modifier = Modifier.align(Alignment.CenterHorizontally),
-//                            textAlign = TextAlign.Center,
-//                            fontSize = 16.sp
-//                        )
-//                    } else {
-//                        LazyColumn {
-//                            items(transactions) { transaction ->
-//                                TransactionItem(transaction)
-//                            }
-//                        }
-//                    }
-//                }
-
-//                is HomeUiState.Error<*> -> {
-//                    // Muestra un mensaje de error en caso de falla
-//                    val failedState: HomeUiState.Error<Exception> = homeUiState as HomeUiState.Error<Exception>
-//                    val errorMessage = failedState.error.message ?: "Error desconocido"
-//
-//                    Text(
-//                        text = "Error: $errorMessage",
-//                        fontWeight = FontWeight.Bold,
-//                        color = Color.Red,
-//                        modifier = Modifier.align(Alignment.CenterHorizontally),
-//                        textAlign = TextAlign.Center,
-//                        fontSize = 16.sp
-//                    )
-//                }
-
         }
-    )
+    })
 }
 
 @Composable

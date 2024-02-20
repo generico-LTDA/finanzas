@@ -35,7 +35,6 @@ fun ProfileScreen(
         Text(
             text = "Profile Screen",
             fontWeight = FontWeight.Bold,
-            color = Color.White,
             modifier = Modifier.align(Alignment.CenterHorizontally),
             textAlign = TextAlign.Center,
             fontSize = 20.sp

@@ -9,8 +9,6 @@ import com.soleel.common.constants.CategoryTypeConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.validation.validator.AccountAmountValidator
 import com.soleel.validation.validator.AccountTypeValidator
 import com.soleel.validation.validator.NameValidator
@@ -19,6 +17,27 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+data class PaymentAccountCreateUi(
+    val type: Int = 0,
+    val typeError: Int? = null,
+
+    val name: String = "",
+    val nameError: Int? = null,
+
+    val amount: String = "",
+    val amountError: Int? = null,
+
+    val isPaymentAccountSaved: Boolean = false
+)
+
+sealed class PaymentAccountCreateEventUi {
+    data class NameChanged(val name: String) : PaymentAccountCreateEventUi()
+    data class AmountChanged(val amount: String) : PaymentAccountCreateEventUi()
+    data class AccountTypeChangedUi(val accountType: Int) : PaymentAccountCreateEventUi()
+
+    data object Submit : PaymentAccountCreateEventUi()
+}
 
 @HiltViewModel
 class PaymentAccountCreateViewModel @Inject constructor(
