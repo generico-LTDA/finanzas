@@ -30,11 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
+import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
+import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
 import com.soleel.paymentaccountcreate.util.PaymentAccountCards
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.ui.template.PaymentAccountCard
 import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
@@ -50,7 +50,7 @@ internal fun PaymentAccountAmountRoute(
     onBackClick: () -> Unit,
     viewModel: PaymentAccountCreateViewModel
 ) {
-    val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
+    val paymentAccountCreateUi = viewModel.paymentAccountUiCreate
 
     PaymentAccountAmountScreen(
         modifier = modifier,
@@ -75,7 +75,7 @@ fun PaymentAccountAmountScreenPreview() {
         onShowBottomBar = {},
         onShowAddFloating = {},
         onCancelClick = {},
-        paymentAccountCreateUi = PaymentAccountCreateUi(
+        paymentAccountCreateUi = PaymentAccountUiCreate(
             type = PaymentAccountTypeConstant.INVESTMENT,
             amount = "$340,000"
         ),
@@ -91,8 +91,8 @@ internal fun PaymentAccountAmountScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit
 ) {
     BackHandler(
         enabled = true,
@@ -122,7 +122,7 @@ internal fun PaymentAccountAmountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
-                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.Submit) },
+                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountUiEvent.Submit) },
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(64.dp),
@@ -183,8 +183,8 @@ internal fun PaymentAccountAmountScreen(
 
 @Composable
 fun EnterPaymentAccountAmountTextFlied(
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit,
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit,
     currencyVisualTransformation: CurrencyVisualTransformation
 ) {
     OutlinedTextField(
@@ -195,7 +195,7 @@ fun EnterPaymentAccountAmountTextFlied(
                 .trim(predicate = { it.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.AmountChanged(trimmed))
+                onPaymentAccountCreateEventUi(PaymentAccountUiEvent.AmountChanged(trimmed))
             }
         },
         modifier = Modifier

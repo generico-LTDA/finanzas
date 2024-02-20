@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import androidx.tracing.trace
 import com.soleel.accounts.navigation.navigateToAccounts
-import com.soleel.createtransaction.navigation.navigateToCreateTransaction
 import com.soleel.finanzas.navigation.TopLevelDestination
 import com.soleel.finanzas.navigation.TopLevelDestination.ACCOUNTS
 import com.soleel.finanzas.navigation.TopLevelDestination.HOME
@@ -24,6 +23,7 @@ import com.soleel.home.navigation.homeRoute
 import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountCreateGraph
 import com.soleel.profile.navigation.navigateToProfile
 import com.soleel.stats.navigation.navigateToStats
+import com.soleel.transactioncreate.navigation.navigateToTransactionCreateGraph
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -131,7 +131,7 @@ class FinanzasAppState(
     }
 
     fun navigateToCreateTransaction() {
-        navController.navigateToCreateTransaction()
+        navController.navigateToTransactionCreateGraph()
     }
 
     fun backToHome() {

@@ -1,4 +1,4 @@
-package com.soleel.createtransaction
+package com.soleel.transactioncreate
 
 import org.junit.Assert.assertEquals
 import org.junit.Test

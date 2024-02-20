@@ -25,10 +25,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
+import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
+import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
 import com.soleel.paymentaccountcreate.util.PaymentAccountCards.getPaymentAccountCards
 import com.soleel.ui.R
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.ui.template.PaymentAccountCard
 import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
@@ -39,24 +39,21 @@ import com.soleel.validation.validator.NameValidator
 internal fun PaymentAccountNameRoute(
     modifier: Modifier = Modifier,
 
-    onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
+    onBackClick: () -> Unit,
 
     fromNameToAmount: () -> Unit,
 
     viewModel: PaymentAccountCreateViewModel
 ) {
-    val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
+    val paymentAccountCreateUi = viewModel.paymentAccountUiCreate
 
     PaymentAccountNameScreen(
         modifier = modifier,
-
-        onBackClick = onBackClick,
         onCancelClick = onCancelClick,
-
+        onBackClick = onBackClick,
         paymentAccountCreateUi = paymentAccountCreateUi,
         onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi,
-
         fromNameToAmount = fromNameToAmount
     )
 }
@@ -68,8 +65,8 @@ internal fun PaymentAccountNameScreenPreview() {
         modifier = Modifier,
         onBackClick = {},
         onCancelClick = {},
-        paymentAccountCreateUi = PaymentAccountCreateUi(
-            type = PaymentAccountTypeConstant.CREDIT,
+        paymentAccountCreateUi = PaymentAccountUiCreate(
+            type = PaymentAccountTypeConstant.DEBIT,
             name = "Inversion en bolsa",
         ),
         onPaymentAccountCreateEventUi = {},
@@ -81,10 +78,10 @@ internal fun PaymentAccountNameScreenPreview() {
 @Composable
 internal fun PaymentAccountNameScreen(
     modifier: Modifier,
-    onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit,
+    onBackClick: () -> Unit,
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit,
     fromNameToAmount: () -> Unit
 ) {
     BackHandler(
@@ -157,15 +154,15 @@ internal fun PaymentAccountNameScreen(
 
 @Composable
 fun EnterPaymentAccountNameTextField(
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit
 ) {
     OutlinedTextField(
         value = paymentAccountCreateUi.name,
         onValueChange = {
             if (it.length <= NameValidator.maxCharLimit) {
                 onPaymentAccountCreateEventUi(
-                    PaymentAccountCreateEventUi.NameChanged(it)
+                    PaymentAccountUiEvent.NameChanged(it)
                 )
             }
         },

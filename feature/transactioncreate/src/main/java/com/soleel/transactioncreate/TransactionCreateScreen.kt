@@ -1,4 +1,4 @@
-package com.soleel.createtransaction
+package com.soleel.transactioncreate
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
@@ -54,7 +54,7 @@ import com.soleel.validation.validator.TransactionAmountValidator
 
 
 @Composable
-internal fun CreateTransactionRoute(
+internal fun TransactionCreateRoute(
     modifier: Modifier = Modifier,
 
     onShowBottomBar: () -> Unit,
@@ -63,12 +63,12 @@ internal fun CreateTransactionRoute(
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
 
-    viewModel: CreateTransactionViewModel = hiltViewModel()
+    viewModel: TransactionCreateViewModel = hiltViewModel()
 ) {
-    val createTransactionUiCreate = viewModel.createTransactionUiCreate
+    val createTransactionUiCreate = viewModel.transactionUiCreate
     val paymentAccountsUiState by viewModel.paymentAccountsUiState.collectAsStateWithLifecycle()
 
-    CreateTransactionScreen(
+    TransactionCreateScreen(
         modifier = modifier,
 
         onShowBottomBar = onShowBottomBar,
@@ -80,13 +80,13 @@ internal fun CreateTransactionRoute(
         createTransactionUiCreate = createTransactionUiCreate,
         paymentAccountsUiState = paymentAccountsUiState,
 
-        onCreateTransactionUiEvent = viewModel::onCreateTransactionUiEvent,
+        onCreateTransactionUiEvent = viewModel::onTransactionCreateUiEvent,
         onPaymentAccountsUiEvent = viewModel::onPaymentAccountsUiEvent
     )
 }
 
 @Composable
-private fun CreateTransactionScreen(
+private fun TransactionCreateScreen(
     modifier: Modifier,
 
     onShowBottomBar: () -> Unit,
@@ -95,10 +95,10 @@ private fun CreateTransactionScreen(
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
 
-    createTransactionUiCreate: CreateTransactionUiCreate,
+    createTransactionUiCreate: TransactionUiCreate,
     paymentAccountsUiState: PaymentAccountsUiState,
 
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
     onPaymentAccountsUiEvent: (PaymentAccountsUiEvent) -> Unit
 ) {
 
@@ -123,7 +123,7 @@ private fun CreateTransactionScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
-                        onClick = { onCreateTransactionUiEvent(CreateTransactionUiEvent.Submit) },
+                        onClick = { onCreateTransactionUiEvent(TransactionUiEvent.Submit) },
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(64.dp),
@@ -163,10 +163,10 @@ private fun CreateTransactionScreen(
 private fun CreateTransactionSuccessScreen(
     modifier: Modifier,
 
-    createTransactionUiCreate: CreateTransactionUiCreate,
+    createTransactionUiCreate: TransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
 
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
     paddingValues: PaddingValues
 ) {
     Column(
@@ -212,9 +212,9 @@ fun CreateTransactionCenterAlignedTopAppBar(
 
 @Composable
 fun CreateTransactionForm(
-    createTransactionUiCreate: CreateTransactionUiCreate,
+    createTransactionUiCreate: TransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit
 ) {
 
     var selectedPaymentAccountOption by remember(calculation = { mutableStateOf("") })
@@ -317,9 +317,9 @@ fun CreateTransactionForm(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectPaymentAccountDropdownMenu(
-    createTransactionUiCreate: CreateTransactionUiCreate,
+    createTransactionUiCreate: TransactionUiCreate,
     paymentAccounts: List<PaymentAccount>,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
 
     currencyVisualTransformation: CurrencyVisualTransformation,
 
@@ -386,7 +386,7 @@ fun SelectPaymentAccountDropdownMenu(
                                     changeExpandedPaymentAccount(false)
 
                                     onCreateTransactionUiEvent(
-                                        CreateTransactionUiEvent.PaymentAccountChanged(
+                                        TransactionUiEvent.PaymentAccountChanged(
                                             paymentAccount = paymentAccount
                                         )
                                     )
@@ -406,8 +406,8 @@ fun SelectPaymentAccountDropdownMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectTransactionTypeDropdownMenu(
-    createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    createTransactionUiCreate: TransactionUiCreate,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
 
     selectedTransactionTypeOption: String,
     changeSelectedTransactionTypeOption: (String) -> Unit,
@@ -460,7 +460,7 @@ fun SelectTransactionTypeDropdownMenu(
                                     changeSelectedTransactionTypeOption(transactionType.second)
                                     changeExpandedTransactionType(false)
                                     onCreateTransactionUiEvent(
-                                        CreateTransactionUiEvent.TransactionTypeChanged(
+                                        TransactionUiEvent.TransactionTypeChanged(
                                             transactionType = transactionType.first
                                         )
                                     )
@@ -479,8 +479,8 @@ fun SelectTransactionTypeDropdownMenu(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SelectCategoryTypeDropdownMenu(
-    createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    createTransactionUiCreate: TransactionUiCreate,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
 
     selectedCategoryTypeOption: String,
     changeSelectedCategoryTypeOption: (String) -> Unit,
@@ -534,7 +534,7 @@ fun SelectCategoryTypeDropdownMenu(
                                     changeSelectedCategoryTypeOption(categoryType.second)
                                     changeExpandedCategoryType(false)
                                     onCreateTransactionUiEvent(
-                                        CreateTransactionUiEvent.CategoryTypeChanged(
+                                        TransactionUiEvent.CategoryTypeChanged(
                                             categoryType = categoryType.first
                                         )
                                     )
@@ -551,14 +551,14 @@ fun SelectCategoryTypeDropdownMenu(
 
 @Composable
 fun EnterTransactionNameTextField(
-    createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit
+    createTransactionUiCreate: TransactionUiCreate,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit
 ) {
     OutlinedTextField(
         value = createTransactionUiCreate.name,
         onValueChange = {
             onCreateTransactionUiEvent(
-                CreateTransactionUiEvent.NameChanged(
+                TransactionUiEvent.NameChanged(
                     it
                 )
             )
@@ -591,8 +591,8 @@ fun EnterTransactionNameTextField(
 
 @Composable
 fun EnterTransactionAmountTextFlied(
-    createTransactionUiCreate: CreateTransactionUiCreate,
-    onCreateTransactionUiEvent: (CreateTransactionUiEvent) -> Unit,
+    createTransactionUiCreate: TransactionUiCreate,
+    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
 
     currencyVisualTransformation: CurrencyVisualTransformation,
 ) {
@@ -604,7 +604,7 @@ fun EnterTransactionAmountTextFlied(
                 .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onCreateTransactionUiEvent(CreateTransactionUiEvent.AmountChanged(trimmed))
+                onCreateTransactionUiEvent(TransactionUiEvent.AmountChanged(trimmed))
             }
         },
         modifier = Modifier.fillMaxWidth(),

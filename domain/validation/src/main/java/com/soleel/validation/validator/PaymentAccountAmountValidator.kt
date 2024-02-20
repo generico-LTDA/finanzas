@@ -5,7 +5,7 @@ import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
 
 
-class AccountAmountValidator : InValidation<String, ResultValidation> {
+class PaymentAccountAmountValidator : InValidation<String, ResultValidation> {
 
     companion object {
         const val maxCharLimit: Int = 8

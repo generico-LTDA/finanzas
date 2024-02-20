@@ -4,7 +4,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import com.soleel.accounts.navigation.accountsScreen
-import com.soleel.createtransaction.navigation.createTransactionScreen
 import com.soleel.finanzas.ui.FinanzasAppState
 import com.soleel.home.navigation.homeRoute
 import com.soleel.home.navigation.homeScreen
@@ -13,6 +12,11 @@ import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountNameRo
 import com.soleel.paymentaccountcreate.navigation.paymentAccountCreateGraph
 import com.soleel.profile.navigation.profileScreen
 import com.soleel.stats.navigation.statsScreen
+import com.soleel.transactioncreate.navigation.navigateToTransactionAmountRoute
+import com.soleel.transactioncreate.navigation.navigateToTransactionCategoryRoute
+import com.soleel.transactioncreate.navigation.navigateToTransactionNameRoute
+import com.soleel.transactioncreate.navigation.navigateToTransactionTypeRoute
+import com.soleel.transactioncreate.navigation.transactionCreateGraph
 
 
 @Composable
@@ -47,11 +51,16 @@ fun FinanzasNavHost(
                 fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
             )
 
-            createTransactionScreen(
+            transactionCreateGraph(
+                navController = navController,
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
                 onBackClick = appState::backToHome,
-                onCancelClick = appState::showCancelAlert
+                onCancelClick = appState::showCancelAlert,
+                fromPaymentAccountToType = navController::navigateToTransactionTypeRoute,
+                fromTypeToCategory = navController::navigateToTransactionCategoryRoute,
+                fromCategoryToName = navController::navigateToTransactionNameRoute,
+                fromNameToAmount = navController::navigateToTransactionAmountRoute,
             )
         }
     )
@@ -78,7 +87,7 @@ fun FinanzasNavHost(
 //        }
 //    )
 //
-//    createTransactionScreen(
+//    transactionCreateScreen(
 //        onShowBottomBar = appState::showBottomBar,
 //        onShowAddFloating = appState::showAddFloating,
 //        onBackClick = navController::popBackStack,

@@ -12,5 +12,5 @@ dependencies {
     implementation(projects.feature.addmodal)
     implementation(projects.feature.cancelalert)
     implementation(projects.feature.paymentaccountcreate)
-    implementation(projects.feature.createtransaction)
+    implementation(projects.feature.transactioncreate)
 }

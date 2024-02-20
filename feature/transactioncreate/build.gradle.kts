@@ -3,5 +3,5 @@ plugins {
 }
 
 android {
-    namespace = "com.soleel.createtransaction"
+    namespace = "com.soleel.transactioncreate"
 }
