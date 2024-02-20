@@ -41,8 +41,8 @@ fun FinanzasNavHost(
                 navController = navController,
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
+                onBackClick = appState::backToHome,
                 onCancelClick = appState::showCancelAlert,
-                onBackClick = navController::popBackStack,
                 fromTypeToName = navController::navigateToPaymentAccountNameRoute,
                 fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
             )
@@ -50,8 +50,8 @@ fun FinanzasNavHost(
             createTransactionScreen(
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
-                onBackClick = navController::popBackStack,
-                onCancelClick = appState::showCancelAlert,
+                onBackClick = appState::backToHome,
+                onCancelClick = appState::showCancelAlert
             )
         }
     )
