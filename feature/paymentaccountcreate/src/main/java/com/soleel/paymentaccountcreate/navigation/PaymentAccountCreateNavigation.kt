@@ -42,6 +42,7 @@ fun NavGraphBuilder.paymentAccountCreateGraph(
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
     fromTypeToName: () -> Unit,
     fromNameToAmount: () -> Unit,
 ) {
@@ -65,7 +66,8 @@ fun NavGraphBuilder.paymentAccountCreateGraph(
                 onShowBottomBar = onShowBottomBar,
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onSaveClick = onSaveClick
             )
         }
     )
@@ -136,7 +138,8 @@ fun NavGraphBuilder.paymentAccountAmountScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     composable(
         route = paymentAccountAmountRoute,
@@ -158,6 +161,7 @@ fun NavGraphBuilder.paymentAccountAmountScreen(
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
                 onBackClick = onBackClick,
+                onSaveClick = onSaveClick,
                 viewModel = viewModel
             )
         }

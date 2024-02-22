@@ -191,7 +191,7 @@ fun CreateTransactionCenterAlignedTopAppBar(
     CenterAlignedTopAppBar(
         title = {
             Text(
-                text = stringResource(id = R.string.create_trasaction_title),
+                text = stringResource(id = R.string.payment_account_create_title),
                 fontWeight = FontWeight.Bold,
                 style = MaterialTheme.typography.titleMedium
             )
@@ -565,7 +565,7 @@ fun EnterTransactionNameTextField(
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = 0 != createTransactionUiCreate.categoryType,
-        label = { Text(text = stringResource(id = R.string.attribute_name_trasaction_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -609,7 +609,7 @@ fun EnterTransactionAmountTextFlied(
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = 0 != createTransactionUiCreate.categoryType,
-        label = { Text(text = stringResource(id = R.string.attribute_amount_trasaction_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
         trailingIcon = {
             if (createTransactionUiCreate.amountError != null) {
                 Icon(

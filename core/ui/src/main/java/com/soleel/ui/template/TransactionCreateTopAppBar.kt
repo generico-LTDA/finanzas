@@ -22,8 +22,8 @@ import com.soleel.ui.R
 
 @Preview
 @Composable
-fun PaymentAccountCreateTopAppBarPreview() {
-    PaymentAccountCreateTopAppBar(
+fun TransactionCreateTopAppBarPreview() {
+    TransactionCreateTopAppBar(
         subTitle = R.string.payment_account_type_top_app_bar_subtitle,
         onCancelClick = {}
     )
@@ -31,7 +31,7 @@ fun PaymentAccountCreateTopAppBarPreview() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PaymentAccountCreateTopAppBar(
+fun TransactionCreateTopAppBar(
     subTitle: Int,
     onCancelClick: () -> Unit
 ) {
@@ -42,7 +42,7 @@ fun PaymentAccountCreateTopAppBar(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Text(
-                        text = stringResource(id = R.string.payment_account_create_title),
+                        text = stringResource(id = R.string.trasaction_create_title),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )

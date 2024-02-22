@@ -45,8 +45,9 @@ fun FinanzasNavHost(
                 navController = navController,
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
-                onBackClick = appState::backToHome,
+                onBackClick = navController::popBackStack,
                 onCancelClick = appState::showCancelAlert,
+                onSaveClick = appState::backToHome,
                 fromTypeToName = navController::navigateToPaymentAccountNameRoute,
                 fromNameToAmount = navController::navigateToPaymentAccountAmountRoute
             )
@@ -55,8 +56,9 @@ fun FinanzasNavHost(
                 navController = navController,
                 onShowBottomBar = appState::showBottomBar,
                 onShowAddFloating = appState::showAddFloating,
-                onBackClick = appState::backToHome,
+                onBackClick = navController::popBackStack,
                 onCancelClick = appState::showCancelAlert,
+                onSaveClick = appState::backToHome,
                 fromPaymentAccountToType = navController::navigateToTransactionTypeRoute,
                 fromTypeToCategory = navController::navigateToTransactionCategoryRoute,
                 fromCategoryToName = navController::navigateToTransactionNameRoute,

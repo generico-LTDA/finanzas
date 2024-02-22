@@ -170,7 +170,7 @@ fun EnterPaymentAccountNameTextField(
             .fillMaxWidth()
             .padding(16.dp),
         enabled = 0 != paymentAccountCreateUi.type,
-        label = { Text(text = stringResource(id = R.string.attribute_name_payment_account_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),

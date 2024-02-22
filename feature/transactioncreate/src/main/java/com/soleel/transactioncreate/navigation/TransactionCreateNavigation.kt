@@ -55,6 +55,7 @@ fun NavGraphBuilder.transactionCreateGraph(
     onShowAddFloating: () -> Unit,
     onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
+    onSaveClick: () -> Unit,
     fromPaymentAccountToType: () -> Unit,
     fromTypeToCategory: () -> Unit,
     fromCategoryToName: () -> Unit,
@@ -92,7 +93,8 @@ fun NavGraphBuilder.transactionCreateGraph(
                 onShowBottomBar = onShowBottomBar,
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onSaveClick = onSaveClick
             )
         }
     )
@@ -239,6 +241,7 @@ fun NavGraphBuilder.transactionAmountRoute(
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
 ) {
     composable(
         route = transactionAmountRoute,
@@ -260,6 +263,7 @@ fun NavGraphBuilder.transactionAmountRoute(
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
                 onBackClick = onBackClick,
+                onSaveClick = onSaveClick,
                 viewModel = viewModel
             )
         }

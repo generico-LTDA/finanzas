@@ -48,6 +48,7 @@ internal fun PaymentAccountAmountRoute(
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
     viewModel: PaymentAccountCreateViewModel
 ) {
     val paymentAccountCreateUi = viewModel.paymentAccountUiCreate
@@ -60,6 +61,7 @@ internal fun PaymentAccountAmountRoute(
 
         onBackClick = onBackClick,
         onCancelClick = onCancelClick,
+        onSaveClick = onSaveClick,
 
         paymentAccountCreateUi = paymentAccountCreateUi,
         onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi
@@ -75,6 +77,7 @@ fun PaymentAccountAmountScreenPreview() {
         onShowBottomBar = {},
         onShowAddFloating = {},
         onCancelClick = {},
+        onSaveClick = {},
         paymentAccountCreateUi = PaymentAccountUiCreate(
             type = PaymentAccountTypeConstant.INVESTMENT,
             amount = "$340,000"
@@ -91,6 +94,7 @@ internal fun PaymentAccountAmountScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
+    onSaveClick: () -> Unit,
     paymentAccountCreateUi: PaymentAccountUiCreate,
     onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit
 ) {
@@ -102,9 +106,7 @@ internal fun PaymentAccountAmountScreen(
     if (paymentAccountCreateUi.isPaymentAccountSaved) {
         onShowBottomBar()
         onShowAddFloating()
-        onBackClick()
-    // TODO: Esto deberia ser FinanzasAppState.backToHome, ya que al ser onBackClick lo que esta
-    //  haciendo en verdad es invocar a navController::popBackStack
+        onSaveClick()
     }
 
     Scaffold(
@@ -129,7 +131,7 @@ internal fun PaymentAccountAmountScreen(
                         enabled = 0 != paymentAccountCreateUi.type
                                 && paymentAccountCreateUi.name.isNotBlank()
                                 && paymentAccountCreateUi.amount.isNotBlank(),
-                        content = { Text(text = stringResource(id = R.string.add_payment_account_title)) }
+                        content = { Text(text = stringResource(id = R.string.add_payment_account_button)) }
                     )
                 }
             )
@@ -203,7 +205,7 @@ fun EnterPaymentAccountAmountTextFlied(
             .padding(16.dp),
         enabled = 0 != paymentAccountCreateUi.type
                 && paymentAccountCreateUi.name.isNotBlank(),
-        label = { Text(text = stringResource(id = R.string.attribute_amount_payment_account_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
         trailingIcon = {
             if (null != paymentAccountCreateUi.amountError) {
                 Icon(
