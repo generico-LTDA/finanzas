@@ -23,7 +23,6 @@ import com.soleel.transactioncreate.TransactionCreateViewModel
 import com.soleel.transactioncreate.TransactionUiCreate
 import com.soleel.transactioncreate.TransactionUiEvent
 import com.soleel.ui.R
-import com.soleel.ui.template.PaymentAccountCreateTopAppBar
 import com.soleel.ui.template.TransactionCreateTopAppBar
 
 
@@ -78,7 +77,7 @@ fun TransactionNameScreen(
         topBar = {
             TransactionCreateTopAppBar(
                 subTitle = R.string.trasaction_name_top_app_bar_subtitle,
-                onCancelClick = onCancelClick
+                onClick = onCancelClick
             )
         },
         bottomBar = {

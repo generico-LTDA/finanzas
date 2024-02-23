@@ -1,5 +1,6 @@
 package com.soleel.transactioncreate
 
+import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,17 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
@@ -50,113 +48,76 @@ import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
+import com.soleel.ui.template.TransactionCreateTopAppBar
 import com.soleel.validation.validator.TransactionAmountValidator
 
 
 @Composable
 internal fun TransactionCreateRoute(
     modifier: Modifier = Modifier,
-
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
-
     onBackClick: () -> Unit,
-    onCancelClick: () -> Unit,
-
+    fromInitToPaymentAccount: () -> Unit,
     viewModel: TransactionCreateViewModel = hiltViewModel()
 ) {
-    val createTransactionUiCreate = viewModel.transactionUiCreate
     val paymentAccountsUiState by viewModel.paymentAccountsUiState.collectAsStateWithLifecycle()
 
     TransactionCreateScreen(
         modifier = modifier,
-
         onShowBottomBar = onShowBottomBar,
         onShowAddFloating = onShowAddFloating,
-
         onBackClick = onBackClick,
-        onCancelClick = onCancelClick,
-
-        createTransactionUiCreate = createTransactionUiCreate,
+        fromInitToPaymentAccount = fromInitToPaymentAccount,
         paymentAccountsUiState = paymentAccountsUiState,
-
-        onCreateTransactionUiEvent = viewModel::onTransactionCreateUiEvent,
         onPaymentAccountsUiEvent = viewModel::onPaymentAccountsUiEvent
     )
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 private fun TransactionCreateScreen(
     modifier: Modifier,
-
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
-
     onBackClick: () -> Unit,
-    onCancelClick: () -> Unit,
-
-    createTransactionUiCreate: TransactionUiCreate,
+    fromInitToPaymentAccount: () -> Unit,
     paymentAccountsUiState: PaymentAccountsUiState,
-
-    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
     onPaymentAccountsUiEvent: (PaymentAccountsUiEvent) -> Unit
 ) {
 
     BackHandler(
         enabled = true,
-        onBack = { onCancelClick() }
+        onBack = {
+            onShowBottomBar()
+            onShowAddFloating()
+            onBackClick()
+        }
     )
 
-    if (createTransactionUiCreate.isTransactionSaved) {
-        onShowBottomBar()
-        onShowAddFloating()
-        onBackClick()
-    }
-
     Scaffold(
-        topBar = { CreateTransactionCenterAlignedTopAppBar(onCancelClick = onCancelClick) },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                content = {
-                    Button(
-                        onClick = { onCreateTransactionUiEvent(TransactionUiEvent.Submit) },
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .height(64.dp),
-                        enabled = createTransactionUiCreate.paymentAccount.id.isNotBlank()
-                                && 0 != createTransactionUiCreate.transactionType
-                                && 0 != createTransactionUiCreate.categoryType
-                                && createTransactionUiCreate.name.isNotBlank()
-                                && createTransactionUiCreate.amount.isNotBlank(),
-                        content = { Text(text = stringResource(id = R.string.add_trasaction_title)) }
-                    )
+        topBar = {
+            TransactionCreateTopAppBar(
+                onClick = {
+                    onShowBottomBar()
+                    onShowAddFloating()
+                    onBackClick()
                 }
             )
         },
         content = {
             when (paymentAccountsUiState) {
-                is PaymentAccountsUiState.Success -> CreateTransactionSuccessScreen(
-                    modifier = modifier,
-                    createTransactionUiCreate = createTransactionUiCreate,
-                    paymentAccounts = paymentAccountsUiState.paymentAccounts,
-                    onCreateTransactionUiEvent = onCreateTransactionUiEvent,
-                    paddingValues = it
-                )
+                is PaymentAccountsUiState.Success -> fromInitToPaymentAccount()
 
                 is PaymentAccountsUiState.Error -> CreateTransactionErrorScreen(
                     modifier = modifier,
                     onRetry = { onPaymentAccountsUiEvent(PaymentAccountsUiEvent.Retry) }
                 )
 
-                is PaymentAccountsUiState.Loading -> CreateTransactionLoadingScreen()
+                is PaymentAccountsUiState.Loading -> TransactionCreateLoadingScreen()
             }
         }
     )
-
 }
 
 @Composable
@@ -183,32 +144,62 @@ private fun CreateTransactionSuccessScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateTransactionCenterAlignedTopAppBar(
-    onCancelClick: () -> Unit
+fun CreateTransactionErrorScreen(
+    modifier: Modifier = Modifier,
+    onRetry: () -> Unit
 ) {
-    CenterAlignedTopAppBar(
-        title = {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .then(modifier),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.padding(16.dp)
+        ) {
             Text(
-                text = stringResource(id = R.string.payment_account_create_title),
+                text = "Error de carga",
+                style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                style = MaterialTheme.typography.titleMedium
+                color = MaterialTheme.colorScheme.error
             )
-        },
-        navigationIcon = {
-            IconButton(
-                onClick = { onCancelClick() },
-                content = {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "Volver a la pantalla anterior",
-                    )
-                }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = "Hubo un problema al cargar los datos. Inténtalo de nuevo.",
+                style = MaterialTheme.typography.bodySmall,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(onClick = onRetry) {
+                Text("Reintentar")
+            }
+        }
+    }
+}
+
+@Composable
+fun TransactionCreateLoadingScreen() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+        content = {
+            CircularProgressIndicator(
+                color = ProgressIndicatorDefaults.circularColor,
+                strokeWidth = 5.dp,
+                trackColor = ProgressIndicatorDefaults.circularTrackColor,
+                strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
             )
         }
     )
 }
+
 
 @Composable
 fun CreateTransactionForm(
@@ -635,58 +626,3 @@ fun EnterTransactionAmountTextFlied(
     )
 }
 
-@Composable
-fun CreateTransactionErrorScreen(
-    modifier: Modifier = Modifier,
-    onRetry: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .then(modifier),
-        contentAlignment = Alignment.Center
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.padding(16.dp)
-        ) {
-            Text(
-                text = "Error de carga",
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.error
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "Hubo un problema al cargar los datos. Inténtalo de nuevo.",
-                style = MaterialTheme.typography.bodySmall,
-                textAlign = TextAlign.Center
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Button(onClick = onRetry) {
-                Text("Reintentar")
-            }
-        }
-    }
-}
-
-@Composable
-fun CreateTransactionLoadingScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-        content = {
-            CircularProgressIndicator(
-                color = ProgressIndicatorDefaults.circularColor,
-                strokeWidth = 5.dp,
-                trackColor = ProgressIndicatorDefaults.circularTrackColor,
-                strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
-            )
-        }
-    )
-}

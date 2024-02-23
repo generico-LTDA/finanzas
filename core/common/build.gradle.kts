@@ -5,7 +5,3 @@ plugins {
 android {
     namespace = "com.soleel.common"
 }
-
-dependencies {
-//    implementation(projects.core)
-}

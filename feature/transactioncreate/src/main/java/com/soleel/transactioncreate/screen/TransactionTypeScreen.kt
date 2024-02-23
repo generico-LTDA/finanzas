@@ -23,7 +23,6 @@ import com.soleel.transactioncreate.TransactionCreateViewModel
 import com.soleel.transactioncreate.TransactionUiCreate
 import com.soleel.transactioncreate.TransactionUiEvent
 import com.soleel.ui.R
-import com.soleel.ui.template.PaymentAccountCreateTopAppBar
 import com.soleel.ui.template.TransactionCreateTopAppBar
 
 
@@ -59,7 +58,6 @@ fun TransactionTypeScreenPreview() {
     )
 }
 
-
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun TransactionTypeScreen(
@@ -79,7 +77,7 @@ fun TransactionTypeScreen(
         topBar = {
             TransactionCreateTopAppBar(
                 subTitle = R.string.trasaction_type_top_app_bar_subtitle,
-                onCancelClick = onCancelClick
+                onClick = onCancelClick
             )
         },
         bottomBar = {
@@ -116,6 +114,5 @@ fun TransactionTypeScreen(
             }
         }
     )
-
 
 }

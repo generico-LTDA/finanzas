@@ -91,7 +91,7 @@ fun TransactionAmountScreen(
         topBar = {
             TransactionCreateTopAppBar(
                 subTitle = R.string.trasaction_amount_top_app_bar_subtitle,
-                onCancelClick = onCancelClick
+                onClick = onCancelClick
             )
         },
         bottomBar = {

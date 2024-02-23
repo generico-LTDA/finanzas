@@ -15,6 +15,7 @@ import com.soleel.stats.navigation.statsScreen
 import com.soleel.transactioncreate.navigation.navigateToTransactionAmountRoute
 import com.soleel.transactioncreate.navigation.navigateToTransactionCategoryRoute
 import com.soleel.transactioncreate.navigation.navigateToTransactionNameRoute
+import com.soleel.transactioncreate.navigation.navigateToTransactionPaymentAccountRoute
 import com.soleel.transactioncreate.navigation.navigateToTransactionTypeRoute
 import com.soleel.transactioncreate.navigation.transactionCreateGraph
 
@@ -59,6 +60,7 @@ fun FinanzasNavHost(
                 onBackClick = navController::popBackStack,
                 onCancelClick = appState::showCancelAlert,
                 onSaveClick = appState::backToHome,
+                fromInitToPaymentAccount = navController::navigateToTransactionPaymentAccountRoute,
                 fromPaymentAccountToType = navController::navigateToTransactionTypeRoute,
                 fromTypeToCategory = navController::navigateToTransactionCategoryRoute,
                 fromCategoryToName = navController::navigateToTransactionNameRoute,

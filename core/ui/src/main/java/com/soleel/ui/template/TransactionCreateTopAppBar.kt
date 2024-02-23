@@ -2,7 +2,6 @@ package com.soleel.ui.template
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -13,27 +12,24 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.soleel.ui.R
 
 @Preview
 @Composable
 fun TransactionCreateTopAppBarPreview() {
     TransactionCreateTopAppBar(
-        subTitle = R.string.payment_account_type_top_app_bar_subtitle,
-        onCancelClick = {}
-    )
+        subTitle = R.string.payment_account_type_top_app_bar_subtitle
+    ) {}
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionCreateTopAppBar(
-    subTitle: Int,
-    onCancelClick: () -> Unit
+    subTitle: Int? = null,
+    onClick: () -> Unit
 ) {
     CenterAlignedTopAppBar(
         title = {
@@ -46,17 +42,20 @@ fun TransactionCreateTopAppBar(
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleMedium
                     )
-                    Text(
-                        text = stringResource(id = subTitle),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleSmall
-                    )
+
+                    if (null != subTitle) {
+                        Text(
+                            text = stringResource(id = subTitle),
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleSmall
+                        )
+                    }
                 }
             )
         },
         navigationIcon = {
             IconButton(
-                onClick = { onCancelClick() },
+                onClick = { onClick() },
                 content = {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,

@@ -27,11 +27,11 @@ import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
 import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
 import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
-import com.soleel.paymentaccountcreate.util.PaymentAccountCards.getPaymentAccountCards
 import com.soleel.ui.R
 import com.soleel.ui.template.PaymentAccountCard
 import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
+import com.soleel.ui.template.getPaymentAccountCard
 import com.soleel.validation.validator.NameValidator
 
 
@@ -66,7 +66,7 @@ internal fun PaymentAccountNameScreenPreview() {
         onBackClick = {},
         onCancelClick = {},
         paymentAccountCreateUi = PaymentAccountUiCreate(
-            type = PaymentAccountTypeConstant.DEBIT,
+            type = PaymentAccountTypeConstant.CREDIT,
             name = "Inversion en bolsa",
         ),
         onPaymentAccountCreateEventUi = {},
@@ -118,7 +118,7 @@ internal fun PaymentAccountNameScreen(
         content = {
 
             val paymentAccountCardItem: PaymentAccountCardItem = remember(calculation = {
-                getPaymentAccountCards(
+                getPaymentAccountCard(
                     paymentAccountCreateUi.type
                 )
             })

@@ -128,13 +128,12 @@ fun SelectPaymentAccountType(
                     PaymentAccountCard(
                         paymentAccountCardItem = paymentAccountCard,
                         onClick = {
-                            fromTypeToName()
                             onPaymentAccountCreateEventUi(
                                 PaymentAccountUiEvent.TypeChanged(
                                     accountType = paymentAccountCard.type
                                 )
                             )
-
+                            fromTypeToName()
                         }
                     )
                 }
