@@ -43,7 +43,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.soleel.common.constants.CategoryTypeConstant
+import com.soleel.common.constants.TransactionCategoryConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
@@ -479,7 +479,7 @@ fun SelectCategoryTypeDropdownMenu(
     expandedCategoryType: Boolean,
     changeExpandedCategoryType: (Boolean) -> Unit
 ) {
-    val categoryTypes: List<Pair<Int, String>> = CategoryTypeConstant.idToValueList(
+    val categoryTypes: List<Pair<Int, String>> = TransactionCategoryConstant.idToValueList(
         transactionType = createTransactionUiCreate.transactionType,
         accountType = createTransactionUiCreate.paymentAccount.accountType
     )

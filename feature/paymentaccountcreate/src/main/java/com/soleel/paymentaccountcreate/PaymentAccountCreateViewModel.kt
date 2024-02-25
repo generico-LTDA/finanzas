@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soleel.common.constants.CategoryTypeConstant
+import com.soleel.common.constants.TransactionCategoryConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
@@ -123,7 +123,7 @@ class PaymentAccountCreateViewModel @Inject constructor(
                     name = "Monto inicial",
                     amount =paymentAccountUiCreate.amount.toInt(),
                     transactionType = TransactionTypeConstant.INCOME,
-                    categoryType = CategoryTypeConstant.INCOME_TRANSFER,
+                    categoryType = TransactionCategoryConstant.INCOME_TRANSFER,
                     paymentAccountId = paymentAccountId
                 )
 

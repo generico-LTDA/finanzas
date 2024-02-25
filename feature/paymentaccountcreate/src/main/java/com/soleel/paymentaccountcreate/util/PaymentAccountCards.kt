@@ -6,7 +6,7 @@ import com.soleel.ui.util.getPaymentAccountCard
 
 object PaymentAccountCards {
     val cardsList: List<PaymentAccountCardItem> = PaymentAccountTypeConstant.idToValueList.map(
-        transform = { getPaymentAccountCard(typePaymentAccount = it.first) }
+        transform = { getPaymentAccountCard(paymentAccountType = it.first) }
     )
 }
 

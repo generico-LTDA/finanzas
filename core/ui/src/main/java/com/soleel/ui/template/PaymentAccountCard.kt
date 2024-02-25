@@ -26,7 +26,7 @@ import com.soleel.ui.theme.CreditGradientColor1
 import com.soleel.ui.theme.CreditGradientColor2
 import com.soleel.ui.theme.CreditLetterColor
 import com.soleel.ui.util.PaymentAccountCardItem
-import com.soleel.ui.util.paymentAccountCardLinearGradient
+import com.soleel.ui.util.getCardLinearGradient
 
 @Preview
 @Composable
@@ -36,13 +36,13 @@ fun PaymentAccountCardPreview() {
             type = PaymentAccountTypeConstant.CREDIT,
             typeName = "CREDITO",
             typeNameAccount = "Tarjeta de credito",
+            typeIcon = R.drawable.ic_credit,
             amount = "$1,000,000",
             letterColor = CreditLetterColor,
-            gradientBrush = paymentAccountCardLinearGradient(
-                CreditGradientColor1,
-                CreditGradientColor2
-            ),
-            icon = R.drawable.ic_credit
+            gradientBrush = getCardLinearGradient(
+                            CreditGradientColor1,
+                            CreditGradientColor2
+                        )
         ),
         onClick = {},
         onClickEnable = false
@@ -96,7 +96,7 @@ fun PaymentAccountCard(
                             .padding(16.dp),
                         content = {
                             Icon(
-                                painter = painterResource(id = paymentAccountCardItem.icon),
+                                painter = painterResource(id = paymentAccountCardItem.typeIcon),
                                 contentDescription = "Add button.",
                                 modifier = Modifier.size(48.dp),
                                 tint = paymentAccountCardItem.letterColor

@@ -26,7 +26,7 @@ import com.soleel.ui.R
 import com.soleel.ui.template.TransactionCard
 import com.soleel.ui.template.TransactionCreateTopAppBar
 import com.soleel.ui.util.getPaymentAccountCard
-import com.soleel.ui.util.getTransactionCard
+import com.soleel.ui.util.getTransactionTypeCard
 
 
 @Composable
@@ -152,13 +152,13 @@ fun SelectTransactionType(
                 itemContent = { transactionType ->
                     TransactionCard(
                         paymentAccountCardItem = getPaymentAccountCard(
-                            typePaymentAccount = transactionUiCreate.paymentAccount.accountType,
-                            nameAccount = transactionUiCreate.paymentAccount.name,
+                            paymentAccountType = transactionUiCreate.paymentAccount.accountType,
+                            paymentAccountTypeName = transactionUiCreate.paymentAccount.name,
                             amount = paymentAccountAmount
                         ),
-                        transactionCardItem = getTransactionCard(
+                        transactionTypeCardItem = getTransactionTypeCard(
                             transactionType = transactionType.first,
-                            nameTransactionType = transactionType.second
+                            transactionTypeName = transactionType.second
                         ),
                         onClick = {
                             onTransactionCreateUiEvent(

@@ -1,7 +1,7 @@
 package com.soleel.common.constants
 
 
-object CategoryTypeConstant {
+object TransactionCategoryConstant {
 
     const val INCOME_TRANSFER: Int = 11
     const val INCOME_TRANSFER_VALUE: String = "Transferencia"
@@ -26,28 +26,28 @@ object CategoryTypeConstant {
     const val INCOME_OTHER_VALUE: String = "Otro"
     // Considerar pago de cuota y aumento de credito, como aumento del amount de la linea de credito
 
-    const val EXPEDITURE_TRANSFER: Int = 21
-    const val EXPEDITURE_TRANSFER_VALUE: String = "Transferencia"
+    const val EXPENDITURE_TRANSFER: Int = 21
+    const val EXPENDITURE_TRANSFER_VALUE: String = "Transferencia"
 
-    const val EXPEDITURE_MARKET: Int = 23
-    const val EXPEDITURE_MARKET_VALUE: String = "Despensa"
+    const val EXPENDITURE_MARKET: Int = 23
+    const val EXPENDITURE_MARKET_VALUE: String = "Despensa"
 
-    const val EXPEDITURE_SERVICE: Int = 24
-    const val EXPEDITURE_SERVICE_VALUE: String = "Servicio obtenidos"
+    const val EXPENDITURE_SERVICE: Int = 24
+    const val EXPENDITURE_SERVICE_VALUE: String = "Servicio obtenidos"
     // Considera: Transporte, Salud
 
-    const val EXPEDITURE_ACQUISITION: Int = 25
-    const val EXPEDITURE_ACQUISITION_VALUE: String = "Adquisicion"
+    const val EXPENDITURE_ACQUISITION: Int = 25
+    const val EXPENDITURE_ACQUISITION_VALUE: String = "Adquisicion"
     // Considera la compra de cosas para la casa
 
-    const val EXPEDITURE_LEASURE: Int = 26
-    const val EXPEDITURE_LEASURE_VALUE: String = "Ocio"
+    const val EXPENDITURE_LEASURE: Int = 26
+    const val EXPENDITURE_LEASURE_VALUE: String = "Ocio"
 
-    const val EXPEDITURE_GIFT: Int = 27
-    const val EXPEDITURE_GIFT_VALUE: String = "Regalo"
+    const val EXPENDITURE_GIFT: Int = 27
+    const val EXPENDITURE_GIFT_VALUE: String = "Regalo"
 
-    const val EXPEDITURE_OTHER: Int = 29
-    const val EXPEDITURE_OTHER_VALUE: String = "Otro"
+    const val EXPENDITURE_OTHER: Int = 29
+    const val EXPENDITURE_OTHER_VALUE: String = "Otro"
 
     fun idToValueList(transactionType: Int, accountType: Int): List<Pair<Int, String>> {
         return when (transactionType) {
@@ -97,38 +97,38 @@ object CategoryTypeConstant {
     private fun idExpeditureToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
             PaymentAccountTypeConstant.CREDIT -> listOf(
-                EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
-                EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,
-                EXPEDITURE_ACQUISITION to EXPEDITURE_ACQUISITION_VALUE,
-                EXPEDITURE_LEASURE to EXPEDITURE_LEASURE_VALUE,
-                EXPEDITURE_GIFT to EXPEDITURE_GIFT_VALUE,
-                EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
+                EXPENDITURE_MARKET to EXPENDITURE_MARKET_VALUE,
+                EXPENDITURE_SERVICE to EXPENDITURE_SERVICE_VALUE,
+                EXPENDITURE_ACQUISITION to EXPENDITURE_ACQUISITION_VALUE,
+                EXPENDITURE_LEASURE to EXPENDITURE_LEASURE_VALUE,
+                EXPENDITURE_GIFT to EXPENDITURE_GIFT_VALUE,
+                EXPENDITURE_OTHER to EXPENDITURE_OTHER_VALUE
             )
 
             PaymentAccountTypeConstant.DEBIT -> listOf(
-                EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
-                EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
-                EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,
-                EXPEDITURE_ACQUISITION to EXPEDITURE_ACQUISITION_VALUE,
-                EXPEDITURE_LEASURE to EXPEDITURE_LEASURE_VALUE,
-                EXPEDITURE_GIFT to EXPEDITURE_GIFT_VALUE,
-                EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
+                EXPENDITURE_TRANSFER to EXPENDITURE_TRANSFER_VALUE,
+                EXPENDITURE_MARKET to EXPENDITURE_MARKET_VALUE,
+                EXPENDITURE_SERVICE to EXPENDITURE_SERVICE_VALUE,
+                EXPENDITURE_ACQUISITION to EXPENDITURE_ACQUISITION_VALUE,
+                EXPENDITURE_LEASURE to EXPENDITURE_LEASURE_VALUE,
+                EXPENDITURE_GIFT to EXPENDITURE_GIFT_VALUE,
+                EXPENDITURE_OTHER to EXPENDITURE_OTHER_VALUE
             )
 
             PaymentAccountTypeConstant.SAVING,
             PaymentAccountTypeConstant.INVESTMENT -> listOf(
-                EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
-                EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
+                EXPENDITURE_TRANSFER to EXPENDITURE_TRANSFER_VALUE,
+                EXPENDITURE_OTHER to EXPENDITURE_OTHER_VALUE
             )
 
             PaymentAccountTypeConstant.CASH -> listOf(
-                EXPEDITURE_TRANSFER to EXPEDITURE_TRANSFER_VALUE,
-                EXPEDITURE_MARKET to EXPEDITURE_MARKET_VALUE,
-                EXPEDITURE_SERVICE to EXPEDITURE_SERVICE_VALUE,
-                EXPEDITURE_ACQUISITION to EXPEDITURE_ACQUISITION_VALUE,
-                EXPEDITURE_LEASURE to EXPEDITURE_LEASURE_VALUE,
-                EXPEDITURE_GIFT to EXPEDITURE_GIFT_VALUE,
-                EXPEDITURE_OTHER to EXPEDITURE_OTHER_VALUE
+                EXPENDITURE_TRANSFER to EXPENDITURE_TRANSFER_VALUE,
+                EXPENDITURE_MARKET to EXPENDITURE_MARKET_VALUE,
+                EXPENDITURE_SERVICE to EXPENDITURE_SERVICE_VALUE,
+                EXPENDITURE_ACQUISITION to EXPENDITURE_ACQUISITION_VALUE,
+                EXPENDITURE_LEASURE to EXPENDITURE_LEASURE_VALUE,
+                EXPENDITURE_GIFT to EXPENDITURE_GIFT_VALUE,
+                EXPENDITURE_OTHER to EXPENDITURE_OTHER_VALUE
             )
 
             else -> listOf()
@@ -136,12 +136,12 @@ object CategoryTypeConstant {
     }
 
     val idExpeditureList: List<Int> = listOf(
-        EXPEDITURE_TRANSFER,
-        EXPEDITURE_MARKET,
-        EXPEDITURE_SERVICE,
-        EXPEDITURE_ACQUISITION,
-        EXPEDITURE_LEASURE,
-        EXPEDITURE_GIFT,
-        EXPEDITURE_OTHER
+        EXPENDITURE_TRANSFER,
+        EXPENDITURE_MARKET,
+        EXPENDITURE_SERVICE,
+        EXPENDITURE_ACQUISITION,
+        EXPENDITURE_LEASURE,
+        EXPENDITURE_GIFT,
+        EXPENDITURE_OTHER
     )
 }

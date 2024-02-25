@@ -21,23 +21,48 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soleel.common.constants.PaymentAccountTypeConstant
+import com.soleel.common.constants.TransactionCategoryConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.ui.util.PaymentAccountCardItem
-import com.soleel.ui.util.TransactionCardItem
+import com.soleel.ui.util.TransactionCategoryCardItem
+import com.soleel.ui.util.TransactionTypeCardItem
 import com.soleel.ui.util.getPaymentAccountCard
-import com.soleel.ui.util.getTransactionCard
+import com.soleel.ui.util.getTransactionCategoryCard
+import com.soleel.ui.util.getTransactionTypeCard
 import java.util.Locale
 
 @Preview
 @Composable
-fun TransactionCardPreview() {
+fun TransactionTypeCardPreview() {
     TransactionCard(
         paymentAccountCardItem = getPaymentAccountCard(
-            typePaymentAccount = PaymentAccountTypeConstant.CREDIT
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
         ),
-        transactionCardItem = getTransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
             transactionType = TransactionTypeConstant.INCOME,
-            nameTransactionType = TransactionTypeConstant.INCOME_VALUE
+            transactionTypeName = TransactionTypeConstant.INCOME_VALUE
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER,
+            transactionCategoryName = TransactionCategoryConstant.INCOME_TRANSFER_VALUE
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionCategoryCardPreview() {
+    TransactionCard(
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.CREDIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionTypeName = TransactionTypeConstant.INCOME_VALUE
         )
     )
 }
@@ -45,7 +70,8 @@ fun TransactionCardPreview() {
 @Composable
 fun TransactionCard(
     paymentAccountCardItem: PaymentAccountCardItem,
-    transactionCardItem: TransactionCardItem,
+    transactionTypeCardItem: TransactionTypeCardItem,
+    transactionCategoryCardItem: TransactionCategoryCardItem? = null,
     onClick: () -> Unit = {},
     onClickEnable: Boolean = true
 ) {
@@ -61,82 +87,156 @@ fun TransactionCard(
             defaultElevation = 6.dp
         ),
         content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = transactionCardItem.typeBackgroundColor)
-                    .padding(8.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+            TransactionTypeColumn(transactionTypeCardItem)
+            TransactionPaymentAccountColumn(paymentAccountCardItem)
+            if (null != transactionCategoryCardItem) {
+                TransactionCategoryColumn(transactionCategoryCardItem)
+            }
+        }
+    )
+}
+
+@Composable
+fun TransactionTypeColumn(
+    transactionTypeCardItem: TransactionTypeCardItem
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(color = transactionTypeCardItem.typeBackgroundColor)
+            .padding(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        content = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
                 content = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        content = {
-                            Icon(
-                                painter = painterResource(id = transactionCardItem.typeIcon),
-                                contentDescription = "Transaction type",
-                                modifier = Modifier.size(16.dp),
-                                tint = transactionCardItem.letterColor
-                            )
-                            Text(
-                                text = transactionCardItem.typeName.uppercase(Locale.getDefault()),
-                                modifier = Modifier.padding(start = 8.dp),
-                                color = transactionCardItem.letterColor,
-                                style = MaterialTheme.typography.labelSmall
-                            )
-                        }
+                    Icon(
+                        painter = painterResource(id = transactionTypeCardItem.typeIcon),
+                        contentDescription = "Transaction type",
+                        modifier = Modifier.size(16.dp),
+                        tint = transactionTypeCardItem.letterColor
+                    )
+                    Text(
+                        text = transactionTypeCardItem.typeName.uppercase(Locale.getDefault()),
+                        modifier = Modifier.padding(start = 8.dp),
+                        color = transactionTypeCardItem.letterColor,
+                        style = MaterialTheme.typography.labelSmall
                     )
                 }
             )
-            Column(
-                modifier = Modifier.background(brush = paymentAccountCardItem.gradientBrush),
+        }
+    )
+}
+
+@Composable
+fun TransactionPaymentAccountColumn(paymentAccountCardItem: PaymentAccountCardItem) {
+    Column(
+        modifier = Modifier.background(brush = paymentAccountCardItem.gradientBrush),
+        content = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 content = {
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically,
                         content = {
-                            Row(
-                                modifier = Modifier,
-                                verticalAlignment = Alignment.CenterVertically,
-                                content = {
-                                    Icon(
-                                        painter = painterResource(id = paymentAccountCardItem.icon),
-                                        contentDescription = "Add button.",
-                                        modifier = Modifier.size(48.dp),
-                                        tint = paymentAccountCardItem.letterColor
-                                    )
-                                    Text(
-                                        text = paymentAccountCardItem.typeName,
-                                        modifier = Modifier.padding(start = 8.dp),
-                                        color = paymentAccountCardItem.letterColor,
-                                        style = MaterialTheme.typography.titleMedium
-                                    )
-                                }
+                            Icon(
+                                painter = painterResource(id = paymentAccountCardItem.typeIcon),
+                                contentDescription = "Add button.",
+                                modifier = Modifier.size(48.dp),
+                                tint = paymentAccountCardItem.letterColor
                             )
                             Text(
-                                text = paymentAccountCardItem.amount,
-                                modifier = Modifier,
+                                text = paymentAccountCardItem.typeName,
+                                modifier = Modifier.padding(start = 8.dp),
                                 color = paymentAccountCardItem.letterColor,
-                                style = MaterialTheme.typography.titleLarge
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
                     )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp),
+                    Text(
+                        text = paymentAccountCardItem.amount,
+                        modifier = Modifier,
+                        color = paymentAccountCardItem.letterColor,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp),
 //                            .padding(16.dp),
+                content = {
+                    Text(
+                        modifier = Modifier,
+                        text = paymentAccountCardItem.typeNameAccount,
+                        color = paymentAccountCardItem.letterColor,
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            )
+        }
+    )
+}
+
+@Composable
+fun TransactionCategoryColumn(transactionCategoryCardItem: TransactionCategoryCardItem) {
+    Column(
+        modifier = Modifier.background(brush = transactionCategoryCardItem.gradientBrush),
+        content = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                content = {
+                    Row(
+                        modifier = Modifier,
+                        verticalAlignment = Alignment.CenterVertically,
                         content = {
+                            Icon(
+                                painter = painterResource(
+                                    id = transactionCategoryCardItem.categoryIcon
+                                ),
+                                contentDescription = "Add button.",
+                                modifier = Modifier.size(48.dp),
+                                tint = transactionCategoryCardItem.letterColor
+                            )
                             Text(
-                                modifier = Modifier,
-                                text = paymentAccountCardItem.typeNameAccount,
-                                color = paymentAccountCardItem.letterColor,
-                                style = MaterialTheme.typography.titleLarge,
-                                textAlign = TextAlign.Center
+                                text = transactionCategoryCardItem.categoryName,
+                                modifier = Modifier.padding(start = 8.dp),
+                                color = transactionCategoryCardItem.letterColor,
+                                style = MaterialTheme.typography.titleMedium
                             )
                         }
+                    )
+                    Text(
+                        text = transactionCategoryCardItem.amount,
+                        modifier = Modifier,
+                        color = transactionCategoryCardItem.letterColor,
+                        style = MaterialTheme.typography.titleLarge
+                    )
+                }
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp),
+//                            .padding(16.dp),
+                content = {
+                    Text(
+                        modifier = Modifier,
+                        text = transactionCategoryCardItem.categoryNameTransaction,
+                        color = transactionCategoryCardItem.letterColor,
+                        style = MaterialTheme.typography.titleLarge,
+                        textAlign = TextAlign.Center
                     )
                 }
             )

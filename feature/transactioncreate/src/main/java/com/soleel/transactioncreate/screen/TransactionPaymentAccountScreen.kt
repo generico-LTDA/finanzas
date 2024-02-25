@@ -179,8 +179,8 @@ fun SelectPaymentAccount(
 
                     PaymentAccountCard(
                         paymentAccountCardItem = getPaymentAccountCard(
-                            typePaymentAccount = paymentAccount.accountType,
-                            nameAccount = paymentAccount.name,
+                            paymentAccountType = paymentAccount.accountType,
+                            paymentAccountTypeName = paymentAccount.name,
                             amount = paymentAccountAmount,
                         ),
                         onClick = {

@@ -5,7 +5,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 
-fun paymentAccountCardLinearGradient(gradient1: Color, gradient2: Color): Brush {
+fun getCardLinearGradient(gradient1: Color, gradient2: Color): Brush {
     return Brush.linearGradient(
         colors = listOf(gradient1, gradient2),
         start = Offset(0f, 0f),

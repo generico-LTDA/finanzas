@@ -25,85 +25,82 @@ data class PaymentAccountCardItem(
     val type: Int,
     val typeName: String,
     var typeNameAccount: String,
+    val typeIcon: Int,
     var amount: String,
     val letterColor: Color,
     val gradientBrush: Brush,
-    val icon: Int
 )
 
 fun getPaymentAccountCard(
-    typePaymentAccount: Int,
-    nameAccount: String? = null,
+    paymentAccountType: Int,
+    paymentAccountTypeName: String? = null,
     amount: String? = null,
 ): PaymentAccountCardItem {
-    return when (typePaymentAccount) {
+    return when (paymentAccountType) {
         PaymentAccountTypeConstant.CREDIT -> PaymentAccountCardItem(
-            type = typePaymentAccount,
+            type = paymentAccountType,
             typeName = "CREDITO",
-            typeNameAccount = nameAccount ?: "Tarjeta de credito",
+            typeNameAccount = paymentAccountTypeName ?: "Tarjeta de credito",
+            typeIcon = R.drawable.ic_credit,
             amount = amount ?: "$1,000,000",
             letterColor = CreditLetterColor,
-            gradientBrush = paymentAccountCardLinearGradient(
-                CreditGradientColor1,
-                CreditGradientColor2
-            ),
-            icon = R.drawable.ic_credit
+            gradientBrush = getCardLinearGradient(CreditGradientColor1, CreditGradientColor2)
         )
 
         PaymentAccountTypeConstant.DEBIT -> PaymentAccountCardItem(
-            type = typePaymentAccount,
+            type = paymentAccountType,
             typeName = "DEBITO",
-            typeNameAccount = nameAccount ?: "Tarjeta de debito",
+            typeNameAccount = paymentAccountTypeName ?: "Tarjeta de debito",
+            typeIcon = R.drawable.ic_debit,
             amount = amount ?: "$1,000,000",
             letterColor = DebitLetterColor,
-            gradientBrush = paymentAccountCardLinearGradient(
+            gradientBrush = getCardLinearGradient(
                 DebitGradientColor1,
                 DebitGradientColor2
-            ),
-            icon = R.drawable.ic_debit
+            )
         )
 
 
         PaymentAccountTypeConstant.SAVING -> PaymentAccountCardItem(
-            type = typePaymentAccount,
+            type = paymentAccountType,
             typeName = "AHORRO",
-            typeNameAccount = nameAccount ?: "Cuenta de ahorro",
+            typeNameAccount = paymentAccountTypeName ?: "Cuenta de ahorro",
+            typeIcon = R.drawable.ic_saving,
             amount = amount ?: "$1,000,000",
             letterColor = SavingLetterColor,
-            gradientBrush = paymentAccountCardLinearGradient(
+            gradientBrush = getCardLinearGradient(
                 SavingGradientColor1,
                 SavingGradientColor2
-            ),
-            icon = R.drawable.ic_saving
+            )
         )
 
 
         PaymentAccountTypeConstant.INVESTMENT -> PaymentAccountCardItem(
-            type = typePaymentAccount,
+            type = paymentAccountType,
             typeName = "INVERSION",
-            typeNameAccount = nameAccount ?: "Bolsa de inversion",
+            typeNameAccount = paymentAccountTypeName ?: "Bolsa de inversion",
+            typeIcon = R.drawable.ic_investment,
             amount = amount ?: "$1,000,000",
             letterColor = InvestmentLetterColor,
-            gradientBrush = paymentAccountCardLinearGradient(
+            gradientBrush = getCardLinearGradient(
                 InvestmentGradientColor1,
                 InvestmentGradientColor2
-            ),
-            icon = R.drawable.ic_investment
+            )
         )
 
 //            PaymentAccountTypeConstant.CASH ->
         else ->
             PaymentAccountCardItem(
-                type = typePaymentAccount,
+                type = paymentAccountType,
                 typeName = "EFECTIVO",
-                typeNameAccount = nameAccount ?: "Efectivo en bolsillo",
+                typeNameAccount = paymentAccountTypeName ?: "Efectivo en bolsillo",
+                typeIcon = R.drawable.ic_money,
                 amount = amount ?: "$1,000,000",
                 letterColor = CashLetterColor,
-                gradientBrush = paymentAccountCardLinearGradient(
+                gradientBrush = getCardLinearGradient(
                     CashGradientColor1,
                     CashGradientColor2
-                ),
-                icon = R.drawable.ic_money
+                )
             )
     }
 }
