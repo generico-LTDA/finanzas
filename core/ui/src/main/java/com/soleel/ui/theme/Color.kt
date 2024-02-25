@@ -22,3 +22,7 @@ val InvestmentGradientColor2 = Color(0xFFF45B69)
 val CashLetterColor = Color(0xFFF6E7CB)
 val CashGradientColor1 = Color(0xFF678D58)
 val CashGradientColor2 = Color(0xFFA6C48A)
+
+val TypeTransactionLetterColor = Color(0xFFFCFFFC)
+val TypeTransactionIncomeBackgroundColor = Color(0xFF226F54)
+val TypeTransactionExpeditureBackgroundColor = Color(0xFFDA2C38)

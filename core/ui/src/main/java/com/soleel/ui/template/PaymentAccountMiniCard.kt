@@ -1,7 +1,6 @@
 package com.soleel.ui.template
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,11 +27,12 @@ import com.soleel.ui.theme.CreditLetterColor
 import com.soleel.ui.util.PaymentAccountCardItem
 import com.soleel.ui.util.paymentAccountCardLinearGradient
 
+
 @Preview
 @Composable
-fun PaymentAccountCardPreview() {
-    PaymentAccountCard(
-        paymentAccountCardItem = PaymentAccountCardItem(
+fun PaymentAccountMiniCardPreview() {
+    PaymentAccountMiniCard(
+        PaymentAccountCardItem(
             type = PaymentAccountTypeConstant.CREDIT,
             typeName = "CREDITO",
             typeNameAccount = "Tarjeta de credito",
@@ -43,23 +43,18 @@ fun PaymentAccountCardPreview() {
                 CreditGradientColor2
             ),
             icon = R.drawable.ic_credit
-        ),
-        onClick = {},
-        onClickEnable = false
+        )
     )
 }
 
 @Composable
-fun PaymentAccountCard(
+fun PaymentAccountMiniCard(
     paymentAccountCardItem: PaymentAccountCardItem,
-    onClick: () -> Unit = {},
-    onClickEnable: Boolean = true
 ) {
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
-            .clickable(enabled = onClickEnable, onClick = onClick),
+            .padding(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
@@ -71,19 +66,31 @@ fun PaymentAccountCard(
                 modifier = Modifier.background(brush = paymentAccountCardItem.gradientBrush),
                 content = {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                         content = {
-                            Text(
-                                text = paymentAccountCardItem.typeName,
-                                modifier = Modifier.padding(16.dp),
-                                color = paymentAccountCardItem.letterColor,
-                                style = MaterialTheme.typography.titleMedium
+                            Row(
+                                modifier = Modifier,
+                                verticalAlignment = Alignment.CenterVertically,
+                                content = {
+                                    Icon(
+                                        painter = painterResource(id = paymentAccountCardItem.icon),
+                                        contentDescription = "Add button.",
+                                        modifier = Modifier.size(48.dp),
+                                        tint = paymentAccountCardItem.letterColor
+                                    )
+                                    Text(
+                                        text = paymentAccountCardItem.typeName,
+                                        modifier = Modifier.padding(start = 8.dp),
+                                        color = paymentAccountCardItem.letterColor,
+                                        style = MaterialTheme.typography.titleMedium
+                                    )
+                                }
                             )
                             Text(
                                 text = paymentAccountCardItem.amount,
-                                modifier = Modifier.padding(16.dp),
+                                modifier = Modifier,
                                 color = paymentAccountCardItem.letterColor,
                                 style = MaterialTheme.typography.titleLarge
                             )
@@ -92,40 +99,14 @@ fun PaymentAccountCard(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(start = 16.dp)
                             .padding(16.dp),
                         content = {
-                            Icon(
-                                painter = painterResource(id = paymentAccountCardItem.icon),
-                                contentDescription = "Add button.",
-                                modifier = Modifier.size(48.dp),
-                                tint = paymentAccountCardItem.letterColor
-                            )
-                        }
-                    )
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        content = {
-                            Column(
-                                modifier = Modifier
-                                    .padding(16.dp),
-                                content = {
-                                    Text(
-                                        modifier = Modifier,
-                                        text = "**** **** **** 3456",
-                                        color = paymentAccountCardItem.letterColor,
-                                        style = MaterialTheme.typography.headlineLarge,
-                                        textAlign = TextAlign.Center
-                                    )
-                                    Text(
-                                        modifier = Modifier,
-                                        text = paymentAccountCardItem.typeNameAccount,
-                                        color = paymentAccountCardItem.letterColor,
-                                        style = MaterialTheme.typography.titleLarge,
-                                        textAlign = TextAlign.Center
-                                    )
-                                }
+                            Text(
+                                modifier = Modifier,
+                                text = paymentAccountCardItem.typeNameAccount,
+                                color = paymentAccountCardItem.letterColor,
+                                style = MaterialTheme.typography.titleLarge,
+                                textAlign = TextAlign.Center
                             )
                         }
                     )

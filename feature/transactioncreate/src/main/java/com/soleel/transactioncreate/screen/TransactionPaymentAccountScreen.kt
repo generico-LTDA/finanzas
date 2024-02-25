@@ -5,26 +5,27 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transactioncreate.PaymentAccountsUiState
 import com.soleel.transactioncreate.TransactionCreateViewModel
-import com.soleel.transactioncreate.TransactionUiCreate
 import com.soleel.transactioncreate.TransactionUiEvent
+import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
 import com.soleel.ui.template.PaymentAccountCard
 import com.soleel.ui.template.TransactionCreateTopAppBar
-import com.soleel.ui.template.getPaymentAccountCard
+import com.soleel.ui.util.getPaymentAccountCard
 
 
 @Composable
@@ -66,7 +67,7 @@ fun TransactionPaymentAccountScreenPreview() {
                 PaymentAccount(
                     id = "2",
                     name = "Cuenta corriente falabella",
-                    amount = 300000,
+                    amount = 400000,
                     createAt = 1708709787983L,
                     updatedAt = 1708709787983L,
                     accountType = PaymentAccountTypeConstant.DEBIT
@@ -75,7 +76,7 @@ fun TransactionPaymentAccountScreenPreview() {
                 PaymentAccount(
                     id = "3",
                     name = "App Racional",
-                    amount = 300000,
+                    amount = 500000,
                     createAt = 1708709787983L,
                     updatedAt = 1708709787983L,
                     accountType = PaymentAccountTypeConstant.INVESTMENT
@@ -133,7 +134,7 @@ fun TransactionPaymentAccountScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+//                    .wrapContentSize(Alignment.Center)
                     .padding(top = it.calculateTopPadding()),
                 content = {
                     when (paymentAccountsUiState) {
@@ -166,10 +167,21 @@ fun SelectPaymentAccount(
             items(
                 items = paymentAccounts,
                 itemContent = { paymentAccount ->
+
+                    val currencyVisualTransformation by remember(calculation = {
+                        mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+                    })
+
+                    val paymentAccountAmount: String = currencyVisualTransformation
+                        .filter(AnnotatedString(text = paymentAccount.amount.toString()))
+                        .text
+                        .toString()
+
                     PaymentAccountCard(
                         paymentAccountCardItem = getPaymentAccountCard(
                             typePaymentAccount = paymentAccount.accountType,
                             nameAccount = paymentAccount.name,
+                            amount = paymentAccountAmount,
                         ),
                         onClick = {
                             onTransactionCreateUiEvent(

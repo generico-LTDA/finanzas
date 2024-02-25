@@ -52,7 +52,7 @@ object CategoryTypeConstant {
     fun idToValueList(transactionType: Int, accountType: Int): List<Pair<Int, String>> {
         return when (transactionType) {
             TransactionTypeConstant.INCOME -> idIncomeToValueList(accountType)
-            TransactionTypeConstant.EXPEDITURE -> idExpeditureToValueList(accountType)
+            TransactionTypeConstant.EXPENDITURE -> idExpeditureToValueList(accountType)
             else -> listOf()
         }
     }

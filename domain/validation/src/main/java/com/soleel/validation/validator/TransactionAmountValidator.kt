@@ -59,7 +59,7 @@ class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, Result
             )
         }
 
-        if (TransactionTypeConstant.EXPEDITURE == input.third
+        if (TransactionTypeConstant.EXPENDITURE == input.third
             && 0 > input.second - input.first.toInt()
         ) {
             return ResultValidation(

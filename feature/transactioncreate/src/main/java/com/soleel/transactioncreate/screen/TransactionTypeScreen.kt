@@ -4,26 +4,29 @@ import android.annotation.SuppressLint
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.soleel.common.constants.PaymentAccountTypeConstant
+import com.soleel.common.constants.TransactionTypeConstant
+import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transactioncreate.TransactionCreateViewModel
 import com.soleel.transactioncreate.TransactionUiCreate
 import com.soleel.transactioncreate.TransactionUiEvent
+import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
+import com.soleel.ui.template.TransactionCard
 import com.soleel.ui.template.TransactionCreateTopAppBar
+import com.soleel.ui.util.getPaymentAccountCard
+import com.soleel.ui.util.getTransactionCard
 
 
 @Composable
@@ -48,14 +51,21 @@ internal fun TransactionTypeRoute(
 @Preview
 @Composable
 fun TransactionTypeScreenPreview() {
-    TransactionTypeScreen(
-        modifier = Modifier,
+    TransactionTypeScreen(modifier = Modifier,
         onCancelClick = {},
         onBackClick = {},
-        transactionUiCreate = TransactionUiCreate(),
+        transactionUiCreate = TransactionUiCreate(
+            PaymentAccount(
+                id = "2",
+                name = "Cuenta corriente falabella",
+                amount = 400000,
+                createAt = 1708709787983L,
+                updatedAt = 1708709787983L,
+                accountType = PaymentAccountTypeConstant.CREDIT
+            )
+        ),
         onTransactionCreateUiEvent = {},
-        fromTypeToCategory = {}
-    )
+        fromTypeToCategory = {})
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -68,51 +78,99 @@ fun TransactionTypeScreen(
     onTransactionCreateUiEvent: (TransactionUiEvent) -> Unit,
     fromTypeToCategory: () -> Unit
 ) {
-    BackHandler(
-        enabled = true,
-        onBack = { onBackClick() }
-    )
+    BackHandler(enabled = true, onBack = { onBackClick() })
 
-    Scaffold(
-        topBar = {
-            TransactionCreateTopAppBar(
-                subTitle = R.string.trasaction_type_top_app_bar_subtitle,
-                onClick = onCancelClick
-            )
-        },
-        bottomBar = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
+    Scaffold(topBar = {
+        TransactionCreateTopAppBar(
+            subTitle = R.string.trasaction_type_top_app_bar_subtitle, onClick = onCancelClick
+        )
+    },
+//        bottomBar = {
+//            Column(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .padding(bottom = 20.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally,
+//                content = {
+//                    Button(
+//                        onClick = { fromTypeToCategory() },
+//                        modifier = Modifier
+//                            .fillMaxWidth(0.9f)
+//                            .height(64.dp),
+////                        enabled = 0 != paymentAccountUiCreate.type,
+//                        content = { Text(text = "Avanzar a seleccion de categoria") }
+//                    )
+//                }
+//            )
+//        },
+        content = {
+            val currencyVisualTransformation by remember(calculation = {
+                mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
+            })
+
+            Column(modifier = Modifier
+                .fillMaxSize()
+//                    .wrapContentSize(Alignment.Center)
+                .padding(top = it.calculateTopPadding()),
                 content = {
-                    Button(
-                        onClick = { fromTypeToCategory() },
-                        modifier = Modifier
-                            .fillMaxWidth(0.9f)
-                            .height(64.dp),
-//                        enabled = 0 != paymentAccountUiCreate.type,
-                        content = { Text(text = "Avanzar a seleccion de categoria") }
+
+                    SelectTransactionType(
+                        transactionUiCreate = transactionUiCreate,
+                        onTransactionCreateUiEvent = onTransactionCreateUiEvent,
+                        currencyVisualTransformation = currencyVisualTransformation,
+                        fromTypeToCategory = fromTypeToCategory
                     )
                 }
             )
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
-            ) {
-                Text(
-                    text = "Selecte Transaction Type Screen",
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                    textAlign = TextAlign.Center,
-                    fontSize = 20.sp
-                )
-            }
         }
     )
+}
 
+@Composable
+fun SelectTransactionType(
+    transactionUiCreate: TransactionUiCreate,
+    onTransactionCreateUiEvent: (TransactionUiEvent) -> Unit,
+    currencyVisualTransformation: CurrencyVisualTransformation,
+    fromTypeToCategory: () -> Unit
+) {
+
+    val transactionTypes: List<Pair<Int, String>> = remember(calculation = {
+        TransactionTypeConstant.idToValueList
+    })
+
+    val paymentAccountAmount: String =
+        currencyVisualTransformation
+            .filter(AnnotatedString(text = transactionUiCreate.paymentAccount.amount.toString()))
+            .text
+            .toString()
+
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        content = {
+            items(
+                items = transactionTypes,
+                itemContent = { transactionType ->
+                    TransactionCard(
+                        paymentAccountCardItem = getPaymentAccountCard(
+                            typePaymentAccount = transactionUiCreate.paymentAccount.accountType,
+                            nameAccount = transactionUiCreate.paymentAccount.name,
+                            amount = paymentAccountAmount
+                        ),
+                        transactionCardItem = getTransactionCard(
+                            transactionType = transactionType.first,
+                            nameTransactionType = transactionType.second
+                        ),
+                        onClick = {
+                            onTransactionCreateUiEvent(
+                                TransactionUiEvent.TransactionTypeChanged(
+                                    transactionType = transactionType.first
+                                )
+                            )
+                            fromTypeToCategory()
+                        }
+                    )
+                }
+            )
+        }
+    )
 }

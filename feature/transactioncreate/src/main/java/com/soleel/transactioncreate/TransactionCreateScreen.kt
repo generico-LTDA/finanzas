@@ -584,7 +584,6 @@ fun EnterTransactionNameTextField(
 fun EnterTransactionAmountTextFlied(
     createTransactionUiCreate: TransactionUiCreate,
     onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
-
     currencyVisualTransformation: CurrencyVisualTransformation,
 ) {
     OutlinedTextField(

@@ -29,9 +29,9 @@ import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
 import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
 import com.soleel.ui.R
 import com.soleel.ui.template.PaymentAccountCard
-import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
-import com.soleel.ui.template.getPaymentAccountCard
+import com.soleel.ui.util.PaymentAccountCardItem
+import com.soleel.ui.util.getPaymentAccountCard
 import com.soleel.validation.validator.NameValidator
 
 

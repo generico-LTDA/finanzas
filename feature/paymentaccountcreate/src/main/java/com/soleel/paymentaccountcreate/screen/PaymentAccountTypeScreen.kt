@@ -6,12 +6,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
@@ -21,6 +19,7 @@ import com.soleel.paymentaccountcreate.util.PaymentAccountCards
 import com.soleel.ui.R
 import com.soleel.ui.template.PaymentAccountCard
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
+import com.soleel.ui.util.PaymentAccountCardItem
 
 
 @Composable
@@ -99,7 +98,7 @@ internal fun CreateSelectPaymentAccountTypeScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .wrapContentSize(Alignment.Center)
+//                    .wrapContentSize(Alignment.Center)
                     .padding(top = it.calculateTopPadding()),
                 content = {
                     SelectPaymentAccountType(
@@ -124,7 +123,7 @@ fun SelectPaymentAccountType(
         content = {
             items(
                 items = PaymentAccountCards.cardsList,
-                itemContent = { paymentAccountCard ->
+                itemContent = { paymentAccountCard: PaymentAccountCardItem ->
                     PaymentAccountCard(
                         paymentAccountCardItem = paymentAccountCard,
                         onClick = {
