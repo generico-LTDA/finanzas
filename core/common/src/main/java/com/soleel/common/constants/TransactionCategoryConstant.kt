@@ -49,15 +49,15 @@ object TransactionCategoryConstant {
     const val EXPENDITURE_OTHER: Int = 29
     const val EXPENDITURE_OTHER_VALUE: String = "Otro"
 
-    fun idToValueList(transactionType: Int, accountType: Int): List<Pair<Int, String>> {
+    fun getIdToValueList(transactionType: Int, accountType: Int): List<Pair<Int, String>> {
         return when (transactionType) {
-            TransactionTypeConstant.INCOME -> idIncomeToValueList(accountType)
-            TransactionTypeConstant.EXPENDITURE -> idExpeditureToValueList(accountType)
+            TransactionTypeConstant.INCOME -> getIdIncomeToValueList(accountType)
+            TransactionTypeConstant.EXPENDITURE -> getIdExpeditureToValueList(accountType)
             else -> listOf()
         }
     }
 
-    private fun idIncomeToValueList(accountType: Int): List<Pair<Int, String>> {
+    private fun getIdIncomeToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
             PaymentAccountTypeConstant.CREDIT -> listOf(
                 INCOME_TRANSFER to INCOME_TRANSFER_VALUE,
@@ -94,7 +94,7 @@ object TransactionCategoryConstant {
         }
     }
 
-    private fun idExpeditureToValueList(accountType: Int): List<Pair<Int, String>> {
+    private fun getIdExpeditureToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
             PaymentAccountTypeConstant.CREDIT -> listOf(
                 EXPENDITURE_MARKET to EXPENDITURE_MARKET_VALUE,

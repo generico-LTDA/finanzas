@@ -479,7 +479,7 @@ fun SelectCategoryTypeDropdownMenu(
     expandedCategoryType: Boolean,
     changeExpandedCategoryType: (Boolean) -> Unit
 ) {
-    val categoryTypes: List<Pair<Int, String>> = TransactionCategoryConstant.idToValueList(
+    val categoryTypes: List<Pair<Int, String>> = TransactionCategoryConstant.getIdToValueList(
         transactionType = createTransactionUiCreate.transactionType,
         accountType = createTransactionUiCreate.paymentAccount.accountType
     )

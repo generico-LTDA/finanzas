@@ -18,20 +18,20 @@ data class TransactionTypeCardItem(
 
 fun getTransactionTypeCard(
     transactionType: Int,
-    transactionTypeName: String,
+//    transactionTypeName: String,
 ): TransactionTypeCardItem {
     return when (transactionType) {
         TransactionTypeConstant.INCOME -> TransactionTypeCardItem(
-            type = transactionType,
-            typeName = transactionTypeName,
+            type = TransactionTypeConstant.INCOME,
+            typeName = TransactionTypeConstant.INCOME_VALUE,
             typeIcon = R.drawable.ic_income,
             typeBackgroundColor = TransactionTypeIncomeBackgroundColor,
             letterColor = TransactionTypeLetterColor
         )
 
         TransactionTypeConstant.EXPENDITURE -> TransactionTypeCardItem(
-            type = transactionType,
-            typeName = transactionTypeName,
+            type = TransactionTypeConstant.EXPENDITURE,
+            typeName = TransactionTypeConstant.EXPENDITURE_VALUE,
             typeIcon = R.drawable.ic_expediture,
             typeBackgroundColor = TransactionTypeExpenditureBackgroundColor,
             letterColor = TransactionTypeLetterColor

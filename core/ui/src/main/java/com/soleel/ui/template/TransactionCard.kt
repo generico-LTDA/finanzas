@@ -41,12 +41,11 @@ fun TransactionTypeCardPreview() {
             amount = "$300,000"
         ),
         transactionTypeCardItem = getTransactionTypeCard(
-            transactionType = TransactionTypeConstant.INCOME,
-            transactionTypeName = TransactionTypeConstant.INCOME_VALUE
+            transactionType = TransactionTypeConstant.INCOME
         ),
         transactionCategoryCardItem = getTransactionCategoryCard(
-            transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER,
-            transactionCategoryName = TransactionCategoryConstant.INCOME_TRANSFER_VALUE
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER
         )
     )
 }
@@ -61,8 +60,7 @@ fun TransactionCategoryCardPreview() {
             amount = "$300,000"
         ),
         transactionTypeCardItem = getTransactionTypeCard(
-            transactionType = TransactionTypeConstant.INCOME,
-            transactionTypeName = TransactionTypeConstant.INCOME_VALUE
+            transactionType = TransactionTypeConstant.INCOME
         )
     )
 }
@@ -87,17 +85,17 @@ fun TransactionCard(
             defaultElevation = 6.dp
         ),
         content = {
-            TransactionTypeColumn(transactionTypeCardItem)
-            TransactionPaymentAccountColumn(paymentAccountCardItem)
+            TransactionTypeRow(transactionTypeCardItem)
+            TransactionPaymentAccountRow(paymentAccountCardItem)
             if (null != transactionCategoryCardItem) {
-                TransactionCategoryColumn(transactionCategoryCardItem)
+                TransactionCategoryRow(transactionCategoryCardItem)
             }
         }
     )
 }
 
 @Composable
-fun TransactionTypeColumn(
+fun TransactionTypeRow(
     transactionTypeCardItem: TransactionTypeCardItem
 ) {
     Column(
@@ -129,7 +127,7 @@ fun TransactionTypeColumn(
 }
 
 @Composable
-fun TransactionPaymentAccountColumn(paymentAccountCardItem: PaymentAccountCardItem) {
+fun TransactionPaymentAccountRow(paymentAccountCardItem: PaymentAccountCardItem) {
     Column(
         modifier = Modifier.background(brush = paymentAccountCardItem.gradientBrush),
         content = {
@@ -186,7 +184,7 @@ fun TransactionPaymentAccountColumn(paymentAccountCardItem: PaymentAccountCardIt
 }
 
 @Composable
-fun TransactionCategoryColumn(transactionCategoryCardItem: TransactionCategoryCardItem) {
+fun TransactionCategoryRow(transactionCategoryCardItem: TransactionCategoryCardItem) {
     Column(
         modifier = Modifier.background(brush = transactionCategoryCardItem.gradientBrush),
         content = {

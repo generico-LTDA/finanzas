@@ -138,11 +138,10 @@ fun SelectTransactionType(
         TransactionTypeConstant.idToValueList
     })
 
-    val paymentAccountAmount: String =
-        currencyVisualTransformation
-            .filter(AnnotatedString(text = transactionUiCreate.paymentAccount.amount.toString()))
-            .text
-            .toString()
+    val paymentAccountAmount: String = currencyVisualTransformation
+        .filter(AnnotatedString(text = transactionUiCreate.paymentAccount.amount.toString()))
+        .text
+        .toString()
 
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -157,8 +156,7 @@ fun SelectTransactionType(
                             amount = paymentAccountAmount
                         ),
                         transactionTypeCardItem = getTransactionTypeCard(
-                            transactionType = transactionType.first,
-                            transactionTypeName = transactionType.second
+                            transactionType = transactionType.first
                         ),
                         onClick = {
                             onTransactionCreateUiEvent(
