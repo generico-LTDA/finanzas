@@ -16,9 +16,9 @@ import com.soleel.paymentaccountcreate.screen.PaymentAccountNameRoute
 
 const val paymentAccountCreateGraph = "payment_account_create_graph"
 
-const val paymentAccountTypeRoute = "payment_account_type_route";
-const val paymentAccountNameRoute = "payment_account_name_route";
-const val paymentAccountAmountRoute = "enter_payment_account_amount_route";
+const val paymentAccountTypeRoute = "payment_account_type_route"
+const val paymentAccountNameRoute = "payment_account_name_route"
+const val paymentAccountAmountRoute = "enter_payment_account_amount_route"
 
 fun NavController.navigateToPaymentAccountCreateGraph(navOptions: NavOptions? = null) {
     this.navigate(paymentAccountCreateGraph, navOptions)

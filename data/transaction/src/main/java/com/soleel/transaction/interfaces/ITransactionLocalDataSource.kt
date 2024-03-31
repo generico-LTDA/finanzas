@@ -21,7 +21,7 @@ interface ITransactionLocalDataSource {
         name: String,
         amount: Int,
         transactionType: Int,
-        categoryType: Int,
+        transactionCategory: Int,
         paymentAccountId: String
     ): String
 

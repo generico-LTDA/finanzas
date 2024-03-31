@@ -5,8 +5,48 @@ import androidx.compose.ui.graphics.Color
 import com.soleel.common.constants.TransactionCategoryConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.ui.R
-import com.soleel.ui.theme.CategoryIncomeTransferGradientColor1
-import com.soleel.ui.theme.CategoryIncomeTransferGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryAcquisitionGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryAcquisitionGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryAcquisitionLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryGiftGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryGiftGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryGiftLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryLeasureGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryLeasureGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryLeasureLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryMarketGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryMarketGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryMarketLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryOtherGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryOtherGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryOtherLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryServiceGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryServiceGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryServiceLetterColor
+import com.soleel.ui.theme.ExpenditureCategoryTransferGradientColor1
+import com.soleel.ui.theme.ExpenditureCategoryTransferGradientColor2
+import com.soleel.ui.theme.ExpenditureCategoryTransferLetterColor
+import com.soleel.ui.theme.IncomeCategoryBonusGradientColor1
+import com.soleel.ui.theme.IncomeCategoryBonusGradientColor2
+import com.soleel.ui.theme.IncomeCategoryBonusLetterColor
+import com.soleel.ui.theme.IncomeCategoryOtherGradientColor1
+import com.soleel.ui.theme.IncomeCategoryOtherGradientColor2
+import com.soleel.ui.theme.IncomeCategoryOtherLetterColor
+import com.soleel.ui.theme.IncomeCategoryRefundGradientColor1
+import com.soleel.ui.theme.IncomeCategoryRefundGradientColor2
+import com.soleel.ui.theme.IncomeCategoryRefundLetterColor
+import com.soleel.ui.theme.IncomeCategorySalaryGradientColor1
+import com.soleel.ui.theme.IncomeCategorySalaryGradientColor2
+import com.soleel.ui.theme.IncomeCategorySalaryLetterColor
+import com.soleel.ui.theme.IncomeCategorySalesGradientColor1
+import com.soleel.ui.theme.IncomeCategorySalesGradientColor2
+import com.soleel.ui.theme.IncomeCategorySalesLetterColor
+import com.soleel.ui.theme.IncomeCategoryServiceGradientColor1
+import com.soleel.ui.theme.IncomeCategoryServiceGradientColor2
+import com.soleel.ui.theme.IncomeCategoryServiceLetterColor
+import com.soleel.ui.theme.IncomeCategoryTransferGradientColor1
+import com.soleel.ui.theme.IncomeCategoryTransferGradientColor2
+import com.soleel.ui.theme.IncomeCategoryTransferLetterColor
 import com.soleel.ui.theme.TransactionTypeLetterColor
 
 
@@ -57,78 +97,90 @@ private fun getTransactionCategoryIncomeCard(
     amount: String?,
 ): TransactionCategoryCardItem {
     return when (transactionCategory) {
+
         TransactionCategoryConstant.INCOME_TRANSFER -> TransactionCategoryCardItem(
             category = transactionCategory,
             categoryName = TransactionCategoryConstant.INCOME_TRANSFER_VALUE,
-            categoryIcon = R.drawable.ic_income_transfer, // PROBLEMA DE CARGA CON ESTE ICONO
-            categoryNameTransaction = transactionCategoryNameTransaction ?: "Ingreso por Transferencia",
+            categoryIcon = R.drawable.ic_income_transfer,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transferencia de ...",
             amount = amount ?: "$10,000",
-            letterColor = TransactionTypeLetterColor,
+            letterColor = IncomeCategoryTransferLetterColor,
             gradientBrush = getCardLinearGradient(
-                CategoryIncomeTransferGradientColor1,
-                CategoryIncomeTransferGradientColor2
-            )
+                IncomeCategoryTransferGradientColor1,
+                IncomeCategoryTransferGradientColor2)
         )
-//
-//        TransactionCategoryConstant.INCOME_SALARY  -> TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_SALARY_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
-//
-//        TransactionCategoryConstant.INCOME_SERVICE  -> TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_SERVICE_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
-//
-//        TransactionCategoryConstant.INCOME_SALES  -> TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_SALES_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
-//
-//        TransactionCategoryConstant.INCOME_BONUS  -> TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_BONUS_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
-//
-//        TransactionCategoryConstant.INCOME_REFOUND  ->  TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_REFOUND_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
-//
-//        TransactionCategoryConstant.INCOME_OTHER  -> TransactionCategoryCardItem(
-//            category = transactionCategory,
-//            categoryName = TransactionCategoryConstant.INCOME_OTHER_VALUE,
-//            categoryIcon = R.drawable.ic_debit,
-//            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transaccion de ingreso",
-//            amount = amount ?: "$10,000",
-//            letterColor = TransactionTypeLetterColor,
-//            gradientBrush = getCardLinearGradient(Color.Black, Color.Gray)
-//        )
+
+        TransactionCategoryConstant.INCOME_SALARY  -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_SALARY_VALUE,
+            categoryIcon = R.drawable.ic_income_salary,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Salario de ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategorySalaryLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategorySalaryGradientColor1,
+                IncomeCategorySalaryGradientColor2)
+        )
+
+        TransactionCategoryConstant.INCOME_SERVICE  -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_SERVICE_VALUE,
+            categoryIcon = R.drawable.ic_income_service,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Servicios prestados a ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategoryServiceLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategoryServiceGradientColor1,
+                IncomeCategoryServiceGradientColor2)
+        )
+
+        TransactionCategoryConstant.INCOME_SALES  -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_SALES_VALUE,
+            categoryIcon = R.drawable.ic_income_sales,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "De vender ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategorySalesLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategorySalesGradientColor1,
+                IncomeCategorySalesGradientColor2)
+        )
+
+        TransactionCategoryConstant.INCOME_BONUS  -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_BONUS_VALUE,
+            categoryIcon = R.drawable.ic_income_bonus,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Bono o premio de ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategoryBonusLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategoryBonusGradientColor1,
+                IncomeCategoryBonusGradientColor2)
+        )
+
+        TransactionCategoryConstant.INCOME_REFUND  ->  TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_REFUND_VALUE,
+            categoryIcon = R.drawable.ic_income_refund,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Devolucion de ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategoryRefundLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategoryRefundGradientColor1,
+                IncomeCategoryRefundGradientColor2)
+        )
+
+        TransactionCategoryConstant.INCOME_OTHER  -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.INCOME_OTHER_VALUE,
+            categoryIcon = R.drawable.ic_income_other,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Ingreso por ...",
+            amount = amount ?: "$10,000",
+            letterColor = IncomeCategoryOtherLetterColor,
+            gradientBrush = getCardLinearGradient(
+                IncomeCategoryOtherGradientColor1,
+                IncomeCategoryOtherGradientColor2)
+        )
 
         else -> TransactionCategoryCardItem(
             category = transactionCategory,
@@ -148,6 +200,91 @@ private fun getTransactionCategoryExpenditureCard(
     amount: String?,
 ): TransactionCategoryCardItem {
     return when (transactionCategory) {
+
+        TransactionCategoryConstant.EXPENDITURE_TRANSFER -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_TRANSFER_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_transfer,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Transferencia a ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryTransferLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryTransferGradientColor1,
+                ExpenditureCategoryTransferGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_MARKET -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_MARKET_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_market,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Compra en ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryMarketLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryMarketGradientColor1,
+                ExpenditureCategoryMarketGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_SERVICE -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_SERVICE_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_service,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Pago de servicio ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryServiceLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryServiceGradientColor1,
+                ExpenditureCategoryServiceGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_ACQUISITION -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_ACQUISITION_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_acquisition,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Adquirido un ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryAcquisitionLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryAcquisitionGradientColor1,
+                ExpenditureCategoryAcquisitionGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_LEASURE -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_LEASURE_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_leasure,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Ida al ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryLeasureLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryLeasureGradientColor1,
+                ExpenditureCategoryLeasureGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_GIFT -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_GIFT_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_gift,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Regalo de ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryGiftLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryGiftGradientColor1,
+                ExpenditureCategoryGiftGradientColor2)
+        )
+
+        TransactionCategoryConstant.EXPENDITURE_OTHER -> TransactionCategoryCardItem(
+            category = transactionCategory,
+            categoryName = TransactionCategoryConstant.EXPENDITURE_OTHER_VALUE,
+            categoryIcon = R.drawable.ic_expenditure_other,
+            categoryNameTransaction = transactionCategoryNameTransaction ?: "Gasto en ...",
+            amount = amount ?: "$10,000",
+            letterColor = ExpenditureCategoryOtherLetterColor,
+            gradientBrush = getCardLinearGradient(
+                ExpenditureCategoryOtherGradientColor1,
+                ExpenditureCategoryOtherGradientColor2)
+        )
+
         else -> TransactionCategoryCardItem(
             category = transactionCategory,
             categoryName = "",

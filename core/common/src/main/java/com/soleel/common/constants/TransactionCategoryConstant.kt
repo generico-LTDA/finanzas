@@ -19,8 +19,8 @@ object TransactionCategoryConstant {
     const val INCOME_BONUS_VALUE: String = "Bono"
     // Considerar donacion como bono
 
-    const val INCOME_REFOUND: Int = 16
-    const val INCOME_REFOUND_VALUE: String = "Reembolso"
+    const val INCOME_REFUND: Int = 16
+    const val INCOME_REFUND_VALUE: String = "Reembolso"
 
     const val INCOME_OTHER: Int = 19
     const val INCOME_OTHER_VALUE: String = "Otro"
@@ -52,7 +52,7 @@ object TransactionCategoryConstant {
     fun getIdToValueList(transactionType: Int, accountType: Int): List<Pair<Int, String>> {
         return when (transactionType) {
             TransactionTypeConstant.INCOME -> getIdIncomeToValueList(accountType)
-            TransactionTypeConstant.EXPENDITURE -> getIdExpeditureToValueList(accountType)
+            TransactionTypeConstant.EXPENDITURE -> getIdExpenditureToValueList(accountType)
             else -> listOf()
         }
     }
@@ -70,7 +70,7 @@ object TransactionCategoryConstant {
                 INCOME_SERVICE to INCOME_SERVICE_VALUE,
                 INCOME_SALES to INCOME_SALES_VALUE,
                 INCOME_BONUS to INCOME_BONUS_VALUE,
-                INCOME_REFOUND to INCOME_REFOUND_VALUE,
+                INCOME_REFUND to INCOME_REFUND_VALUE,
                 INCOME_OTHER to INCOME_OTHER_VALUE
             )
 
@@ -86,7 +86,7 @@ object TransactionCategoryConstant {
                 INCOME_SERVICE to INCOME_SERVICE_VALUE,
                 INCOME_SALES to INCOME_SALES_VALUE,
                 INCOME_BONUS to INCOME_BONUS_VALUE,
-                INCOME_REFOUND to INCOME_REFOUND_VALUE,
+                INCOME_REFUND to INCOME_REFUND_VALUE,
                 INCOME_OTHER to INCOME_OTHER_VALUE
             )
 
@@ -94,7 +94,7 @@ object TransactionCategoryConstant {
         }
     }
 
-    private fun getIdExpeditureToValueList(accountType: Int): List<Pair<Int, String>> {
+    private fun getIdExpenditureToValueList(accountType: Int): List<Pair<Int, String>> {
         return when (accountType) {
             PaymentAccountTypeConstant.CREDIT -> listOf(
                 EXPENDITURE_MARKET to EXPENDITURE_MARKET_VALUE,
@@ -135,7 +135,7 @@ object TransactionCategoryConstant {
         }
     }
 
-    val idExpeditureList: List<Int> = listOf(
+    val idExpenditureList: List<Int> = listOf(
         EXPENDITURE_TRANSFER,
         EXPENDITURE_MARKET,
         EXPENDITURE_SERVICE,

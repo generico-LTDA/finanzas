@@ -176,7 +176,7 @@ fun EnterPaymentAccountNameTextField(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (paymentAccountCreateUi.nameError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = paymentAccountCreateUi.nameError!!),
+                    stringResource(id = paymentAccountCreateUi.nameError),
                 textAlign = TextAlign.End,
             )
         },

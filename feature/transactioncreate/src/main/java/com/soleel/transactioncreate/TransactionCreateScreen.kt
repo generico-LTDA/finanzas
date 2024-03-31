@@ -502,13 +502,13 @@ fun SelectCategoryTypeDropdownMenu(
                 supportingText = {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = if (createTransactionUiCreate.categoryTypeError == null)
+                        text = if (createTransactionUiCreate.transactionCategoryError == null)
                             stringResource(id = R.string.required_field) else
-                            stringResource(id = createTransactionUiCreate.categoryTypeError),
+                            stringResource(id = createTransactionUiCreate.transactionCategoryError),
                         textAlign = TextAlign.End,
                     )
                 },
-                isError = createTransactionUiCreate.categoryTypeError != null,
+                isError = createTransactionUiCreate.transactionCategoryError != null,
             )
             ExposedDropdownMenu(
                 modifier = Modifier
@@ -525,8 +525,8 @@ fun SelectCategoryTypeDropdownMenu(
                                     changeSelectedCategoryTypeOption(categoryType.second)
                                     changeExpandedCategoryType(false)
                                     onCreateTransactionUiEvent(
-                                        TransactionUiEvent.CategoryTypeChanged(
-                                            categoryType = categoryType.first
+                                        TransactionUiEvent.TransactionCategoryChanged(
+                                            transactionCategory = categoryType.first
                                         )
                                     )
                                 },
@@ -555,7 +555,7 @@ fun EnterTransactionNameTextField(
             )
         },
         modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createTransactionUiCreate.categoryType,
+        enabled = 0 != createTransactionUiCreate.transactionCategory,
         label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
         supportingText = {
             Text(
@@ -598,7 +598,7 @@ fun EnterTransactionAmountTextFlied(
             }
         },
         modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createTransactionUiCreate.categoryType,
+        enabled = 0 != createTransactionUiCreate.transactionCategory,
         label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
         trailingIcon = {
             if (createTransactionUiCreate.amountError != null) {

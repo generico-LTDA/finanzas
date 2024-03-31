@@ -32,7 +32,7 @@ fun getTransactionTypeCard(
         TransactionTypeConstant.EXPENDITURE -> TransactionTypeCardItem(
             type = TransactionTypeConstant.EXPENDITURE,
             typeName = TransactionTypeConstant.EXPENDITURE_VALUE,
-            typeIcon = R.drawable.ic_expediture,
+            typeIcon = R.drawable.ic_expenditure,
             typeBackgroundColor = TransactionTypeExpenditureBackgroundColor,
             letterColor = TransactionTypeLetterColor
         )

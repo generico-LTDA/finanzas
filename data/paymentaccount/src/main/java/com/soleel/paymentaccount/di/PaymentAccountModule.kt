@@ -15,7 +15,7 @@ interface PaymentAccountModule {
 
     @Singleton
     @Binds
-    abstract fun bindPaymentAccountLocalRepository(localRepository: PaymentAccountRepository) : IPaymentAccountLocalDataSource
+    fun bindPaymentAccountLocalRepository(localRepository: PaymentAccountRepository) : IPaymentAccountLocalDataSource
 
 //    @Singleton
 //    @Binds

@@ -28,7 +28,7 @@ class PaymentAccountDbModel {
                 createAt = System.currentTimeMillis(),
                 updatedAt = System.currentTimeMillis(),
                 accountType = paymentAccount.accountType
-            );
+            )
         }
     }
 }

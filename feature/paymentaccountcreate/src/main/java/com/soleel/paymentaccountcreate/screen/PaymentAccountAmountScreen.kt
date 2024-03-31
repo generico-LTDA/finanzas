@@ -220,7 +220,7 @@ fun EnterPaymentAccountAmountTextFlied(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (paymentAccountCreateUi.amountError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = paymentAccountCreateUi.amountError!!),
+                    stringResource(id = paymentAccountCreateUi.amountError),
                 textAlign = TextAlign.End,
             )
         },

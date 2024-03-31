@@ -47,7 +47,7 @@ class TransactionRepository @Inject constructor(
         name: String,
         amount: Int,
         transactionType: Int,
-        categoryType: Int,
+        transactionCategory: Int,
         paymentAccountId: String
     ): String {
 
@@ -64,7 +64,7 @@ class TransactionRepository @Inject constructor(
             createAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis(),
             categoryType = transactionType,
-            transactionType = categoryType,
+            transactionType = transactionCategory,
             paymentAccountId = paymentAccountId
         )
 

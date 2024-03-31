@@ -12,7 +12,7 @@ import com.soleel.common.retryflow.retryableFlow
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.validation.validator.CategoryTypeValidator
+import com.soleel.validation.validator.TransactionCategoryValidator
 import com.soleel.validation.validator.NameValidator
 import com.soleel.validation.validator.PaymentAccountTypeValidator
 import com.soleel.validation.validator.TransactionAmountValidator
@@ -37,8 +37,8 @@ data class TransactionUiCreate(
     val transactionType: Int = 0,
     val transactionTypeError: Int? = null,
 
-    val categoryType: Int = 0,
-    val categoryTypeError: Int? = null,
+    val transactionCategory: Int = 0,
+    val transactionCategoryError: Int? = null,
 
     val name: String = "",
     val nameError: Int? = null,
@@ -52,7 +52,7 @@ data class TransactionUiCreate(
 sealed class TransactionUiEvent {
     data class PaymentAccountChanged(val paymentAccount: PaymentAccount) : TransactionUiEvent()
     data class TransactionTypeChanged(val transactionType: Int) : TransactionUiEvent()
-    data class CategoryTypeChanged(val categoryType: Int) : TransactionUiEvent()
+    data class TransactionCategoryChanged(val transactionCategory: Int) : TransactionUiEvent()
     data class NameChanged(val name: String) : TransactionUiEvent()
     data class AmountChanged(val amount: String) : TransactionUiEvent()
 
@@ -81,7 +81,7 @@ class TransactionCreateViewModel @Inject constructor(
 
     private val validatePaymentAccountUseCase = PaymentAccountTypeValidator()
     private val transactionTypeValidator = TransactionTypeValidator()
-    private val categoryTypeValidator = CategoryTypeValidator()
+    private val transactionCategoryValidator = TransactionCategoryValidator()
     private val nameValidator = NameValidator()
     private val amountValidator = TransactionAmountValidator()
 
@@ -150,8 +150,8 @@ class TransactionCreateViewModel @Inject constructor(
                 transactionUiCreate = transactionUiCreate.copy(
                     transactionType = 0,
                     transactionTypeError = null,
-                    categoryType = 0,
-                    categoryTypeError = null
+                    transactionCategory = 0,
+                    transactionCategoryError = null
                 )
 
                 validatePaymentAccount()
@@ -165,18 +165,18 @@ class TransactionCreateViewModel @Inject constructor(
 
                 // README: Campos afectados
                 transactionUiCreate = transactionUiCreate.copy(
-                    categoryType = 0,
-                    categoryTypeError = null
+                    transactionCategory = 0,
+                    transactionCategoryError = null
                 )
 
                 validateTransactionType()
             }
 
-            is TransactionUiEvent.CategoryTypeChanged -> {
+            is TransactionUiEvent.TransactionCategoryChanged -> {
                 transactionUiCreate = transactionUiCreate.copy(
-                    categoryType = event.categoryType
+                    transactionCategory = event.transactionCategory
                 )
-                validateCategoryType()
+                validateTransactionCategory()
             }
 
             is TransactionUiEvent.NameChanged -> {
@@ -192,7 +192,7 @@ class TransactionCreateViewModel @Inject constructor(
             is TransactionUiEvent.Submit -> {
                 if (validatePaymentAccount()
                     && validateTransactionType()
-                    && validateCategoryType()
+                    && validateTransactionCategory()
                     && validateName()
                     && validateAmount()
                 ) {
@@ -222,14 +222,14 @@ class TransactionCreateViewModel @Inject constructor(
         return transactionTypeResult.successful
     }
 
-    private fun validateCategoryType(): Boolean {
-        val categoryTypeResult = categoryTypeValidator.execute(
-            input = transactionUiCreate.categoryType
+    private fun validateTransactionCategory(): Boolean {
+        val transactionCategoryResult = transactionCategoryValidator.execute(
+            input = transactionUiCreate.transactionCategory
         )
         transactionUiCreate = transactionUiCreate.copy(
-            categoryTypeError = categoryTypeResult.errorMessage
+            transactionCategoryError = transactionCategoryResult.errorMessage
         )
-        return categoryTypeResult.successful
+        return transactionCategoryResult.successful
     }
 
     private fun validateName(): Boolean {
@@ -263,7 +263,7 @@ class TransactionCreateViewModel @Inject constructor(
                     name = transactionUiCreate.name,
                     amount = transactionUiCreate.amount.toInt(),
                     transactionType = transactionUiCreate.transactionType,
-                    categoryType = transactionUiCreate.categoryType,
+                    transactionCategory = transactionUiCreate.transactionCategory,
                     paymentAccountId = transactionUiCreate.paymentAccount.id
                 )
 

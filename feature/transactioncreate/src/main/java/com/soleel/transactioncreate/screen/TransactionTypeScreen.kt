@@ -78,7 +78,10 @@ fun TransactionTypeScreen(
     onTransactionCreateUiEvent: (TransactionUiEvent) -> Unit,
     fromTypeToCategory: () -> Unit
 ) {
-    BackHandler(enabled = true, onBack = { onBackClick() })
+    BackHandler(
+        enabled = true,
+        onBack = { onBackClick() }
+    )
 
     Scaffold(topBar = {
         TransactionCreateTopAppBar(
@@ -110,7 +113,6 @@ fun TransactionTypeScreen(
 
             Column(modifier = Modifier
                 .fillMaxSize()
-//                    .wrapContentSize(Alignment.Center)
                 .padding(top = it.calculateTopPadding()),
                 content = {
 

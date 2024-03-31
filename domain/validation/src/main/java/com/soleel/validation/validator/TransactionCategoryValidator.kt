@@ -5,7 +5,7 @@ import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
 
 
-class CategoryTypeValidator : InValidation<Int, ResultValidation> {
+class TransactionCategoryValidator : InValidation<Int, ResultValidation> {
 
     override fun execute(input: Int): ResultValidation {
 

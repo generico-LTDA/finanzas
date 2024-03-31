@@ -27,55 +27,58 @@ val TransactionTypeLetterColor = Color(0xFFFCFFFC)
 val TransactionTypeIncomeBackgroundColor = Color(0xFF226F54)
 val TransactionTypeExpenditureBackgroundColor = Color(0xFFDA2C38)
 
-val CategoryIncomeTransferGradientColor1 = Color(0xFFF8F2DC)
-val CategoryIncomeTransferGradientColor2 = Color(0xFF81ADC8)
+val IncomeCategoryTransferLetterColor = Color(0xFF434B66)
+val IncomeCategoryTransferGradientColor1 = Color(0xFF9E6240)
+val IncomeCategoryTransferGradientColor2 = Color(0xFFDEA47E)
 
-const val INCOME_TRANSFER: Int = 11
-const val INCOME_TRANSFER_VALUE: String = "Transferencia"
+val IncomeCategorySalaryLetterColor = Color(0xFF434B66)
+val IncomeCategorySalaryGradientColor1 = Color(0xFF0FA3B1)
+val IncomeCategorySalaryGradientColor2 = Color(0xFFB5E2FA)
 
-const val INCOME_SALARY: Int = 12
-const val INCOME_SALARY_VALUE: String = "Sueldo"
+val IncomeCategoryServiceLetterColor = Color(0xFF434B66)
+val IncomeCategoryServiceGradientColor1 = Color(0xFF8EB897)
+val IncomeCategoryServiceGradientColor2 = Color(0xFFC3E8BD)
 
-const val INCOME_SERVICE: Int = 13
-const val INCOME_SERVICE_VALUE: String = "Servicio prestados"
+val IncomeCategorySalesLetterColor = Color(0xFF434B66)
+val IncomeCategorySalesGradientColor1 = Color(0xFFBCB8B1)
+val IncomeCategorySalesGradientColor2 = Color(0xFFF4F3EE)
 
-const val INCOME_SALES: Int = 14
-const val INCOME_SALES_VALUE: String = "Ventas"
+val IncomeCategoryBonusLetterColor = Color(0xFF434B66)
+val IncomeCategoryBonusGradientColor1 = Color(0xFFF1A208)
+val IncomeCategoryBonusGradientColor2 = Color(0xFFD5C67A)
 
-const val INCOME_BONUS: Int = 15
-const val INCOME_BONUS_VALUE: String = "Bono"
-// Considerar donacion como bono
+val IncomeCategoryRefundLetterColor = Color(0xFF434B66)
+val IncomeCategoryRefundGradientColor1 = Color(0xFFB8DBD9)
+val IncomeCategoryRefundGradientColor2 = Color(0xFFF4F4F9)
 
-const val INCOME_REFOUND: Int = 16
-const val INCOME_REFOUND_VALUE: String = "Reembolso"
+val IncomeCategoryOtherLetterColor = Color(0xFF434B66)
+val IncomeCategoryOtherGradientColor1 = Color(0xFFBAA7B0)
+val IncomeCategoryOtherGradientColor2 = Color(0xFFB2ABBF)
 
-const val INCOME_OTHER: Int = 19
-const val INCOME_OTHER_VALUE: String = "Otro"
-// Considerar pago de cuota y aumento de credito, como aumento del amount de la linea de credito
+val ExpenditureCategoryTransferLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryTransferGradientColor1 = Color(0xFFF2EFC7)
+val ExpenditureCategoryTransferGradientColor2 = Color(0xFFF7FFE0)
 
+val ExpenditureCategoryMarketLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryMarketGradientColor1 = Color(0xFF8FB8DE)
+val ExpenditureCategoryMarketGradientColor2 = Color(0xFFCDF7F6)
 
-val TransactionExpenditureCategoryBackgroundColor = Color(0xFFDA2C38)
+val ExpenditureCategoryServiceLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryServiceGradientColor1 = Color(0xFFA4B494)
+val ExpenditureCategoryServiceGradientColor2 = Color(0xFFBEC5AD)
 
-const val EXPENDITURE_TRANSFER: Int = 21
-const val EXPENDITURE_TRANSFER_VALUE: String = "Transferencia"
+val ExpenditureCategoryAcquisitionLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryAcquisitionGradientColor1 = Color(0xFF6874E8)
+val ExpenditureCategoryAcquisitionGradientColor2 = Color(0xFFE8F0FF)
 
-const val EXPENDITURE_MARKET: Int = 23
-const val EXPENDITURE_MARKET_VALUE: String = "Despensa"
+val ExpenditureCategoryLeasureLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryLeasureGradientColor1 = Color(0xFFFECDAA)
+val ExpenditureCategoryLeasureGradientColor2 = Color(0xFFFAFAC6)
 
-const val EXPENDITURE_SERVICE: Int = 24
-const val EXPENDITURE_SERVICE_VALUE: String = "Servicio obtenidos"
-// Considera: Transporte, Salud
+val ExpenditureCategoryGiftLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryGiftGradientColor1 = Color(0xFFFF87AB)
+val ExpenditureCategoryGiftGradientColor2 = Color(0xFFFCC8C2)
 
-const val EXPENDITURE_ACQUISITION: Int = 25
-const val EXPENDITURE_ACQUISITION_VALUE: String = "Adquisicion"
-// Considera la compra de cosas para la casa
-
-const val EXPENDITURE_LEASURE: Int = 26
-const val EXPENDITURE_LEASURE_VALUE: String = "Ocio"
-
-const val EXPENDITURE_GIFT: Int = 27
-const val EXPENDITURE_GIFT_VALUE: String = "Regalo"
-
-const val EXPENDITURE_OTHER: Int = 29
-const val EXPENDITURE_OTHER_VALUE: String = "Otro"
-
+val ExpenditureCategoryOtherLetterColor = Color(0xFF434B66)
+val ExpenditureCategoryOtherGradientColor1 = Color(0xFF7389AE)
+val ExpenditureCategoryOtherGradientColor2 = Color(0xFFB5BAD0)

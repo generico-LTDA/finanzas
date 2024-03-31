@@ -89,7 +89,7 @@ class FinanzasAppState(
     @Composable
     fun getCurrentTopLevelDestination(): TopLevelDestination? {
         return when (getCurrentDestination()?.route) {
-            homeRoute -> TopLevelDestination.HOME
+            homeRoute -> HOME
             else -> null
         }
     }

@@ -33,15 +33,45 @@ import java.util.Locale
 
 @Preview
 @Composable
-fun TransactionTypeCardPreview() {
+fun TransactionTypeCategoryCardPreview() {
     TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.CREDIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.CREDIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategoryTransferCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
         paymentAccountCardItem = getPaymentAccountCard(
             paymentAccountType = PaymentAccountTypeConstant.DEBIT,
             paymentAccountTypeName = "Cuenta de credito banco estado",
             amount = "$300,000"
-        ),
-        transactionTypeCardItem = getTransactionTypeCard(
-            transactionType = TransactionTypeConstant.INCOME
         ),
         transactionCategoryCardItem = getTransactionCategoryCard(
             transactionType = TransactionTypeConstant.INCOME,
@@ -52,23 +82,255 @@ fun TransactionTypeCardPreview() {
 
 @Preview
 @Composable
-fun TransactionCategoryCardPreview() {
+fun TransactionTypeIncomeCategorySalaryCardPreview() {
     TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
         paymentAccountCardItem = getPaymentAccountCard(
-            paymentAccountType = PaymentAccountTypeConstant.CREDIT,
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
             paymentAccountTypeName = "Cuenta de credito banco estado",
             amount = "$300,000"
         ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_SALARY
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategoryServiceCardPreview() {
+    TransactionCard(
         transactionTypeCardItem = getTransactionTypeCard(
             transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_SERVICE
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategorySalesCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_SALES
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategoryBonusCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_BONUS
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategoryRefundCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_REFUND
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeIncomeCategoryOtherCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.INCOME
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.INCOME,
+            transactionCategory = TransactionCategoryConstant.INCOME_OTHER
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryTransferCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_TRANSFER
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryMarketCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_MARKET
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryServiceCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_SERVICE
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryAcquisitionCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_ACQUISITION
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryLeasureCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_LEASURE
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryGiftCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_GIFT
+        )
+    )
+}
+
+@Preview
+@Composable
+fun TransactionTypeExpenditureCategoryOtherCardPreview() {
+    TransactionCard(
+        transactionTypeCardItem = getTransactionTypeCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE
+        ),
+        paymentAccountCardItem = getPaymentAccountCard(
+            paymentAccountType = PaymentAccountTypeConstant.DEBIT,
+            paymentAccountTypeName = "Cuenta de credito banco estado",
+            amount = "$300,000"
+        ),
+        transactionCategoryCardItem = getTransactionCategoryCard(
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_OTHER
         )
     )
 }
 
 @Composable
 fun TransactionCard(
-    paymentAccountCardItem: PaymentAccountCardItem,
     transactionTypeCardItem: TransactionTypeCardItem,
+    paymentAccountCardItem: PaymentAccountCardItem,
     transactionCategoryCardItem: TransactionCategoryCardItem? = null,
     onClick: () -> Unit = {},
     onClickEnable: Boolean = true

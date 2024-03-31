@@ -1,4 +1,3 @@
 package com.soleel.transaction.model
 
-class TransactionApiModel {
-}
+class TransactionApiModel
