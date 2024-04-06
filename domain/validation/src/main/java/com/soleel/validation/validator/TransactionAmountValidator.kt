@@ -6,14 +6,14 @@ import com.soleel.validation.generic.InValidation
 import com.soleel.validation.model.ResultValidation
 
 
-class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, ResultValidation> {
+class TransactionAmountValidator : InValidation<Triple<Int, Int, Int>, ResultValidation> {
 
     companion object {
         const val maxCharLimit: Int = 8
         const val maxAmountLimit: Int = 9999999
     }
 
-    override fun execute(input: Triple<String, Int, Int>): ResultValidation {
+    override fun execute(input: Triple<Int, Int, Int>): ResultValidation {
 
         if (0 == input.second) {
             return ResultValidation(
@@ -22,12 +22,12 @@ class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, Result
             )
         }
 
-        if (input.first.isBlank()) {
-            return ResultValidation(
-                successful = false,
-                errorMessage = R.string.amount_can_not_be_blank_error_message
-            )
-        }
+//        if (input.first.isBlank()) {
+//            return ResultValidation(
+//                successful = false,
+//                errorMessage = R.string.amount_can_not_be_blank_error_message
+//            )
+//        }
 
 //        if (0 == input.toInt()) {
 //            return ResultValidation(
@@ -43,7 +43,7 @@ class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, Result
 //            )
 //        }
 
-        if (maxAmountLimit < input.first.toInt()) {
+        if (maxAmountLimit < input.first) {
             return ResultValidation(
                 successful = false,
                 errorMessage = R.string.amount_can_not_be_gt_error_message
@@ -51,7 +51,7 @@ class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, Result
         }
 
         if (TransactionTypeConstant.INCOME == input.third
-            && maxAmountLimit < input.first.toInt() + input.second
+            && maxAmountLimit < input.first + input.second
         ) {
             return ResultValidation(
                 successful = false,
@@ -60,7 +60,7 @@ class TransactionAmountValidator : InValidation<Triple<String, Int, Int>, Result
         }
 
         if (TransactionTypeConstant.EXPENDITURE == input.third
-            && 0 > input.second - input.first.toInt()
+            && 0 > input.second - input.first
         ) {
             return ResultValidation(
                 successful = false,

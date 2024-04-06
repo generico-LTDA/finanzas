@@ -12,16 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.ProgressIndicatorDefaults
@@ -34,11 +30,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,7 +43,6 @@ import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
 import com.soleel.ui.template.TransactionCreateTopAppBar
-import com.soleel.validation.validator.TransactionAmountValidator
 
 
 @Composable
@@ -293,12 +286,12 @@ fun CreateTransactionForm(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            EnterTransactionAmountTextFlied(
-                createTransactionUiCreate = createTransactionUiCreate,
-                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
-
-                currencyVisualTransformation = currencyVisualTransformation
-            )
+//            EnterTransactionAmountTextFlied(
+//                createTransactionUiCreate = createTransactionUiCreate,
+//                onCreateTransactionUiEvent = onCreateTransactionUiEvent,
+//
+//                currencyVisualTransformation = currencyVisualTransformation
+//            )
 
         }
     )
@@ -580,48 +573,48 @@ fun SelectCategoryTypeDropdownMenu(
 //    )
 //}
 
-@Composable
-fun EnterTransactionAmountTextFlied(
-    createTransactionUiCreate: TransactionUiCreate,
-    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
-    currencyVisualTransformation: CurrencyVisualTransformation,
-) {
-    OutlinedTextField(
-        value = createTransactionUiCreate.transactionAmount,
-        onValueChange = { input ->
-            val trimmed = input
-                .trimStart('0')
-                .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
-
-            if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onCreateTransactionUiEvent(TransactionUiEvent.TransactionAmountChanged(trimmed))
-            }
-        },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createTransactionUiCreate.transactionCategory,
-        label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
-        trailingIcon = {
-            if (createTransactionUiCreate.transactionAmountError != null) {
-                Icon(
-                    imageVector = Icons.Filled.Info,
-                    tint = Color.Red, // Cambiar color
-                    contentDescription = "Monto de la transaccion a crear"
-                )
-            }
-        },
-        supportingText = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = if (createTransactionUiCreate.transactionAmountError == null)
-                    stringResource(id = R.string.required_field) else
-                    stringResource(id = createTransactionUiCreate.transactionAmountError),
-                textAlign = TextAlign.End,
-            )
-        },
-        isError = createTransactionUiCreate.transactionAmountError != null,
-        visualTransformation = currencyVisualTransformation,
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        singleLine = true
-    )
-}
-
+//@Composable
+//fun EnterTransactionAmountTextFlied(
+//    createTransactionUiCreate: TransactionUiCreate,
+//    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit,
+//    currencyVisualTransformation: CurrencyVisualTransformation,
+//) {
+//    OutlinedTextField(
+//        value = createTransactionUiCreate.transactionAmount,
+//        onValueChange = { input ->
+//            val trimmed = input
+//                .trimStart('0')
+//                .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
+//
+//            if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
+//                onCreateTransactionUiEvent(TransactionUiEvent.TransactionAmountChanged(trimmed))
+//            }
+//        },
+//        modifier = Modifier.fillMaxWidth(),
+//        enabled = 0 != createTransactionUiCreate.transactionCategory,
+//        label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
+//        trailingIcon = {
+//            if (createTransactionUiCreate.transactionAmountError != null) {
+//                Icon(
+//                    imageVector = Icons.Filled.Info,
+//                    tint = Color.Red, // Cambiar color
+//                    contentDescription = "Monto de la transaccion a crear"
+//                )
+//            }
+//        },
+//        supportingText = {
+//            Text(
+//                modifier = Modifier.fillMaxWidth(),
+//                text = if (createTransactionUiCreate.transactionAmountError == null)
+//                    stringResource(id = R.string.required_field) else
+//                    stringResource(id = createTransactionUiCreate.transactionAmountError),
+//                textAlign = TextAlign.End,
+//            )
+//        },
+//        isError = createTransactionUiCreate.transactionAmountError != null,
+//        visualTransformation = currencyVisualTransformation,
+//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//        singleLine = true
+//    )
+//}
+//

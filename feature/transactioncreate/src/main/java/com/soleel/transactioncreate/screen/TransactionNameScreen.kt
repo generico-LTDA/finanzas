@@ -120,7 +120,8 @@ fun TransactionNameScreen(
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(64.dp),
-//                        enabled = 0 != paymentAccountUiCreate.type,
+                        enabled = transactionUiCreate.transactionName.isNotBlank() &&
+                                null == transactionUiCreate.transactionNameError,
                         content = { Text(text = "Avanzar a ingresar monto") }
                     )
                 }
@@ -155,15 +156,15 @@ fun TransactionNameScreen(
                             transactionType = transactionUiCreate.transactionType,
                             transactionCategory = transactionUiCreate.transactionCategory,
                             transactionName = transactionUiCreate.transactionName,
-                            transactionAmount = transactionUiCreate.transactionAmount
+                            transactionAmount = ""
                         )
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     EnterTransactionNameTextField(
-                        createTransactionUiCreate = transactionUiCreate,
-                        onCreateTransactionUiEvent = onTransactionCreateUiEvent
+                        transactionUiCreate = transactionUiCreate,
+                        onTransactionCreateUiEvent = onTransactionCreateUiEvent
                     )
                 }
             )
@@ -174,13 +175,13 @@ fun TransactionNameScreen(
 
 @Composable
 fun EnterTransactionNameTextField(
-    createTransactionUiCreate: TransactionUiCreate,
-    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit
+    transactionUiCreate: TransactionUiCreate,
+    onTransactionCreateUiEvent: (TransactionUiEvent) -> Unit
 ) {
     OutlinedTextField(
-        value = createTransactionUiCreate.transactionName,
+        value = transactionUiCreate.transactionName,
         onValueChange = {
-            onCreateTransactionUiEvent(
+            onTransactionCreateUiEvent(
                 TransactionUiEvent.TransactionNameChanged(
                     it
                 )
@@ -189,21 +190,22 @@ fun EnterTransactionNameTextField(
         modifier = Modifier
             .padding(
                 start = 16.dp,
-                end = 16.dp)
+                end = 16.dp
+            )
             .fillMaxWidth(),
-        enabled = 0 != createTransactionUiCreate.transactionCategory,
+        enabled = 0 != transactionUiCreate.transactionCategory,
         label = { Text(text = stringResource(id = R.string.attribute_trasaction_name_field)) },
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (createTransactionUiCreate.transactionNameError == null)
+                text = if (transactionUiCreate.transactionNameError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = createTransactionUiCreate.transactionNameError),
+                    stringResource(id = transactionUiCreate.transactionNameError),
                 textAlign = TextAlign.End,
             )
         },
         trailingIcon = {
-            if (createTransactionUiCreate.transactionNameError != null) {
+            if (transactionUiCreate.transactionNameError != null) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     tint = Color.Red, // Cambiar color
@@ -211,7 +213,7 @@ fun EnterTransactionNameTextField(
                 )
             }
         },
-        isError = createTransactionUiCreate.transactionNameError != null,
+        isError = transactionUiCreate.transactionNameError != null,
         singleLine = true
     )
 }

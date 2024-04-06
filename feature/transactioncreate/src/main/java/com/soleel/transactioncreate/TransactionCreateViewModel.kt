@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.common.result.Result
 import com.soleel.common.result.asResult
 import com.soleel.common.retryflow.RetryableFlowTrigger
@@ -12,10 +13,10 @@ import com.soleel.common.retryflow.retryableFlow
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.validation.validator.TransactionCategoryValidator
 import com.soleel.validation.validator.NameValidator
 import com.soleel.validation.validator.PaymentAccountTypeValidator
 import com.soleel.validation.validator.TransactionAmountValidator
+import com.soleel.validation.validator.TransactionCategoryValidator
 import com.soleel.validation.validator.TransactionTypeValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,7 @@ data class TransactionUiCreate(
     val transactionName: String = "",
     val transactionNameError: Int? = null,
 
-    val transactionAmount: String = "",
+    val transactionAmount: Int = 0,
     val transactionAmountError: Int? = null,
 
     val isTransactionSaved: Boolean = false
@@ -54,7 +55,7 @@ sealed class TransactionUiEvent {
     data class TransactionTypeChanged(val transactionType: Int) : TransactionUiEvent()
     data class TransactionCategoryChanged(val transactionCategory: Int) : TransactionUiEvent()
     data class TransactionNameChanged(val transactionName: String) : TransactionUiEvent()
-    data class TransactionAmountChanged(val transactionAmount: String) : TransactionUiEvent()
+    data class TransactionAmountChanged(val transactionAmount: Int) : TransactionUiEvent()
 
     data object Submit : TransactionUiEvent()
 }
@@ -78,6 +79,7 @@ class TransactionCreateViewModel @Inject constructor(
 ) : ViewModel() {
 
     var transactionUiCreate by mutableStateOf(TransactionUiCreate())
+    private var initialPaymentAccountAmount = 0
 
     private val paymentAccountValidator = PaymentAccountTypeValidator()
     private val transactionTypeValidator = TransactionTypeValidator()
@@ -180,21 +182,23 @@ class TransactionCreateViewModel @Inject constructor(
             }
 
             is TransactionUiEvent.TransactionNameChanged -> {
-                transactionUiCreate = transactionUiCreate.copy(transactionName = event.transactionName)
-                validateName()
+                transactionUiCreate =
+                    transactionUiCreate.copy(transactionName = event.transactionName)
+                validateTransactionName()
             }
 
             is TransactionUiEvent.TransactionAmountChanged -> {
                 transactionUiCreate = transactionUiCreate.copy(transactionAmount = event.transactionAmount)
-                validateAmount()
+                validateTransactionAmount()
+                paymentAccountAmountRecalculate()
             }
 
             is TransactionUiEvent.Submit -> {
                 if (validatePaymentAccount()
                     && validateTransactionType()
                     && validateTransactionCategory()
-                    && validateName()
-                    && validateAmount()
+                    && validateTransactionName()
+                    && validateTransactionAmount()
                 ) {
                     saveTransaction()
                 }
@@ -232,16 +236,17 @@ class TransactionCreateViewModel @Inject constructor(
         return transactionCategoryResult.successful
     }
 
-    private fun validateName(): Boolean {
-        val nameResult = transactionNameValidator.execute(input = transactionUiCreate.transactionName)
+    private fun validateTransactionName(): Boolean {
+        val nameResult =
+            transactionNameValidator.execute(input = transactionUiCreate.transactionName)
         transactionUiCreate = transactionUiCreate.copy(
             transactionNameError = nameResult.errorMessage
         )
         return nameResult.successful
     }
 
-    private fun validateAmount(): Boolean {
-        val input = Triple<String, Int, Int>(
+    private fun validateTransactionAmount(): Boolean {
+        val input = Triple<Int, Int, Int>(
             first = transactionUiCreate.transactionAmount,
             second = transactionUiCreate.paymentAccount.amount,
             third = transactionUiCreate.transactionType
@@ -255,13 +260,25 @@ class TransactionCreateViewModel @Inject constructor(
         return amountResult.successful
     }
 
+    private fun paymentAccountAmountRecalculate() {
+        if (0 == initialPaymentAccountAmount) {
+            initialPaymentAccountAmount = transactionUiCreate.paymentAccount.amount
+        }
+
+        transactionUiCreate.paymentAccount.amount = when (transactionUiCreate.transactionType) {
+            TransactionTypeConstant.INCOME -> initialPaymentAccountAmount + transactionUiCreate.transactionAmount
+            TransactionTypeConstant.EXPENDITURE -> initialPaymentAccountAmount - transactionUiCreate.transactionAmount
+            else -> initialPaymentAccountAmount
+        }
+    }
+
     private fun saveTransaction() {
         viewModelScope.launch(
             context = Dispatchers.IO,
             block = {
                 transactionRepository.createTransaction(
                     name = transactionUiCreate.transactionName,
-                    amount = transactionUiCreate.transactionAmount.toInt(),
+                    amount = transactionUiCreate.transactionAmount,
                     transactionType = transactionUiCreate.transactionType,
                     transactionCategory = transactionUiCreate.transactionCategory,
                     paymentAccountId = transactionUiCreate.paymentAccount.id
@@ -272,5 +289,6 @@ class TransactionCreateViewModel @Inject constructor(
                 )
             })
     }
+
 }
 
