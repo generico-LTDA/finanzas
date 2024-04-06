@@ -40,11 +40,11 @@ data class TransactionUiCreate(
     val transactionCategory: Int = 0,
     val transactionCategoryError: Int? = null,
 
-    val name: String = "",
-    val nameError: Int? = null,
+    val transactionName: String = "",
+    val transactionNameError: Int? = null,
 
-    val amount: String = "",
-    val amountError: Int? = null,
+    val transactionAmount: String = "",
+    val transactionAmountError: Int? = null,
 
     val isTransactionSaved: Boolean = false
 )
@@ -53,8 +53,8 @@ sealed class TransactionUiEvent {
     data class PaymentAccountChanged(val paymentAccount: PaymentAccount) : TransactionUiEvent()
     data class TransactionTypeChanged(val transactionType: Int) : TransactionUiEvent()
     data class TransactionCategoryChanged(val transactionCategory: Int) : TransactionUiEvent()
-    data class NameChanged(val name: String) : TransactionUiEvent()
-    data class AmountChanged(val amount: String) : TransactionUiEvent()
+    data class TransactionNameChanged(val transactionName: String) : TransactionUiEvent()
+    data class TransactionAmountChanged(val transactionAmount: String) : TransactionUiEvent()
 
     data object Submit : TransactionUiEvent()
 }
@@ -79,11 +79,11 @@ class TransactionCreateViewModel @Inject constructor(
 
     var transactionUiCreate by mutableStateOf(TransactionUiCreate())
 
-    private val validatePaymentAccountUseCase = PaymentAccountTypeValidator()
+    private val paymentAccountValidator = PaymentAccountTypeValidator()
     private val transactionTypeValidator = TransactionTypeValidator()
     private val transactionCategoryValidator = TransactionCategoryValidator()
-    private val nameValidator = NameValidator()
-    private val amountValidator = TransactionAmountValidator()
+    private val transactionNameValidator = NameValidator()
+    private val transactionAmountValidator = TransactionAmountValidator()
 
     private val _paymentAccountsUiState: Flow<PaymentAccountsUiState> = retryableFlowTrigger
         .retryableFlow(flowProvider = {
@@ -179,13 +179,13 @@ class TransactionCreateViewModel @Inject constructor(
                 validateTransactionCategory()
             }
 
-            is TransactionUiEvent.NameChanged -> {
-                transactionUiCreate = transactionUiCreate.copy(name = event.name)
+            is TransactionUiEvent.TransactionNameChanged -> {
+                transactionUiCreate = transactionUiCreate.copy(transactionName = event.transactionName)
                 validateName()
             }
 
-            is TransactionUiEvent.AmountChanged -> {
-                transactionUiCreate = transactionUiCreate.copy(amount = event.amount)
+            is TransactionUiEvent.TransactionAmountChanged -> {
+                transactionUiCreate = transactionUiCreate.copy(transactionAmount = event.transactionAmount)
                 validateAmount()
             }
 
@@ -203,7 +203,7 @@ class TransactionCreateViewModel @Inject constructor(
     }
 
     private fun validatePaymentAccount(): Boolean {
-        val paymentAccountResult = validatePaymentAccountUseCase.execute(
+        val paymentAccountResult = paymentAccountValidator.execute(
             input = transactionUiCreate.paymentAccount
         )
         transactionUiCreate = transactionUiCreate.copy(
@@ -233,24 +233,24 @@ class TransactionCreateViewModel @Inject constructor(
     }
 
     private fun validateName(): Boolean {
-        val nameResult = nameValidator.execute(input = transactionUiCreate.name)
+        val nameResult = transactionNameValidator.execute(input = transactionUiCreate.transactionName)
         transactionUiCreate = transactionUiCreate.copy(
-            nameError = nameResult.errorMessage
+            transactionNameError = nameResult.errorMessage
         )
         return nameResult.successful
     }
 
     private fun validateAmount(): Boolean {
         val input = Triple<String, Int, Int>(
-            first = transactionUiCreate.amount,
+            first = transactionUiCreate.transactionAmount,
             second = transactionUiCreate.paymentAccount.amount,
             third = transactionUiCreate.transactionType
         )
 
-        val amountResult = amountValidator.execute(input = input)
+        val amountResult = transactionAmountValidator.execute(input = input)
 
         transactionUiCreate = transactionUiCreate.copy(
-            amountError = amountResult.errorMessage
+            transactionAmountError = amountResult.errorMessage
         )
         return amountResult.successful
     }
@@ -260,8 +260,8 @@ class TransactionCreateViewModel @Inject constructor(
             context = Dispatchers.IO,
             block = {
                 transactionRepository.createTransaction(
-                    name = transactionUiCreate.name,
-                    amount = transactionUiCreate.amount.toInt(),
+                    name = transactionUiCreate.transactionName,
+                    amount = transactionUiCreate.transactionAmount.toInt(),
                     transactionType = transactionUiCreate.transactionType,
                     transactionCategory = transactionUiCreate.transactionCategory,
                     paymentAccountId = transactionUiCreate.paymentAccount.id

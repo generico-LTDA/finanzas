@@ -75,7 +75,7 @@ fun TransactionTypeIncomeCategoryTransferCardPreview() {
         ),
         transactionCategoryCardItem = getTransactionCategoryCard(
             transactionType = TransactionTypeConstant.INCOME,
-            transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER
+            transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER,
         )
     )
 }

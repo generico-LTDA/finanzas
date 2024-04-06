@@ -119,9 +119,10 @@ fun TransactionCategoryScreen(
                 mutableStateOf(CurrencyVisualTransformation(currencyCode = "USD"))
             })
 
-            Column(modifier = Modifier
-                .fillMaxSize()
-                .padding(top = it.calculateTopPadding()),
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = it.calculateTopPadding()),
                 content = {
                     SelectTransactionCategory(
                         transactionUiCreate = transactionUiCreate,
@@ -172,9 +173,7 @@ fun SelectTransactionCategory(
                         ),
                         transactionCategoryCardItem = getTransactionCategoryCard(
                             transactionType = transactionUiCreate.transactionType,
-                            transactionCategory = transactionCategory.first,
-                            transactionCategoryNameTransaction = null,
-                            amount = null
+                            transactionCategory = transactionCategory.first
                         ),
                         onClick = {
                             onTransactionCreateUiEvent(

@@ -286,10 +286,10 @@ fun CreateTransactionForm(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            EnterTransactionNameTextField(
-                createTransactionUiCreate = createTransactionUiCreate,
-                onCreateTransactionUiEvent = onCreateTransactionUiEvent
-            )
+//            EnterTransactionNameTextField(
+//                createTransactionUiCreate = createTransactionUiCreate,
+//                onCreateTransactionUiEvent = onCreateTransactionUiEvent
+//            )
 
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -540,45 +540,45 @@ fun SelectCategoryTypeDropdownMenu(
     )
 }
 
-@Composable
-fun EnterTransactionNameTextField(
-    createTransactionUiCreate: TransactionUiCreate,
-    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit
-) {
-    OutlinedTextField(
-        value = createTransactionUiCreate.name,
-        onValueChange = {
-            onCreateTransactionUiEvent(
-                TransactionUiEvent.NameChanged(
-                    it
-                )
-            )
-        },
-        modifier = Modifier.fillMaxWidth(),
-        enabled = 0 != createTransactionUiCreate.transactionCategory,
-        label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
-        supportingText = {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = if (createTransactionUiCreate.nameError == null)
-                    stringResource(id = R.string.required_field) else
-                    stringResource(id = createTransactionUiCreate.nameError),
-                textAlign = TextAlign.End,
-            )
-        },
-        trailingIcon = {
-            if (createTransactionUiCreate.nameError != null) {
-                Icon(
-                    imageVector = Icons.Filled.Info,
-                    tint = Color.Red, // Cambiar color
-                    contentDescription = "Nombre de la transaccion a crear"
-                )
-            }
-        },
-        isError = createTransactionUiCreate.nameError != null,
-        singleLine = true
-    )
-}
+//@Composable
+//fun EnterTransactionNameTextField(
+//    createTransactionUiCreate: TransactionUiCreate,
+//    onCreateTransactionUiEvent: (TransactionUiEvent) -> Unit
+//) {
+//    OutlinedTextField(
+//        value = createTransactionUiCreate.name,
+//        onValueChange = {
+//            onCreateTransactionUiEvent(
+//                TransactionUiEvent.NameChanged(
+//                    it
+//                )
+//            )
+//        },
+//        modifier = Modifier.fillMaxWidth(),
+//        enabled = 0 != createTransactionUiCreate.transactionCategory,
+//        label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
+//        supportingText = {
+//            Text(
+//                modifier = Modifier.fillMaxWidth(),
+//                text = if (createTransactionUiCreate.nameError == null)
+//                    stringResource(id = R.string.required_field) else
+//                    stringResource(id = createTransactionUiCreate.nameError),
+//                textAlign = TextAlign.End,
+//            )
+//        },
+//        trailingIcon = {
+//            if (createTransactionUiCreate.nameError != null) {
+//                Icon(
+//                    imageVector = Icons.Filled.Info,
+//                    tint = Color.Red, // Cambiar color
+//                    contentDescription = "Nombre de la transaccion a crear"
+//                )
+//            }
+//        },
+//        isError = createTransactionUiCreate.nameError != null,
+//        singleLine = true
+//    )
+//}
 
 @Composable
 fun EnterTransactionAmountTextFlied(
@@ -587,21 +587,21 @@ fun EnterTransactionAmountTextFlied(
     currencyVisualTransformation: CurrencyVisualTransformation,
 ) {
     OutlinedTextField(
-        value = createTransactionUiCreate.amount,
+        value = createTransactionUiCreate.transactionAmount,
         onValueChange = { input ->
             val trimmed = input
                 .trimStart('0')
                 .trim(predicate = { inputTrimStart -> inputTrimStart.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onCreateTransactionUiEvent(TransactionUiEvent.AmountChanged(trimmed))
+                onCreateTransactionUiEvent(TransactionUiEvent.TransactionAmountChanged(trimmed))
             }
         },
         modifier = Modifier.fillMaxWidth(),
         enabled = 0 != createTransactionUiCreate.transactionCategory,
         label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
         trailingIcon = {
-            if (createTransactionUiCreate.amountError != null) {
+            if (createTransactionUiCreate.transactionAmountError != null) {
                 Icon(
                     imageVector = Icons.Filled.Info,
                     tint = Color.Red, // Cambiar color
@@ -612,13 +612,13 @@ fun EnterTransactionAmountTextFlied(
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = if (createTransactionUiCreate.amountError == null)
+                text = if (createTransactionUiCreate.transactionAmountError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = createTransactionUiCreate.amountError),
+                    stringResource(id = createTransactionUiCreate.transactionAmountError),
                 textAlign = TextAlign.End,
             )
         },
-        isError = createTransactionUiCreate.amountError != null,
+        isError = createTransactionUiCreate.transactionAmountError != null,
         visualTransformation = currencyVisualTransformation,
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         singleLine = true

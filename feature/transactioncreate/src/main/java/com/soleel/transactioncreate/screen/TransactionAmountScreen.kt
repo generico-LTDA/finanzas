@@ -19,6 +19,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.soleel.common.constants.PaymentAccountTypeConstant
+import com.soleel.common.constants.TransactionCategoryConstant
+import com.soleel.common.constants.TransactionTypeConstant
+import com.soleel.paymentaccount.model.PaymentAccount
 import com.soleel.transactioncreate.TransactionCreateViewModel
 import com.soleel.transactioncreate.TransactionUiCreate
 import com.soleel.transactioncreate.TransactionUiEvent
@@ -59,8 +63,20 @@ fun TransactionAmountScreenPreview() {
         onCancelClick = {},
         onBackClick = {},
         onSaveClick = {},
-        transactionUiCreate = TransactionUiCreate(),
-        onTransactionCreateUiEvent = {},
+        transactionUiCreate = TransactionUiCreate(
+            paymentAccount = PaymentAccount(
+                id = "2",
+                name = "Cuenta corriente falabella",
+                amount = 400000,
+                createAt = 1708709787983L,
+                updatedAt = 1708709787983L,
+                accountType = PaymentAccountTypeConstant.CREDIT
+            ),
+            transactionType = TransactionTypeConstant.EXPENDITURE,
+            transactionCategory = TransactionCategoryConstant.EXPENDITURE_GIFT,
+            transactionName = "Regalo para abuela"
+        ),
+        onTransactionCreateUiEvent = {}
     )
 }
 
