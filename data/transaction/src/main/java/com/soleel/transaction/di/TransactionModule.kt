@@ -15,7 +15,7 @@ interface TransactionModule {
 
     @Singleton
     @Binds
-    abstract fun bindTransactionLocalRepository(localRepository: TransactionRepository): ITransactionLocalDataSource
+    fun bindTransactionLocalRepository(localRepository: TransactionRepository): ITransactionLocalDataSource
 
 //    @Singleton
 //    @Binds

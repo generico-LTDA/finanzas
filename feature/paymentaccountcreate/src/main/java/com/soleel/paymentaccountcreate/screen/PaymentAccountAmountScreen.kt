@@ -30,14 +30,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
-import com.soleel.paymentaccountcreate.util.PaymentAccountCards
+import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
+import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
 import com.soleel.transformation.visualtransformation.CurrencyVisualTransformation
 import com.soleel.ui.R
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.ui.template.PaymentAccountCard
-import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
+import com.soleel.ui.util.PaymentAccountCardItem
+import com.soleel.ui.util.getPaymentAccountCard
 import com.soleel.validation.validator.TransactionAmountValidator
 
 
@@ -48,9 +48,10 @@ internal fun PaymentAccountAmountRoute(
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
     viewModel: PaymentAccountCreateViewModel
 ) {
-    val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
+    val paymentAccountCreateUi = viewModel.paymentAccountUiCreate
 
     PaymentAccountAmountScreen(
         modifier = modifier,
@@ -60,6 +61,7 @@ internal fun PaymentAccountAmountRoute(
 
         onBackClick = onBackClick,
         onCancelClick = onCancelClick,
+        onSaveClick = onSaveClick,
 
         paymentAccountCreateUi = paymentAccountCreateUi,
         onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi
@@ -75,7 +77,8 @@ fun PaymentAccountAmountScreenPreview() {
         onShowBottomBar = {},
         onShowAddFloating = {},
         onCancelClick = {},
-        paymentAccountCreateUi = PaymentAccountCreateUi(
+        onSaveClick = {},
+        paymentAccountCreateUi = PaymentAccountUiCreate(
             type = PaymentAccountTypeConstant.INVESTMENT,
             amount = "$340,000"
         ),
@@ -91,8 +94,9 @@ internal fun PaymentAccountAmountScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
+    onSaveClick: () -> Unit,
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit
 ) {
     BackHandler(
         enabled = true,
@@ -102,7 +106,7 @@ internal fun PaymentAccountAmountScreen(
     if (paymentAccountCreateUi.isPaymentAccountSaved) {
         onShowBottomBar()
         onShowAddFloating()
-        onBackClick()
+        onSaveClick()
     }
 
     Scaffold(
@@ -120,14 +124,14 @@ internal fun PaymentAccountAmountScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
                     Button(
-                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.Submit) },
+                        onClick = { onPaymentAccountCreateEventUi(PaymentAccountUiEvent.Submit) },
                         modifier = Modifier
                             .fillMaxWidth(0.9f)
                             .height(64.dp),
                         enabled = 0 != paymentAccountCreateUi.type
                                 && paymentAccountCreateUi.name.isNotBlank()
                                 && paymentAccountCreateUi.amount.isNotBlank(),
-                        content = { Text(text = stringResource(id = R.string.add_payment_account_title)) }
+                        content = { Text(text = stringResource(id = R.string.add_payment_account_button)) }
                     )
                 }
             )
@@ -139,7 +143,7 @@ internal fun PaymentAccountAmountScreen(
             })
 
             val paymentAccountCardItem: PaymentAccountCardItem = remember(calculation = {
-                PaymentAccountCards.getPaymentAccountCards(
+                getPaymentAccountCard(
                     paymentAccountCreateUi.type
                 )
             })
@@ -181,8 +185,8 @@ internal fun PaymentAccountAmountScreen(
 
 @Composable
 fun EnterPaymentAccountAmountTextFlied(
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit,
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit,
     currencyVisualTransformation: CurrencyVisualTransformation
 ) {
     OutlinedTextField(
@@ -193,7 +197,7 @@ fun EnterPaymentAccountAmountTextFlied(
                 .trim(predicate = { it.isDigit().not() })
 
             if (trimmed.length <= TransactionAmountValidator.maxCharLimit) {
-                onPaymentAccountCreateEventUi(PaymentAccountCreateEventUi.AmountChanged(trimmed))
+                onPaymentAccountCreateEventUi(PaymentAccountUiEvent.AmountChanged(trimmed))
             }
         },
         modifier = Modifier
@@ -201,7 +205,7 @@ fun EnterPaymentAccountAmountTextFlied(
             .padding(16.dp),
         enabled = 0 != paymentAccountCreateUi.type
                 && paymentAccountCreateUi.name.isNotBlank(),
-        label = { Text(text = stringResource(id = R.string.attribute_amount_payment_account_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_amount_field)) },
         trailingIcon = {
             if (null != paymentAccountCreateUi.amountError) {
                 Icon(
@@ -216,7 +220,7 @@ fun EnterPaymentAccountAmountTextFlied(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (paymentAccountCreateUi.amountError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = paymentAccountCreateUi.amountError!!),
+                    stringResource(id = paymentAccountCreateUi.amountError),
                 textAlign = TextAlign.End,
             )
         },

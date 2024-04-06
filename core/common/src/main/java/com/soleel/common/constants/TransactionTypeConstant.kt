@@ -5,13 +5,13 @@ object TransactionTypeConstant {
     const val INCOME: Int = 1
     const val INCOME_VALUE: String = "Ingreso"
 
-    const val EXPEDITURE: Int = 2
-    const val EXPEDITURE_VALUE: String = "Gasto"
+    const val EXPENDITURE: Int = 2
+    const val EXPENDITURE_VALUE: String = "Gasto"
 
     val idToValueList: List<Pair<Int, String>> = listOf(
         INCOME to INCOME_VALUE,
-        EXPEDITURE to EXPEDITURE_VALUE
+        EXPENDITURE to EXPENDITURE_VALUE
     )
 
-    val idList: List<Int> = listOf(INCOME, EXPEDITURE)
+    val idList: List<Int> = listOf(INCOME, EXPENDITURE)
 }

@@ -13,7 +13,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import androidx.tracing.trace
 import com.soleel.accounts.navigation.navigateToAccounts
-import com.soleel.createtransaction.navigation.navigateToCreateTransaction
 import com.soleel.finanzas.navigation.TopLevelDestination
 import com.soleel.finanzas.navigation.TopLevelDestination.ACCOUNTS
 import com.soleel.finanzas.navigation.TopLevelDestination.HOME
@@ -24,6 +23,7 @@ import com.soleel.home.navigation.homeRoute
 import com.soleel.paymentaccountcreate.navigation.navigateToPaymentAccountCreateGraph
 import com.soleel.profile.navigation.navigateToProfile
 import com.soleel.stats.navigation.navigateToStats
+import com.soleel.transactioncreate.navigation.navigateToTransactionCreateGraph
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -89,7 +89,7 @@ class FinanzasAppState(
     @Composable
     fun getCurrentTopLevelDestination(): TopLevelDestination? {
         return when (getCurrentDestination()?.route) {
-            homeRoute -> TopLevelDestination.HOME
+            homeRoute -> HOME
             else -> null
         }
     }
@@ -99,14 +99,19 @@ class FinanzasAppState(
     }
 
     fun navigateToTopLevelDestination(topLevelDestination: TopLevelDestination) {
-        trace(label = "Navigation: ${topLevelDestination.name}",
+        trace(
+            label = "Navigation: ${topLevelDestination.name}",
             block = {
-                val topLevelNavOptions = navOptions(optionsBuilder = {
-                    popUpTo(id = navController.graph.findStartDestination().id,
-                        popUpToBuilder = { saveState = true })
-                    launchSingleTop = true
-                    restoreState = true
-                })
+                val topLevelNavOptions = navOptions(
+                    optionsBuilder = {
+                        popUpTo(
+                            id = navController.graph.findStartDestination().id,
+                            popUpToBuilder = { saveState = true }
+                        )
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                )
 
                 when (topLevelDestination) {
                     HOME -> navController.backToHome(topLevelNavOptions)
@@ -117,7 +122,8 @@ class FinanzasAppState(
 
                     PROFILE -> navController.navigateToProfile(topLevelNavOptions)
                 }
-            })
+            }
+        )
     }
 
     fun navigateToCreatePaymentAccount() {
@@ -125,7 +131,7 @@ class FinanzasAppState(
     }
 
     fun navigateToCreateTransaction() {
-        navController.navigateToCreateTransaction()
+        navController.navigateToTransactionCreateGraph()
     }
 
     fun backToHome() {

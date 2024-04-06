@@ -5,20 +5,39 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.soleel.common.constants.CategoryTypeConstant
+import com.soleel.common.constants.TransactionCategoryConstant
 import com.soleel.common.constants.TransactionTypeConstant
 import com.soleel.paymentaccount.interfaces.IPaymentAccountLocalDataSource
 import com.soleel.transaction.interfaces.ITransactionLocalDataSource
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
-import com.soleel.validation.validator.AccountAmountValidator
 import com.soleel.validation.validator.AccountTypeValidator
 import com.soleel.validation.validator.NameValidator
+import com.soleel.validation.validator.PaymentAccountAmountValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
+data class PaymentAccountUiCreate(
+    val type: Int = 0,
+    val typeError: Int? = null,
+
+    val name: String = "",
+    val nameError: Int? = null,
+
+    val amount: String = "",
+    val amountError: Int? = null,
+
+    val isPaymentAccountSaved: Boolean = false
+)
+
+sealed class PaymentAccountUiEvent {
+    data class NameChanged(val name: String) : PaymentAccountUiEvent()
+    data class AmountChanged(val amount: String) : PaymentAccountUiEvent()
+    data class TypeChanged(val accountType: Int) : PaymentAccountUiEvent()
+
+    data object Submit : PaymentAccountUiEvent()
+}
 
 @HiltViewModel
 class PaymentAccountCreateViewModel @Inject constructor(
@@ -26,33 +45,33 @@ class PaymentAccountCreateViewModel @Inject constructor(
     private val transactionRepository: ITransactionLocalDataSource
 ) : ViewModel() {
 
-    var paymentAccountCreateUi by mutableStateOf(PaymentAccountCreateUi())
+    var paymentAccountUiCreate by mutableStateOf(PaymentAccountUiCreate())
 
     private val accountTypeValidator = AccountTypeValidator()
     private val nameValidator = NameValidator()
-    private val accountAmountValidator = AccountAmountValidator()
+    private val accountAmountValidator = PaymentAccountAmountValidator()
 
-    fun onPaymentAccountCreateEventUi(event: PaymentAccountCreateEventUi) {
+    fun onPaymentAccountCreateEventUi(event: PaymentAccountUiEvent) {
         when (event) {
-            is PaymentAccountCreateEventUi.AccountTypeChangedUi -> {
-                paymentAccountCreateUi = paymentAccountCreateUi.copy(
+            is PaymentAccountUiEvent.TypeChanged -> {
+                paymentAccountUiCreate = paymentAccountUiCreate.copy(
                     type = event.accountType
                 )
                 validateAccountType()
             }
 
-            is PaymentAccountCreateEventUi.NameChanged -> {
-                paymentAccountCreateUi = paymentAccountCreateUi.copy(name = event.name)
+            is PaymentAccountUiEvent.NameChanged -> {
+                paymentAccountUiCreate = paymentAccountUiCreate.copy(name = event.name)
                 validateName()
             }
 
-            is PaymentAccountCreateEventUi.AmountChanged -> {
-                paymentAccountCreateUi =
-                    paymentAccountCreateUi.copy(amount = event.amount)
+            is PaymentAccountUiEvent.AmountChanged -> {
+                paymentAccountUiCreate =
+                    paymentAccountUiCreate.copy(amount = event.amount)
                 validateAmount()
             }
 
-            is PaymentAccountCreateEventUi.Submit -> {
+            is PaymentAccountUiEvent.Submit -> {
                 if (validateAccountType()
                     && validateName()
                     && validateAmount()
@@ -65,17 +84,17 @@ class PaymentAccountCreateViewModel @Inject constructor(
 
     private fun validateAccountType(): Boolean {
         val accountTypeResult = accountTypeValidator.execute(
-            input = paymentAccountCreateUi.type
+            input = paymentAccountUiCreate.type
         )
-        paymentAccountCreateUi = paymentAccountCreateUi.copy(
+        paymentAccountUiCreate = paymentAccountUiCreate.copy(
             typeError = accountTypeResult.errorMessage
         )
         return accountTypeResult.successful
     }
 
     private fun validateName(): Boolean {
-        val nameResult = nameValidator.execute(input = paymentAccountCreateUi.name)
-        paymentAccountCreateUi = paymentAccountCreateUi.copy(
+        val nameResult = nameValidator.execute(input = paymentAccountUiCreate.name)
+        paymentAccountUiCreate = paymentAccountUiCreate.copy(
             nameError = nameResult.errorMessage
         )
         return nameResult.successful
@@ -83,8 +102,8 @@ class PaymentAccountCreateViewModel @Inject constructor(
 
     private fun validateAmount(): Boolean {
         val amountResult =
-            accountAmountValidator.execute(input = paymentAccountCreateUi.amount)
-        paymentAccountCreateUi = paymentAccountCreateUi.copy(
+            accountAmountValidator.execute(input = paymentAccountUiCreate.amount)
+        paymentAccountUiCreate = paymentAccountUiCreate.copy(
             amountError = amountResult.errorMessage
         )
         return amountResult.successful
@@ -95,20 +114,20 @@ class PaymentAccountCreateViewModel @Inject constructor(
             context = Dispatchers.IO,
             block = {
                 val paymentAccountId = paymentAccountRepository.createPaymentAccount(
-                    name = paymentAccountCreateUi.name,
-                    amount = paymentAccountCreateUi.amount.toInt(),
-                    accountType = paymentAccountCreateUi.type
+                    name = paymentAccountUiCreate.name,
+                    amount = paymentAccountUiCreate.amount.toInt(),
+                    accountType = paymentAccountUiCreate.type
                 )
 
                 transactionRepository.createTransaction(
                     name = "Monto inicial",
-                    amount =paymentAccountCreateUi.amount.toInt(),
+                    amount =paymentAccountUiCreate.amount.toInt(),
                     transactionType = TransactionTypeConstant.INCOME,
-                    categoryType = CategoryTypeConstant.INCOME_TRANSFER,
+                    transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER,
                     paymentAccountId = paymentAccountId
                 )
 
-                paymentAccountCreateUi = paymentAccountCreateUi.copy(
+                paymentAccountUiCreate = paymentAccountUiCreate.copy(
                     isPaymentAccountSaved = true
                 )
             })

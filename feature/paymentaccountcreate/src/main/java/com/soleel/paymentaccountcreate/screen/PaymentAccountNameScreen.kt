@@ -25,13 +25,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soleel.common.constants.PaymentAccountTypeConstant
 import com.soleel.paymentaccountcreate.PaymentAccountCreateViewModel
-import com.soleel.paymentaccountcreate.util.PaymentAccountCards.getPaymentAccountCards
+import com.soleel.paymentaccountcreate.PaymentAccountUiCreate
+import com.soleel.paymentaccountcreate.PaymentAccountUiEvent
 import com.soleel.ui.R
-import com.soleel.ui.state.PaymentAccountCreateEventUi
-import com.soleel.ui.state.PaymentAccountCreateUi
 import com.soleel.ui.template.PaymentAccountCard
-import com.soleel.ui.template.PaymentAccountCardItem
 import com.soleel.ui.template.PaymentAccountCreateTopAppBar
+import com.soleel.ui.util.PaymentAccountCardItem
+import com.soleel.ui.util.getPaymentAccountCard
 import com.soleel.validation.validator.NameValidator
 
 
@@ -39,24 +39,21 @@ import com.soleel.validation.validator.NameValidator
 internal fun PaymentAccountNameRoute(
     modifier: Modifier = Modifier,
 
-    onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
+    onBackClick: () -> Unit,
 
     fromNameToAmount: () -> Unit,
 
     viewModel: PaymentAccountCreateViewModel
 ) {
-    val paymentAccountCreateUi = viewModel.paymentAccountCreateUi
+    val paymentAccountCreateUi = viewModel.paymentAccountUiCreate
 
     PaymentAccountNameScreen(
         modifier = modifier,
-
-        onBackClick = onBackClick,
         onCancelClick = onCancelClick,
-
+        onBackClick = onBackClick,
         paymentAccountCreateUi = paymentAccountCreateUi,
         onPaymentAccountCreateEventUi = viewModel::onPaymentAccountCreateEventUi,
-
         fromNameToAmount = fromNameToAmount
     )
 }
@@ -68,7 +65,7 @@ internal fun PaymentAccountNameScreenPreview() {
         modifier = Modifier,
         onBackClick = {},
         onCancelClick = {},
-        paymentAccountCreateUi = PaymentAccountCreateUi(
+        paymentAccountCreateUi = PaymentAccountUiCreate(
             type = PaymentAccountTypeConstant.CREDIT,
             name = "Inversion en bolsa",
         ),
@@ -81,10 +78,10 @@ internal fun PaymentAccountNameScreenPreview() {
 @Composable
 internal fun PaymentAccountNameScreen(
     modifier: Modifier,
-    onBackClick: () -> Unit,
     onCancelClick: () -> Unit,
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit,
+    onBackClick: () -> Unit,
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit,
     fromNameToAmount: () -> Unit
 ) {
     BackHandler(
@@ -121,7 +118,7 @@ internal fun PaymentAccountNameScreen(
         content = {
 
             val paymentAccountCardItem: PaymentAccountCardItem = remember(calculation = {
-                getPaymentAccountCards(
+                getPaymentAccountCard(
                     paymentAccountCreateUi.type
                 )
             })
@@ -157,15 +154,15 @@ internal fun PaymentAccountNameScreen(
 
 @Composable
 fun EnterPaymentAccountNameTextField(
-    paymentAccountCreateUi: PaymentAccountCreateUi,
-    onPaymentAccountCreateEventUi: (PaymentAccountCreateEventUi) -> Unit
+    paymentAccountCreateUi: PaymentAccountUiCreate,
+    onPaymentAccountCreateEventUi: (PaymentAccountUiEvent) -> Unit
 ) {
     OutlinedTextField(
         value = paymentAccountCreateUi.name,
         onValueChange = {
             if (it.length <= NameValidator.maxCharLimit) {
                 onPaymentAccountCreateEventUi(
-                    PaymentAccountCreateEventUi.NameChanged(it)
+                    PaymentAccountUiEvent.NameChanged(it)
                 )
             }
         },
@@ -173,13 +170,13 @@ fun EnterPaymentAccountNameTextField(
             .fillMaxWidth()
             .padding(16.dp),
         enabled = 0 != paymentAccountCreateUi.type,
-        label = { Text(text = stringResource(id = R.string.attribute_name_payment_account_title)) },
+        label = { Text(text = stringResource(id = R.string.attribute_payment_account_name_field)) },
         supportingText = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = if (paymentAccountCreateUi.nameError == null)
                     stringResource(id = R.string.required_field) else
-                    stringResource(id = paymentAccountCreateUi.nameError!!),
+                    stringResource(id = paymentAccountCreateUi.nameError),
                 textAlign = TextAlign.End,
             )
         },

@@ -94,21 +94,23 @@ private fun FinanzasBottomBar(
     NavigationBar(
         modifier = modifier.fillMaxWidth(),
         content = {
-            destinations.forEach(action = { destination ->
-                val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
+            destinations.forEach(
+                action = { destination ->
+                    val selected = currentDestination.isTopLevelDestinationInHierarchy(destination)
 
-                NavigationBarItem(
-                    selected = selected,
-                    onClick = { onNavigateToDestination(destination) },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = destination.unselectedIcon),
-                            contentDescription = destination.titleTextId
-                        )
-                    },
-                    label = { Text(destination.titleTextId) },
-                )
-            })
+                    NavigationBarItem(
+                        selected = selected,
+                        onClick = { onNavigateToDestination(destination) },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = destination.unselectedIcon),
+                                contentDescription = destination.titleTextId
+                            )
+                        },
+                        label = { Text(destination.titleTextId) },
+                    )
+                }
+            )
         }
     )
 }

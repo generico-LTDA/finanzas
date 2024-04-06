@@ -14,14 +14,14 @@ import com.soleel.paymentaccountcreate.screen.PaymentAccountAmountRoute
 import com.soleel.paymentaccountcreate.screen.PaymentAccountNameRoute
 
 
-const val createPaymentAccountGraph = "create_payment_account_graph"
+const val paymentAccountCreateGraph = "payment_account_create_graph"
 
-const val paymentAccountTypeRoute = "payment_account_type_route";
-const val paymentAccountNameRoute = "payment_account_name_route";
-const val paymentAccountAmountRoute = "enter_payment_account_amount_route";
+const val paymentAccountTypeRoute = "payment_account_type_route"
+const val paymentAccountNameRoute = "payment_account_name_route"
+const val paymentAccountAmountRoute = "enter_payment_account_amount_route"
 
 fun NavController.navigateToPaymentAccountCreateGraph(navOptions: NavOptions? = null) {
-    this.navigate(createPaymentAccountGraph, navOptions)
+    this.navigate(paymentAccountCreateGraph, navOptions)
 }
 
 fun NavController.navigateToPaymentAccountTypeRoute(navOptions: NavOptions? = null) {
@@ -42,12 +42,13 @@ fun NavGraphBuilder.paymentAccountCreateGraph(
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
     onBackClick: () -> Unit,
+    onSaveClick: () -> Unit,
     fromTypeToName: () -> Unit,
     fromNameToAmount: () -> Unit,
 ) {
     navigation(
         startDestination = paymentAccountTypeRoute,
-        route = createPaymentAccountGraph,
+        route = paymentAccountCreateGraph,
         builder = {
             paymentAccountTypeScreen(
                 navController = navController,
@@ -65,7 +66,8 @@ fun NavGraphBuilder.paymentAccountCreateGraph(
                 onShowBottomBar = onShowBottomBar,
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                onSaveClick = onSaveClick
             )
         }
     )
@@ -83,7 +85,7 @@ fun NavGraphBuilder.paymentAccountTypeScreen(
             val parentEntry = remember(
                 key1 = it,
                 calculation = {
-                    navController.getBackStackEntry(route = createPaymentAccountGraph)
+                    navController.getBackStackEntry(route = paymentAccountCreateGraph)
                 }
             )
 
@@ -113,7 +115,7 @@ fun NavGraphBuilder.paymentAccountNameScreen(
             val parentEntry = remember(
                 key1 = it,
                 calculation = {
-                    navController.getBackStackEntry(route = createPaymentAccountGraph)
+                    navController.getBackStackEntry(route = paymentAccountCreateGraph)
                 }
             )
 
@@ -136,7 +138,8 @@ fun NavGraphBuilder.paymentAccountAmountScreen(
     onShowBottomBar: () -> Unit,
     onShowAddFloating: () -> Unit,
     onCancelClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
+    onSaveClick: () -> Unit
 ) {
     composable(
         route = paymentAccountAmountRoute,
@@ -145,7 +148,7 @@ fun NavGraphBuilder.paymentAccountAmountScreen(
             val parentEntry = remember(
                 key1 = it,
                 calculation = {
-                    navController.getBackStackEntry(route = createPaymentAccountGraph)
+                    navController.getBackStackEntry(route = paymentAccountCreateGraph)
                 }
             )
 
@@ -158,6 +161,7 @@ fun NavGraphBuilder.paymentAccountAmountScreen(
                 onShowAddFloating = onShowAddFloating,
                 onCancelClick = onCancelClick,
                 onBackClick = onBackClick,
+                onSaveClick = onSaveClick,
                 viewModel = viewModel
             )
         }
