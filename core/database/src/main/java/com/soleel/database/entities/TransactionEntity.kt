@@ -23,18 +23,11 @@ import androidx.room.PrimaryKey
 )
 data class TransactionEntity(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
-
     @ColumnInfo(name = "name") var name: String,
-
     @ColumnInfo(name = "amount") var amount: Int,
-
     @ColumnInfo(name = "create_at") var createAt: Long,
-
     @ColumnInfo(name = "updated_at") var updatedAt: Long,
-
-    @ColumnInfo(name = "category_type") var categoryType: Int,
-
     @ColumnInfo(name = "transaction_type") var transactionType: Int,
-
+    @ColumnInfo(name = "category_type") var categoryType: Int,
     @ColumnInfo(name = "payment_account_id") var paymentAccountId: String
 )

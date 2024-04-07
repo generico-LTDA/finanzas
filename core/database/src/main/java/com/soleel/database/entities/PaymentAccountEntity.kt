@@ -10,14 +10,8 @@ import androidx.room.PrimaryKey
 )
 data class PaymentAccountEntity(
     @PrimaryKey @ColumnInfo(name = "id") val id: String,
-
     @ColumnInfo(name = "name") var name: String,
-
-    @ColumnInfo(name = "amount") var amount: Int,
-
     @ColumnInfo(name = "create_at") var createAt: Long,
-
     @ColumnInfo(name = "updated_at") var updatedAt: Long,
-
     @ColumnInfo(name = "account_type") var accountType: Int
 )

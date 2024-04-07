@@ -19,23 +19,27 @@ class TransactionRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) : ITransactionLocalDataSource {
 
+    override fun getTransaction(transactionId: String): Flow<Transaction?> {
+        return transactionDAO
+            .getTransactionForTransactionId(transactionId)
+            .map(transform = TransactionDbModel::asExternalModel)
+    }
+
+    override fun getTransactionWithForceUpdate(transactionId: String, forceUpdate: Boolean): Transaction? {
+        TODO("Not yet implemented")
+    }
+
     override fun getTransactions(): Flow<List<Transaction>> {
         return transactionDAO
             .getAllTransaction()
             .map(transform = TransactionDbModel::asExternalModelList)
     }
 
-    override suspend fun refreshTransactions() {
+    override fun getTransactionsWithForceUpdate(forceUpdate: Boolean): List<Transaction> {
         TODO("Not yet implemented")
     }
 
-    override fun getTransactionStream(transactionId: String): Flow<Transaction?> {
-        return transactionDAO
-            .getTransactionForTransactionId(transactionId)
-            .map(transform = TransactionDbModel::asExternalModel)
-    }
-
-    override suspend fun getTransaction(transactionId: String, forceUpdate: Boolean): Transaction? {
+    override suspend fun refreshTransactions() {
         TODO("Not yet implemented")
     }
 
@@ -63,8 +67,8 @@ class TransactionRepository @Inject constructor(
             amount = amount,
             createAt = System.currentTimeMillis(),
             updatedAt = System.currentTimeMillis(),
-            categoryType = transactionType,
-            transactionType = transactionCategory,
+            transactionType = transactionType,
+            categoryType = transactionCategory,
             paymentAccountId = paymentAccountId
         )
 

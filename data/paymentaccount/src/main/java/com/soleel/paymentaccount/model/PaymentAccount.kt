@@ -3,7 +3,7 @@ package com.soleel.paymentaccount.model
 data class PaymentAccount(
     val id: String,
     val name: String,
-    var amount: Int,
+    var amount: Int = 0,
     val createAt: Long,
     val updatedAt: Long,
     val accountType: Int

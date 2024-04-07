@@ -5,18 +5,19 @@ import kotlinx.coroutines.flow.Flow
 
 interface IPaymentAccountLocalDataSource {
 
+    fun getPaymentAccount(paymentAccountId: String): Flow<PaymentAccount?>
+
+    fun getPaymentAccountWithForceUpdate(paymentAccountId: String, forceUpdate: Boolean = false): PaymentAccount?
+
     fun getPaymentAccounts(): Flow<List<PaymentAccount>>
 
-//    suspend fun getPaymentAccounts(forceUpdate: Boolean = false): List<PaymentAccount>
+    fun getPaymentAccountsWithForceUpdate(forceUpdate: Boolean = false): List<PaymentAccount>
+
+    fun getPaymentAccountWithTotalAmount(paymentAccountId: String): Flow<PaymentAccount?>
+
+    fun getPaymentAccountsWithTotalAmount(): Flow<List<PaymentAccount>>
 
     suspend fun refreshPaymentAccounts()
-
-    fun getPaymentAccountStream(paymentAccountId: String): Flow<PaymentAccount?>
-
-    suspend fun getPaymentAccount(
-        paymentAccountId: String,
-        forceUpdate: Boolean = false
-    ): PaymentAccount?
 
     suspend fun refreshPaymentAccount(paymentAccountId: String)
 
