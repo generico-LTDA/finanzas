@@ -13,8 +13,8 @@ class TransactionDbModel {
                 amount = transactionEntity.amount,
                 createAt = transactionEntity.createAt,
                 updatedAt = transactionEntity.updatedAt,
-                categoryType = transactionEntity.categoryType,
                 transactionType = transactionEntity.transactionType,
+                categoryType = transactionEntity.categoryType,
                 paymentAccountId = transactionEntity.paymentAccountId
             )
         }

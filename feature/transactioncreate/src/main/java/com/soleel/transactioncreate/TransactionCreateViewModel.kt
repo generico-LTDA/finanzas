@@ -101,7 +101,7 @@ class TransactionCreateViewModel @Inject constructor(
     private fun paymentAccountUiState(
         paymentAccountRepository: IPaymentAccountLocalDataSource,
     ): Flow<PaymentAccountsUiState> {
-        return paymentAccountRepository.getPaymentAccounts()
+        return paymentAccountRepository.getPaymentAccountsWithTotalAmount()
             .asResult()
             .map(transform = this::getData)
     }
@@ -114,7 +114,7 @@ class TransactionCreateViewModel @Inject constructor(
 //
 //            delay(2000)
 //
-//            val itemsPaymentAccount = paymentAccountRepository.getPaymentAccounts()
+//            val itemsPaymentAccount = paymentAccountRepository.getPaymentAccountsWithTotalAmount()
 //                .asResult()
 //                .map {  getData(it)}
 //

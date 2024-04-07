@@ -18,26 +18,39 @@ class PaymentAccountRepository @Inject constructor(
     @DefaultDispatcher private val dispatcher: CoroutineDispatcher
 ) : IPaymentAccountLocalDataSource {
 
+    override fun getPaymentAccount(paymentAccountId: String): Flow<PaymentAccount?> {
+        return paymentAccountDAO
+            .getPaymentAccountById(paymentAccountId)
+            .map(transform = PaymentAccountDbModel::asExternalModel)
+    }
+
+    override fun getPaymentAccountWithForceUpdate(paymentAccountId: String, forceUpdate: Boolean): PaymentAccount? {
+        TODO("Not yet implemented")
+    }
+
     override fun getPaymentAccounts(): Flow<List<PaymentAccount>> {
         return paymentAccountDAO
             .getAllPaymentAccount()
             .map(transform = PaymentAccountDbModel::asExternalModelList)
     }
 
-    override suspend fun refreshPaymentAccounts() {
+    override fun getPaymentAccountsWithForceUpdate(forceUpdate: Boolean): List<PaymentAccount> {
         TODO("Not yet implemented")
     }
 
-    override fun getPaymentAccountStream(paymentAccountId: String): Flow<PaymentAccount?> {
+    override fun getPaymentAccountWithTotalAmount(paymentAccountId: String): Flow<PaymentAccount?> {
         return paymentAccountDAO
-            .getPaymentAccountForPaymentAccountId(paymentAccountId)
-            .map(transform = PaymentAccountDbModel::asExternalModel)
+            .getPaymentAccountByIdWithTotalsAmount(paymentAccountId)
+            .map(transform = PaymentAccountDbModel::asExternalModelWithTotalAmount)
     }
 
-    override suspend fun getPaymentAccount(
-        paymentAccountId: String,
-        forceUpdate: Boolean
-    ): PaymentAccount? {
+    override fun getPaymentAccountsWithTotalAmount(): Flow<List<PaymentAccount>> {
+        return paymentAccountDAO
+            .getPaymentAccountsWithTotalsAmount()
+            .map(transform = PaymentAccountDbModel::asExternalModelWithTotalAmountList)
+    }
+
+    override suspend fun refreshPaymentAccounts() {
         TODO("Not yet implemented")
     }
 
@@ -87,4 +100,5 @@ class PaymentAccountRepository @Inject constructor(
     override suspend fun deletePaymentAccount(paymentAccountId: String) {
         TODO("Not yet implemented")
     }
+
 }

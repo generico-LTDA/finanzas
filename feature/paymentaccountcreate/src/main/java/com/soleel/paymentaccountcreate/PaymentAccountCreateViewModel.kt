@@ -121,7 +121,7 @@ class PaymentAccountCreateViewModel @Inject constructor(
 
                 transactionRepository.createTransaction(
                     name = "Monto inicial",
-                    amount =paymentAccountUiCreate.amount.toInt(),
+                    amount = paymentAccountUiCreate.amount.toInt(),
                     transactionType = TransactionTypeConstant.INCOME,
                     transactionCategory = TransactionCategoryConstant.INCOME_TRANSFER,
                     paymentAccountId = paymentAccountId

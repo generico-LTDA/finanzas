@@ -5,15 +5,15 @@ import kotlinx.coroutines.flow.Flow
 
 interface ITransactionLocalDataSource {
 
+    fun getTransaction(transactionId: String): Flow<Transaction?>
+
+    fun getTransactionWithForceUpdate(transactionId: String, forceUpdate: Boolean = false): Transaction?
+
     fun getTransactions(): Flow<List<Transaction>>
 
-//    suspend fun getTransactions(forceUpdate: Boolean = false): List<Transaction>
+    fun getTransactionsWithForceUpdate(forceUpdate: Boolean = false): List<Transaction>
 
     suspend fun refreshTransactions()
-
-    fun getTransactionStream(transactionId: String): Flow<Transaction?>
-
-    suspend fun getTransaction(transactionId: String, forceUpdate: Boolean = false): Transaction?
 
     suspend fun refreshTransaction(transactionId: String)
 
