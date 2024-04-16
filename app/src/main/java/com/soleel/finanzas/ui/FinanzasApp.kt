@@ -43,8 +43,9 @@ fun FinanzasApp(
             }
         },
         floatingActionButton = {
-            if (appState.shouldShowAddFloating())
+            if (appState.shouldShowAddFloating()) {
                 AddFloatingActionButton(onClick = { appState.showAddModal() })
+            }
         },
         content = {
             if (appState.shouldShowAddModal()) {
